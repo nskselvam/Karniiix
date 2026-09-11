@@ -106,6 +106,7 @@ public:
         
         return jacobian_result;
     }
+
     
     void displayJacobian(const std::vector<double>& x) {
         std::cout << "Jacobian matrix at (";
