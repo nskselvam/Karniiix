@@ -36,6 +36,11 @@ struct SpineRecord {
     double      abnormal_prob = 0.0;
     std::string image_path;
     std::string classification; // "Normal" | "Abnormal"
+    std::string modality = "XRAY";  // XRAY | DEXA | CT | MRI | AUTO
+    double      trabecular_bone_score = 0.0;
+    double      cortical_thinning_index = 0.0;
+    double      marrow_dark_ratio = 0.0;
+    std::string marrow_signal;
 };
 
 /* ═══════════════════════════════════════════════════════════════════════════ */
@@ -126,7 +131,12 @@ namespace MiniJson {
            << "    \"risk_score\": "      << r.risk_score             << ",\n"
            << "    \"abnormal_prob\": "   << r.abnormal_prob          << ",\n"
            << "    \"classification\": \"" << escape(r.classification) << "\",\n"
-           << "    \"image_path\": \""    << escape(r.image_path)     << "\"\n"
+           << "    \"image_path\": \""    << escape(r.image_path)     << "\",\n"
+           << "    \"modality\": \""      << escape(r.modality)       << "\",\n"
+           << "    \"trabecular_bone_score\": " << r.trabecular_bone_score << ",\n"
+           << "    \"cortical_thinning_index\": " << r.cortical_thinning_index << ",\n"
+           << "    \"marrow_dark_ratio\": " << r.marrow_dark_ratio << ",\n"
+           << "    \"marrow_signal\": \"" << escape(r.marrow_signal) << "\"\n"
            << "  }";
         return ss.str();
     }
@@ -147,14 +157,23 @@ private:
         r.date           = MiniJson::extract_value(obj, "date");
         r.classification = MiniJson::extract_value(obj, "classification");
         r.image_path     = MiniJson::extract_value(obj, "image_path");
+        r.modality       = MiniJson::extract_value(obj, "modality");
+        r.marrow_signal  = MiniJson::extract_value(obj, "marrow_signal");
 
         std::string age_s  = MiniJson::extract_value(obj, "age");
         std::string rs_s   = MiniJson::extract_value(obj, "risk_score");
         std::string ap_s   = MiniJson::extract_value(obj, "abnormal_prob");
+        std::string tbs_s  = MiniJson::extract_value(obj, "trabecular_bone_score");
+        std::string cti_s  = MiniJson::extract_value(obj, "cortical_thinning_index");
+        std::string mdr_s  = MiniJson::extract_value(obj, "marrow_dark_ratio");
 
         if (!age_s.empty()) r.age           = std::stoi(age_s);
         if (!rs_s.empty())  r.risk_score    = std::stod(rs_s);
         if (!ap_s.empty())  r.abnormal_prob = std::stod(ap_s);
+        if (!tbs_s.empty()) r.trabecular_bone_score = std::stod(tbs_s);
+        if (!cti_s.empty()) r.cortical_thinning_index = std::stod(cti_s);
+        if (!mdr_s.empty()) r.marrow_dark_ratio = std::stod(mdr_s);
+        if (r.modality.empty()) r.modality = "XRAY";
         return r;
     }
 

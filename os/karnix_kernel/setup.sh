@@ -241,6 +241,8 @@ printf "  ${DIM}stats${RST}   – database statistics\n"
 printf "  ${DIM}uci${RST}     – UCI vertebral analysis\n"
 printf "  ${DIM}sel N${RST}   – select patient N (0-based)\n"
 printf "  ${DIM}spine3d${RST} – launch 3D X-ray spine viewer on host\n"
+printf "  ${DIM}brain${RST}   – launch Brain Tumour MRI CNN visualizer on host\n"
+printf "  ${DIM}spine3dData${RST} – launch Moonday/Jester Electron interface on host\n"
 printf "  ${DIM}quit${RST}    – power off the OS\n"
 echo ""
 sep
@@ -261,6 +263,9 @@ command -v "$QEMU" &>/dev/null || die "qemu-system-i386 not found.  Run:  brew i
 
 # ── Spine 3D viewer – triggered by 'spine3d' command inside the OS ────────────
 SPINE3D_BIN="/Users/sudharsans/Orion/spine_3d/spine3d"
+BRAIN_TUMOUR_DIR="/Users/sudharsans/Documents/Karniiix/Brain_tumour"
+BRAIN_TUMOUR_BIN="$BRAIN_TUMOUR_DIR/build/brain_tumour_visualizer"
+MOONDAY_DIR="/Users/sudharsans/Documents/Karniiix/jester"
 DEBUG_LOG="/tmp/karnix_debug_$$.log"
 rm -f "$DEBUG_LOG"; : > "$DEBUG_LOG"
 
@@ -269,11 +274,18 @@ if [[ ! -x "$SPINE3D_BIN" ]]; then
 fi
 
 say "3D viewer trigger active – type ${CYN}spine3d${RST} inside KarnixOS to open it"
+if [[ -x "$BRAIN_TUMOUR_BIN" ]]; then
+  say "Brain Tumour viewer trigger active – type ${CYN}brain${RST} inside KarnixOS to open it"
+else
+  warn "Brain Tumour visualizer not found at $BRAIN_TUMOUR_BIN – run Brain_tumour/setup.sh first"
+fi
 
 # Background watcher: tail the QEMU debug log; launch viewer when magic string seen
 SPINE3D_DIR="$(dirname "$SPINE3D_BIN")"
 SPINE3D_LOG="/tmp/spine3d_launch.log"
 SPINE3D_CMD="/tmp/orion_spine3d_$$.command"
+BRAIN_TUMOUR_CMD="/tmp/karnix_brain_tumour_$$.command"
+MOONDAY_CMD="/tmp/karnix_moonday_$$.command"
 
 # Pre-write a macOS .command launcher (macOS 'open' registers it with the Window Server)
 cat > "$SPINE3D_CMD" << CMDEOF
@@ -282,6 +294,26 @@ cd "$SPINE3D_DIR"
 exec "$SPINE3D_BIN"
 CMDEOF
 chmod +x "$SPINE3D_CMD"
+
+cat > "$BRAIN_TUMOUR_CMD" << CMDEOF
+#!/bin/bash
+cd "$BRAIN_TUMOUR_DIR"
+exec "$BRAIN_TUMOUR_BIN" "data/brain_tumor/Testing" "models/brain_tumour_cnn.weights"
+CMDEOF
+chmod +x "$BRAIN_TUMOUR_CMD"
+
+cat > "$MOONDAY_CMD" << CMDEOF
+#!/bin/bash
+cd "$MOONDAY_DIR"
+exec npm run app
+CMDEOF
+chmod +x "$MOONDAY_CMD"
+
+if [[ -f "$MOONDAY_DIR/package.json" ]]; then
+  say "Moonday Electron trigger active – type ${CYN}spine3dData${RST} inside KarnixOS to run npm run app"
+else
+  warn "Moonday project not found at $MOONDAY_DIR"
+fi
 
 (
   _launched=0
@@ -299,13 +331,32 @@ chmod +x "$SPINE3D_CMD"
         printf "       Run:  cd $SPINE3D_DIR && make\n"
       fi
     fi
+    if [[ "$line" == *"KARNIX_LAUNCH_BRAIN_TUMOUR"* ]]; then
+      printf "${GRN}[host]${RST} brain tumour visualizer triggered – opening MRI CNN console...\n"
+      if [[ -x "$BRAIN_TUMOUR_BIN" ]]; then
+        open "$BRAIN_TUMOUR_CMD"
+        printf "${GRN}[host]${RST} Brain Tumour visualizer launched.\n"
+      else
+        printf "${YEL}[host]${RST} Brain Tumour visualizer not found: $BRAIN_TUMOUR_BIN\n"
+        printf "       Run:  cd $BRAIN_TUMOUR_DIR && ./setup.sh --skip-train --skip-evaluate\n"
+      fi
+    fi
+    if [[ "$line" == *"KARNIX_LAUNCH_MOONDAY"* ]]; then
+      printf "${GRN}[host]${RST} spine3dData triggered – launching Moonday with npm run app...\n"
+      if [[ -f "$MOONDAY_DIR/package.json" ]]; then
+        open "$MOONDAY_CMD"
+        printf "${GRN}[host]${RST} Moonday Electron interface launched from $MOONDAY_DIR\n"
+      else
+        printf "${YEL}[host]${RST} Moonday project not found: $MOONDAY_DIR\n"
+      fi
+    fi
   done < <(tail -f "$DEBUG_LOG" 2>/dev/null)
 ) &
 WATCHER_PID=$!
 say "Debug watcher running (PID $WATCHER_PID)"
 
 # Clean up watcher + tmp files on exit
-trap 'kill $WATCHER_PID 2>/dev/null; rm -f "$DEBUG_LOG" "$SPINE3D_CMD"' EXIT INT TERM
+trap 'kill $WATCHER_PID 2>/dev/null; rm -f "$DEBUG_LOG" "$SPINE3D_CMD" "$BRAIN_TUMOUR_CMD" "$MOONDAY_CMD"' EXIT INT TERM
 
 sep
 

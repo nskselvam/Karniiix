@@ -72,6 +72,25 @@ function fmtDate(d) {
     return dd.toISOString().substring(0, 10);
 }
 
+function derivedTbs(p) {
+    if (p.trabecular_bone_score) return clamp(p.trabecular_bone_score, 0, 3);
+    const bone = clamp(p.bone_density || 0, -4, 2);
+    const disc = clamp(p.disc_grade || 0, 0, 5);
+    return clamp(1.35 + bone * 0.08 - disc * 0.03, 0.4, 1.8);
+}
+
+function derivedCorticalThinning(p) {
+    if (p.cortical_thinning_index) return clamp(p.cortical_thinning_index, 0, 100);
+    const age = clamp(p.age || 0, 0, 100);
+    const bone = clamp(-(p.bone_density || 0), 0, 4);
+    return clamp(age * 0.35 + bone * 18 + (p.frac_grade || 0) * 10, 0, 100);
+}
+
+function derivedMarrowDark(p) {
+    if (p.marrow_dark_ratio) return clamp(p.marrow_dark_ratio, 0, 100);
+    return clamp((p.abnormal_prob || 0) * 0.45 + (p.disc_grade || 0) * 6 + (p.frac_grade || 0) * 7, 0, 100);
+}
+
 /* ── Query helpers ─────────────────────────────────────────────────────── */
 async function fetchPatients(client) {
     /* Select ONLY anonymised clinical fields – no names, no doctor IDs */
@@ -224,6 +243,10 @@ function generateHeader(patients, uci, agg, source) {
     lines.push('    int         bone_x10;       /* bone density T-score * 10 (signed) */');
     lines.push('    int         frac_grade;     /* compression fracture grade 0-3 */');
     lines.push('    int         disc_grade;     /* disc degeneration 0-4 */');
+    lines.push('    int         tbs_x100;       /* DEXA TBS texture proxy * 100 */');
+    lines.push('    int         cortical_idx;   /* CT cortical thinning index 0-100 */');
+    lines.push('    int         marrow_dark_pct;/* MRI dark marrow ratio 0-100 */');
+    lines.push('    const char *marrow_signal;  /* bright/dark marrow summary */');
     lines.push('} SpineRec;');
     lines.push('');
 
@@ -236,12 +259,16 @@ function generateHeader(patients, uci, agg, source) {
         const bd = Math.round(clamp(p.bone_density || (p.bone_x10 / 10) || 0, -99, 99) * 10);
         const fg = parseInt(p.frac_grade) || 0;
         const dg = parseInt(p.disc_grade) || 0;
+        const tbs = Math.round(derivedTbs(p) * 100);
+        const cortical = Math.round(derivedCorticalThinning(p));
+        const marrow = Math.round(derivedMarrowDark(p));
+        const marrowSignal = p.marrow_signal || (marrow >= 45 ? 'Dark marrow signal' : 'Bright marrow signal');
         lines.push(
             `    {${cstr(p.patient_id)}, ${p.age}, ${cstr(p.sex)}, ` +
             `${cstr(fmtDate(p.scan_date))}, ` +
             `${rs}, ${ap}, ` +
             `${cstr(p.classification)}, ${cstr((p.risk_category||'MODERATE').toUpperCase())}, ` +
-            `${cb}, ${bd}, ${fg}, ${dg}},`);
+            `${cb}, ${bd}, ${fg}, ${dg}, ${tbs}, ${cortical}, ${marrow}, ${cstr(marrowSignal)}},`);
     }
     lines.push('};');
     lines.push('');

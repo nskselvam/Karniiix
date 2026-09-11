@@ -1,0 +1,4 @@
+/Users/sudharsans/Documents/Karniiix/Brain_tumour/build/CMakeFiles/brain_tumour_cli.dir
+/Users/sudharsans/Documents/Karniiix/Brain_tumour/build/CMakeFiles/brain_tumour_visualizer.dir
+/Users/sudharsans/Documents/Karniiix/Brain_tumour/build/CMakeFiles/edit_cache.dir
+/Users/sudharsans/Documents/Karniiix/Brain_tumour/build/CMakeFiles/rebuild_cache.dir

@@ -154,13 +154,13 @@ namespace ImageIO {
     }
 
     /**
-     * Convert JPEG/PNG/TIFF → PPM via macOS sips (ships with every macOS).
-     * Fully offline – no internet required.
+     * Convert JPEG/PNG/TIFF → BMP via macOS sips (ships with every macOS).
+     * BMP is used because current macOS sips builds do not write PPM output.
      */
     inline RawImage convert_via_sips(const std::string& src) {
         std::string tmp = "/tmp/spine_sips_"
-            + std::to_string(reinterpret_cast<std::uintptr_t>(&src)) + ".ppm";
-        std::string cmd = "sips -s format ppm \"" + src
+            + std::to_string(reinterpret_cast<std::uintptr_t>(&src)) + ".bmp";
+        std::string cmd = "sips -s format bmp \"" + src
             + "\" --out \"" + tmp + "\" > /dev/null 2>&1";
         if (std::system(cmd.c_str()) != 0) {
             std::remove(tmp.c_str());
@@ -168,7 +168,7 @@ namespace ImageIO {
                 "Image conversion failed for: " + src +
                 "\n  Ensure sips is available (macOS) and the file is a valid JPEG/PNG/TIFF.");
         }
-        RawImage img = load_ppm(tmp);
+        RawImage img = load_bmp(tmp);
         std::remove(tmp.c_str());
         return img;
     }

@@ -1,0 +1,751 @@
+Training OSTEOARTHRITIS CNN on 480 images
+Epochs: 12 | Learning rate: 0.001 | Batch size: 16
+Architecture: 1x64x64 -> Conv(4) -> Pool -> Conv(8) -> Pool -> Conv(16) -> Pool -> Dense(32) -> Softmax(2)
+Parameters: 20034 | Optimizer: SGD | Loss: Cross-Entropy
+
+PIPELINE
+  [1] DATASET       validated manifest: data/osteoarthritis/train.csv
+  [2] PREPROCESSING grayscale -> 64x64 -> normalize [-1,1]
+  [3] BATCH LOADER  deterministic shuffle, 30 batches/epoch
+  [4] MODEL         Conv/ReLU/Pool x3 -> Dense -> Softmax
+  [5] LOSS          binary cross-entropy
+  [6] FORWARD       probabilities for 2 classes
+  [7] BACKPROP      analytical gradients through every layer
+  [8] OPTIMIZER     online SGD inside each loaded batch
+  [9] EPOCHS        12 complete dataset passes
+ [10] CHECKPOINT    atomic save after every epoch
+
+[BATCH] epoch=1/12 batch=1/30 samples=16 begin
+[BATCH] epoch=1/12 batch=1/30 loss=0.7808 accuracy=87.50% duration_ms=116.46 end
+[BATCH] epoch=1/12 batch=2/30 samples=16 begin
+[BATCH] epoch=1/12 batch=2/30 loss=1.3602 accuracy=93.75% duration_ms=115.70 end
+[BATCH] epoch=1/12 batch=3/30 samples=16 begin
+[BATCH] epoch=1/12 batch=3/30 loss=1.1878 accuracy=75.00% duration_ms=116.69 end
+[BATCH] epoch=1/12 batch=4/30 samples=16 begin
+[BATCH] epoch=1/12 batch=4/30 loss=1.0696 accuracy=81.25% duration_ms=118.41 end
+[BATCH] epoch=1/12 batch=5/30 samples=16 begin
+[BATCH] epoch=1/12 batch=5/30 loss=0.6369 accuracy=75.00% duration_ms=120.95 end
+[BATCH] epoch=1/12 batch=6/30 samples=16 begin
+[BATCH] epoch=1/12 batch=6/30 loss=0.7266 accuracy=75.00% duration_ms=142.06 end
+[BATCH] epoch=1/12 batch=7/30 samples=16 begin
+[BATCH] epoch=1/12 batch=7/30 loss=0.9363 accuracy=81.25% duration_ms=126.96 end
+[BATCH] epoch=1/12 batch=8/30 samples=16 begin
+[BATCH] epoch=1/12 batch=8/30 loss=0.7619 accuracy=75.00% duration_ms=122.50 end
+[BATCH] epoch=1/12 batch=9/30 samples=16 begin
+[BATCH] epoch=1/12 batch=9/30 loss=0.8181 accuracy=81.25% duration_ms=115.56 end
+[BATCH] epoch=1/12 batch=10/30 samples=16 begin
+[BATCH] epoch=1/12 batch=10/30 loss=0.6428 accuracy=81.25% duration_ms=114.35 end
+[BATCH] epoch=1/12 batch=11/30 samples=16 begin
+[BATCH] epoch=1/12 batch=11/30 loss=1.2844 accuracy=75.00% duration_ms=115.05 end
+[BATCH] epoch=1/12 batch=12/30 samples=16 begin
+[BATCH] epoch=1/12 batch=12/30 loss=0.5266 accuracy=81.25% duration_ms=117.78 end
+[BATCH] epoch=1/12 batch=13/30 samples=16 begin
+[BATCH] epoch=1/12 batch=13/30 loss=0.6714 accuracy=75.00% duration_ms=117.56 end
+[BATCH] epoch=1/12 batch=14/30 samples=16 begin
+[BATCH] epoch=1/12 batch=14/30 loss=0.8102 accuracy=68.75% duration_ms=116.46 end
+[BATCH] epoch=1/12 batch=15/30 samples=16 begin
+[BATCH] epoch=1/12 batch=15/30 loss=1.1239 accuracy=68.75% duration_ms=114.69 end
+[BATCH] epoch=1/12 batch=16/30 samples=16 begin
+[BATCH] epoch=1/12 batch=16/30 loss=1.0813 accuracy=68.75% duration_ms=117.73 end
+[BATCH] epoch=1/12 batch=17/30 samples=16 begin
+[BATCH] epoch=1/12 batch=17/30 loss=0.7503 accuracy=56.25% duration_ms=116.32 end
+[BATCH] epoch=1/12 batch=18/30 samples=16 begin
+[BATCH] epoch=1/12 batch=18/30 loss=0.6741 accuracy=81.25% duration_ms=116.31 end
+[BATCH] epoch=1/12 batch=19/30 samples=16 begin
+[BATCH] epoch=1/12 batch=19/30 loss=0.7441 accuracy=62.50% duration_ms=134.92 end
+[BATCH] epoch=1/12 batch=20/30 samples=16 begin
+[BATCH] epoch=1/12 batch=20/30 loss=0.6641 accuracy=62.50% duration_ms=122.98 end
+[BATCH] epoch=1/12 batch=21/30 samples=16 begin
+[BATCH] epoch=1/12 batch=21/30 loss=0.7304 accuracy=81.25% duration_ms=122.44 end
+[BATCH] epoch=1/12 batch=22/30 samples=16 begin
+[BATCH] epoch=1/12 batch=22/30 loss=0.6870 accuracy=75.00% duration_ms=132.49 end
+[BATCH] epoch=1/12 batch=23/30 samples=16 begin
+[BATCH] epoch=1/12 batch=23/30 loss=0.6835 accuracy=87.50% duration_ms=152.48 end
+[BATCH] epoch=1/12 batch=24/30 samples=16 begin
+[BATCH] epoch=1/12 batch=24/30 loss=0.6970 accuracy=68.75% duration_ms=127.25 end
+[BATCH] epoch=1/12 batch=25/30 samples=16 begin
+[BATCH] epoch=1/12 batch=25/30 loss=0.6177 accuracy=81.25% duration_ms=123.97 end
+[BATCH] epoch=1/12 batch=26/30 samples=16 begin
+[BATCH] epoch=1/12 batch=26/30 loss=0.7933 accuracy=62.50% duration_ms=239.82 end
+[BATCH] epoch=1/12 batch=27/30 samples=16 begin
+[BATCH] epoch=1/12 batch=27/30 loss=0.6963 accuracy=75.00% duration_ms=146.63 end
+[BATCH] epoch=1/12 batch=28/30 samples=16 begin
+[BATCH] epoch=1/12 batch=28/30 loss=0.7325 accuracy=62.50% duration_ms=136.35 end
+[BATCH] epoch=1/12 batch=29/30 samples=16 begin
+[BATCH] epoch=1/12 batch=29/30 loss=0.6320 accuracy=81.25% duration_ms=119.42 end
+[BATCH] epoch=1/12 batch=30/30 samples=16 begin
+[BATCH] epoch=1/12 batch=30/30 loss=0.6943 accuracy=56.25% duration_ms=117.76 end
+Epoch 1/12 - loss: 0.8072 - train accuracy: 74.58% - duration: 3.82 s - throughput: 125.71 images/s
+[BATCH] epoch=2/12 batch=1/30 samples=16 begin
+[BATCH] epoch=2/12 batch=1/30 loss=0.5801 accuracy=87.50% duration_ms=113.35 end
+[BATCH] epoch=2/12 batch=2/30 samples=16 begin
+[BATCH] epoch=2/12 batch=2/30 loss=0.5544 accuracy=87.50% duration_ms=189.44 end
+[BATCH] epoch=2/12 batch=3/30 samples=16 begin
+[BATCH] epoch=2/12 batch=3/30 loss=0.6182 accuracy=75.00% duration_ms=125.03 end
+[BATCH] epoch=2/12 batch=4/30 samples=16 begin
+[BATCH] epoch=2/12 batch=4/30 loss=0.6817 accuracy=68.75% duration_ms=125.70 end
+[BATCH] epoch=2/12 batch=5/30 samples=16 begin
+[BATCH] epoch=2/12 batch=5/30 loss=0.7276 accuracy=43.75% duration_ms=251.51 end
+[BATCH] epoch=2/12 batch=6/30 samples=16 begin
+[BATCH] epoch=2/12 batch=6/30 loss=0.7330 accuracy=68.75% duration_ms=201.15 end
+[BATCH] epoch=2/12 batch=7/30 samples=16 begin
+[BATCH] epoch=2/12 batch=7/30 loss=0.4712 accuracy=87.50% duration_ms=149.57 end
+[BATCH] epoch=2/12 batch=8/30 samples=16 begin
+[BATCH] epoch=2/12 batch=8/30 loss=0.6563 accuracy=75.00% duration_ms=119.91 end
+[BATCH] epoch=2/12 batch=9/30 samples=16 begin
+[BATCH] epoch=2/12 batch=9/30 loss=0.7001 accuracy=75.00% duration_ms=149.65 end
+[BATCH] epoch=2/12 batch=10/30 samples=16 begin
+[BATCH] epoch=2/12 batch=10/30 loss=0.7709 accuracy=68.75% duration_ms=145.46 end
+[BATCH] epoch=2/12 batch=11/30 samples=16 begin
+[BATCH] epoch=2/12 batch=11/30 loss=0.6206 accuracy=81.25% duration_ms=406.97 end
+[BATCH] epoch=2/12 batch=12/30 samples=16 begin
+[BATCH] epoch=2/12 batch=12/30 loss=0.6560 accuracy=75.00% duration_ms=156.75 end
+[BATCH] epoch=2/12 batch=13/30 samples=16 begin
+[BATCH] epoch=2/12 batch=13/30 loss=0.6752 accuracy=75.00% duration_ms=127.15 end
+[BATCH] epoch=2/12 batch=14/30 samples=16 begin
+[BATCH] epoch=2/12 batch=14/30 loss=0.5752 accuracy=87.50% duration_ms=114.01 end
+[BATCH] epoch=2/12 batch=15/30 samples=16 begin
+[BATCH] epoch=2/12 batch=15/30 loss=0.5960 accuracy=87.50% duration_ms=120.82 end
+[BATCH] epoch=2/12 batch=16/30 samples=16 begin
+[BATCH] epoch=2/12 batch=16/30 loss=0.6735 accuracy=75.00% duration_ms=116.88 end
+[BATCH] epoch=2/12 batch=17/30 samples=16 begin
+[BATCH] epoch=2/12 batch=17/30 loss=0.6586 accuracy=62.50% duration_ms=121.53 end
+[BATCH] epoch=2/12 batch=18/30 samples=16 begin
+[BATCH] epoch=2/12 batch=18/30 loss=0.6647 accuracy=68.75% duration_ms=126.55 end
+[BATCH] epoch=2/12 batch=19/30 samples=16 begin
+[BATCH] epoch=2/12 batch=19/30 loss=0.8146 accuracy=62.50% duration_ms=122.15 end
+[BATCH] epoch=2/12 batch=20/30 samples=16 begin
+[BATCH] epoch=2/12 batch=20/30 loss=0.8191 accuracy=56.25% duration_ms=132.03 end
+[BATCH] epoch=2/12 batch=21/30 samples=16 begin
+[BATCH] epoch=2/12 batch=21/30 loss=0.6992 accuracy=50.00% duration_ms=129.16 end
+[BATCH] epoch=2/12 batch=22/30 samples=16 begin
+[BATCH] epoch=2/12 batch=22/30 loss=0.7179 accuracy=50.00% duration_ms=186.80 end
+[BATCH] epoch=2/12 batch=23/30 samples=16 begin
+[BATCH] epoch=2/12 batch=23/30 loss=0.6575 accuracy=68.75% duration_ms=250.20 end
+[BATCH] epoch=2/12 batch=24/30 samples=16 begin
+[BATCH] epoch=2/12 batch=24/30 loss=0.7238 accuracy=43.75% duration_ms=134.24 end
+[BATCH] epoch=2/12 batch=25/30 samples=16 begin
+[BATCH] epoch=2/12 batch=25/30 loss=0.6442 accuracy=68.75% duration_ms=109.73 end
+[BATCH] epoch=2/12 batch=26/30 samples=16 begin
+[BATCH] epoch=2/12 batch=26/30 loss=0.6606 accuracy=62.50% duration_ms=108.76 end
+[BATCH] epoch=2/12 batch=27/30 samples=16 begin
+[BATCH] epoch=2/12 batch=27/30 loss=0.6989 accuracy=62.50% duration_ms=119.47 end
+[BATCH] epoch=2/12 batch=28/30 samples=16 begin
+[BATCH] epoch=2/12 batch=28/30 loss=0.7332 accuracy=56.25% duration_ms=118.58 end
+[BATCH] epoch=2/12 batch=29/30 samples=16 begin
+[BATCH] epoch=2/12 batch=29/30 loss=0.6898 accuracy=75.00% duration_ms=184.43 end
+[BATCH] epoch=2/12 batch=30/30 samples=16 begin
+[BATCH] epoch=2/12 batch=30/30 loss=0.6926 accuracy=75.00% duration_ms=153.85 end
+Epoch 2/12 - loss: 0.6722 - train accuracy: 69.38% - duration: 4.61 s - throughput: 104.09 images/s
+[BATCH] epoch=3/12 batch=1/30 samples=16 begin
+[BATCH] epoch=3/12 batch=1/30 loss=0.6196 accuracy=81.25% duration_ms=145.50 end
+[BATCH] epoch=3/12 batch=2/30 samples=16 begin
+[BATCH] epoch=3/12 batch=2/30 loss=0.6485 accuracy=62.50% duration_ms=144.00 end
+[BATCH] epoch=3/12 batch=3/30 samples=16 begin
+[BATCH] epoch=3/12 batch=3/30 loss=0.7485 accuracy=43.75% duration_ms=120.28 end
+[BATCH] epoch=3/12 batch=4/30 samples=16 begin
+[BATCH] epoch=3/12 batch=4/30 loss=0.7638 accuracy=50.00% duration_ms=118.41 end
+[BATCH] epoch=3/12 batch=5/30 samples=16 begin
+[BATCH] epoch=3/12 batch=5/30 loss=0.5963 accuracy=81.25% duration_ms=116.30 end
+[BATCH] epoch=3/12 batch=6/30 samples=16 begin
+[BATCH] epoch=3/12 batch=6/30 loss=0.6581 accuracy=81.25% duration_ms=152.74 end
+[BATCH] epoch=3/12 batch=7/30 samples=16 begin
+[BATCH] epoch=3/12 batch=7/30 loss=0.6054 accuracy=75.00% duration_ms=115.14 end
+[BATCH] epoch=3/12 batch=8/30 samples=16 begin
+[BATCH] epoch=3/12 batch=8/30 loss=0.6041 accuracy=81.25% duration_ms=109.31 end
+[BATCH] epoch=3/12 batch=9/30 samples=16 begin
+[BATCH] epoch=3/12 batch=9/30 loss=0.6870 accuracy=75.00% duration_ms=108.13 end
+[BATCH] epoch=3/12 batch=10/30 samples=16 begin
+[BATCH] epoch=3/12 batch=10/30 loss=0.6171 accuracy=81.25% duration_ms=107.73 end
+[BATCH] epoch=3/12 batch=11/30 samples=16 begin
+[BATCH] epoch=3/12 batch=11/30 loss=0.6508 accuracy=62.50% duration_ms=107.89 end
+[BATCH] epoch=3/12 batch=12/30 samples=16 begin
+[BATCH] epoch=3/12 batch=12/30 loss=0.6617 accuracy=68.75% duration_ms=107.39 end
+[BATCH] epoch=3/12 batch=13/30 samples=16 begin
+[BATCH] epoch=3/12 batch=13/30 loss=0.7927 accuracy=43.75% duration_ms=108.18 end
+[BATCH] epoch=3/12 batch=14/30 samples=16 begin
+[BATCH] epoch=3/12 batch=14/30 loss=0.6636 accuracy=75.00% duration_ms=108.10 end
+[BATCH] epoch=3/12 batch=15/30 samples=16 begin
+[BATCH] epoch=3/12 batch=15/30 loss=0.5839 accuracy=87.50% duration_ms=107.30 end
+[BATCH] epoch=3/12 batch=16/30 samples=16 begin
+[BATCH] epoch=3/12 batch=16/30 loss=0.7797 accuracy=62.50% duration_ms=107.78 end
+[BATCH] epoch=3/12 batch=17/30 samples=16 begin
+[BATCH] epoch=3/12 batch=17/30 loss=0.6821 accuracy=56.25% duration_ms=106.91 end
+[BATCH] epoch=3/12 batch=18/30 samples=16 begin
+[BATCH] epoch=3/12 batch=18/30 loss=0.6558 accuracy=68.75% duration_ms=108.89 end
+[BATCH] epoch=3/12 batch=19/30 samples=16 begin
+[BATCH] epoch=3/12 batch=19/30 loss=0.5866 accuracy=68.75% duration_ms=108.35 end
+[BATCH] epoch=3/12 batch=20/30 samples=16 begin
+[BATCH] epoch=3/12 batch=20/30 loss=0.7053 accuracy=50.00% duration_ms=108.87 end
+[BATCH] epoch=3/12 batch=21/30 samples=16 begin
+[BATCH] epoch=3/12 batch=21/30 loss=0.6197 accuracy=68.75% duration_ms=109.21 end
+[BATCH] epoch=3/12 batch=22/30 samples=16 begin
+[BATCH] epoch=3/12 batch=22/30 loss=0.7109 accuracy=68.75% duration_ms=109.39 end
+[BATCH] epoch=3/12 batch=23/30 samples=16 begin
+[BATCH] epoch=3/12 batch=23/30 loss=0.5686 accuracy=81.25% duration_ms=107.62 end
+[BATCH] epoch=3/12 batch=24/30 samples=16 begin
+[BATCH] epoch=3/12 batch=24/30 loss=0.6022 accuracy=87.50% duration_ms=107.52 end
+[BATCH] epoch=3/12 batch=25/30 samples=16 begin
+[BATCH] epoch=3/12 batch=25/30 loss=0.5569 accuracy=87.50% duration_ms=107.59 end
+[BATCH] epoch=3/12 batch=26/30 samples=16 begin
+[BATCH] epoch=3/12 batch=26/30 loss=0.8191 accuracy=62.50% duration_ms=110.11 end
+[BATCH] epoch=3/12 batch=27/30 samples=16 begin
+[BATCH] epoch=3/12 batch=27/30 loss=0.6249 accuracy=81.25% duration_ms=108.16 end
+[BATCH] epoch=3/12 batch=28/30 samples=16 begin
+[BATCH] epoch=3/12 batch=28/30 loss=0.6522 accuracy=75.00% duration_ms=107.63 end
+[BATCH] epoch=3/12 batch=29/30 samples=16 begin
+[BATCH] epoch=3/12 batch=29/30 loss=0.6331 accuracy=81.25% duration_ms=106.66 end
+[BATCH] epoch=3/12 batch=30/30 samples=16 begin
+[BATCH] epoch=3/12 batch=30/30 loss=0.6632 accuracy=75.00% duration_ms=109.07 end
+Epoch 3/12 - loss: 0.6587 - train accuracy: 70.83% - duration: 3.40 s - throughput: 141.16 images/s
+[BATCH] epoch=4/12 batch=1/30 samples=16 begin
+[BATCH] epoch=4/12 batch=1/30 loss=0.7416 accuracy=68.75% duration_ms=105.42 end
+[BATCH] epoch=4/12 batch=2/30 samples=16 begin
+[BATCH] epoch=4/12 batch=2/30 loss=0.7128 accuracy=75.00% duration_ms=105.24 end
+[BATCH] epoch=4/12 batch=3/30 samples=16 begin
+[BATCH] epoch=4/12 batch=3/30 loss=0.7586 accuracy=68.75% duration_ms=105.69 end
+[BATCH] epoch=4/12 batch=4/30 samples=16 begin
+[BATCH] epoch=4/12 batch=4/30 loss=0.6601 accuracy=62.50% duration_ms=105.93 end
+[BATCH] epoch=4/12 batch=5/30 samples=16 begin
+[BATCH] epoch=4/12 batch=5/30 loss=0.5825 accuracy=81.25% duration_ms=105.59 end
+[BATCH] epoch=4/12 batch=6/30 samples=16 begin
+[BATCH] epoch=4/12 batch=6/30 loss=0.6339 accuracy=75.00% duration_ms=106.16 end
+[BATCH] epoch=4/12 batch=7/30 samples=16 begin
+[BATCH] epoch=4/12 batch=7/30 loss=0.6554 accuracy=81.25% duration_ms=104.97 end
+[BATCH] epoch=4/12 batch=8/30 samples=16 begin
+[BATCH] epoch=4/12 batch=8/30 loss=0.6431 accuracy=75.00% duration_ms=107.27 end
+[BATCH] epoch=4/12 batch=9/30 samples=16 begin
+[BATCH] epoch=4/12 batch=9/30 loss=0.6393 accuracy=62.50% duration_ms=105.14 end
+[BATCH] epoch=4/12 batch=10/30 samples=16 begin
+[BATCH] epoch=4/12 batch=10/30 loss=0.6942 accuracy=68.75% duration_ms=105.13 end
+[BATCH] epoch=4/12 batch=11/30 samples=16 begin
+[BATCH] epoch=4/12 batch=11/30 loss=0.6758 accuracy=75.00% duration_ms=105.32 end
+[BATCH] epoch=4/12 batch=12/30 samples=16 begin
+[BATCH] epoch=4/12 batch=12/30 loss=0.6587 accuracy=75.00% duration_ms=105.07 end
+[BATCH] epoch=4/12 batch=13/30 samples=16 begin
+[BATCH] epoch=4/12 batch=13/30 loss=0.6464 accuracy=56.25% duration_ms=107.74 end
+[BATCH] epoch=4/12 batch=14/30 samples=16 begin
+[BATCH] epoch=4/12 batch=14/30 loss=0.8062 accuracy=50.00% duration_ms=110.18 end
+[BATCH] epoch=4/12 batch=15/30 samples=16 begin
+[BATCH] epoch=4/12 batch=15/30 loss=0.6447 accuracy=75.00% duration_ms=105.43 end
+[BATCH] epoch=4/12 batch=16/30 samples=16 begin
+[BATCH] epoch=4/12 batch=16/30 loss=0.4991 accuracy=81.25% duration_ms=105.56 end
+[BATCH] epoch=4/12 batch=17/30 samples=16 begin
+[BATCH] epoch=4/12 batch=17/30 loss=0.6356 accuracy=75.00% duration_ms=120.09 end
+[BATCH] epoch=4/12 batch=18/30 samples=16 begin
+[BATCH] epoch=4/12 batch=18/30 loss=0.6462 accuracy=68.75% duration_ms=111.21 end
+[BATCH] epoch=4/12 batch=19/30 samples=16 begin
+[BATCH] epoch=4/12 batch=19/30 loss=0.6526 accuracy=75.00% duration_ms=120.81 end
+[BATCH] epoch=4/12 batch=20/30 samples=16 begin
+[BATCH] epoch=4/12 batch=20/30 loss=0.6402 accuracy=75.00% duration_ms=120.74 end
+[BATCH] epoch=4/12 batch=21/30 samples=16 begin
+[BATCH] epoch=4/12 batch=21/30 loss=0.5973 accuracy=68.75% duration_ms=233.03 end
+[BATCH] epoch=4/12 batch=22/30 samples=16 begin
+[BATCH] epoch=4/12 batch=22/30 loss=0.5904 accuracy=81.25% duration_ms=121.59 end
+[BATCH] epoch=4/12 batch=23/30 samples=16 begin
+[BATCH] epoch=4/12 batch=23/30 loss=0.7270 accuracy=62.50% duration_ms=110.41 end
+[BATCH] epoch=4/12 batch=24/30 samples=16 begin
+[BATCH] epoch=4/12 batch=24/30 loss=0.6661 accuracy=87.50% duration_ms=143.02 end
+[BATCH] epoch=4/12 batch=25/30 samples=16 begin
+[BATCH] epoch=4/12 batch=25/30 loss=0.6850 accuracy=68.75% duration_ms=114.20 end
+[BATCH] epoch=4/12 batch=26/30 samples=16 begin
+[BATCH] epoch=4/12 batch=26/30 loss=0.6602 accuracy=75.00% duration_ms=176.02 end
+[BATCH] epoch=4/12 batch=27/30 samples=16 begin
+[BATCH] epoch=4/12 batch=27/30 loss=0.5572 accuracy=87.50% duration_ms=349.34 end
+[BATCH] epoch=4/12 batch=28/30 samples=16 begin
+[BATCH] epoch=4/12 batch=28/30 loss=0.7318 accuracy=62.50% duration_ms=172.49 end
+[BATCH] epoch=4/12 batch=29/30 samples=16 begin
+[BATCH] epoch=4/12 batch=29/30 loss=0.6277 accuracy=81.25% duration_ms=195.87 end
+[BATCH] epoch=4/12 batch=30/30 samples=16 begin
+[BATCH] epoch=4/12 batch=30/30 loss=0.5858 accuracy=75.00% duration_ms=171.51 end
+Epoch 4/12 - loss: 0.6552 - train accuracy: 72.50% - duration: 3.96 s - throughput: 121.32 images/s
+[BATCH] epoch=5/12 batch=1/30 samples=16 begin
+[BATCH] epoch=5/12 batch=1/30 loss=0.6991 accuracy=62.50% duration_ms=120.23 end
+[BATCH] epoch=5/12 batch=2/30 samples=16 begin
+[BATCH] epoch=5/12 batch=2/30 loss=0.6683 accuracy=75.00% duration_ms=312.05 end
+[BATCH] epoch=5/12 batch=3/30 samples=16 begin
+[BATCH] epoch=5/12 batch=3/30 loss=0.6140 accuracy=62.50% duration_ms=117.19 end
+[BATCH] epoch=5/12 batch=4/30 samples=16 begin
+[BATCH] epoch=5/12 batch=4/30 loss=0.6126 accuracy=87.50% duration_ms=111.26 end
+[BATCH] epoch=5/12 batch=5/30 samples=16 begin
+[BATCH] epoch=5/12 batch=5/30 loss=0.6472 accuracy=56.25% duration_ms=108.38 end
+[BATCH] epoch=5/12 batch=6/30 samples=16 begin
+[BATCH] epoch=5/12 batch=6/30 loss=0.5873 accuracy=81.25% duration_ms=130.09 end
+[BATCH] epoch=5/12 batch=7/30 samples=16 begin
+[BATCH] epoch=5/12 batch=7/30 loss=0.6240 accuracy=75.00% duration_ms=125.09 end
+[BATCH] epoch=5/12 batch=8/30 samples=16 begin
+[BATCH] epoch=5/12 batch=8/30 loss=0.6321 accuracy=68.75% duration_ms=111.52 end
+[BATCH] epoch=5/12 batch=9/30 samples=16 begin
+[BATCH] epoch=5/12 batch=9/30 loss=0.6173 accuracy=81.25% duration_ms=112.89 end
+[BATCH] epoch=5/12 batch=10/30 samples=16 begin
+[BATCH] epoch=5/12 batch=10/30 loss=0.6695 accuracy=62.50% duration_ms=109.85 end
+[BATCH] epoch=5/12 batch=11/30 samples=16 begin
+[BATCH] epoch=5/12 batch=11/30 loss=0.5905 accuracy=81.25% duration_ms=108.78 end
+[BATCH] epoch=5/12 batch=12/30 samples=16 begin
+[BATCH] epoch=5/12 batch=12/30 loss=0.6343 accuracy=75.00% duration_ms=106.92 end
+[BATCH] epoch=5/12 batch=13/30 samples=16 begin
+[BATCH] epoch=5/12 batch=13/30 loss=0.6491 accuracy=68.75% duration_ms=107.70 end
+[BATCH] epoch=5/12 batch=14/30 samples=16 begin
+[BATCH] epoch=5/12 batch=14/30 loss=0.6317 accuracy=75.00% duration_ms=106.98 end
+[BATCH] epoch=5/12 batch=15/30 samples=16 begin
+[BATCH] epoch=5/12 batch=15/30 loss=0.6424 accuracy=81.25% duration_ms=106.97 end
+[BATCH] epoch=5/12 batch=16/30 samples=16 begin
+[BATCH] epoch=5/12 batch=16/30 loss=0.6175 accuracy=68.75% duration_ms=106.01 end
+[BATCH] epoch=5/12 batch=17/30 samples=16 begin
+[BATCH] epoch=5/12 batch=17/30 loss=0.6481 accuracy=68.75% duration_ms=107.26 end
+[BATCH] epoch=5/12 batch=18/30 samples=16 begin
+[BATCH] epoch=5/12 batch=18/30 loss=0.6226 accuracy=68.75% duration_ms=125.75 end
+[BATCH] epoch=5/12 batch=19/30 samples=16 begin
+[BATCH] epoch=5/12 batch=19/30 loss=0.7681 accuracy=43.75% duration_ms=134.51 end
+[BATCH] epoch=5/12 batch=20/30 samples=16 begin
+[BATCH] epoch=5/12 batch=20/30 loss=0.7167 accuracy=68.75% duration_ms=110.76 end
+[BATCH] epoch=5/12 batch=21/30 samples=16 begin
+[BATCH] epoch=5/12 batch=21/30 loss=0.6445 accuracy=81.25% duration_ms=106.47 end
+[BATCH] epoch=5/12 batch=22/30 samples=16 begin
+[BATCH] epoch=5/12 batch=22/30 loss=0.6232 accuracy=62.50% duration_ms=107.07 end
+[BATCH] epoch=5/12 batch=23/30 samples=16 begin
+[BATCH] epoch=5/12 batch=23/30 loss=0.6414 accuracy=68.75% duration_ms=107.78 end
+[BATCH] epoch=5/12 batch=24/30 samples=16 begin
+[BATCH] epoch=5/12 batch=24/30 loss=0.6793 accuracy=62.50% duration_ms=107.52 end
+[BATCH] epoch=5/12 batch=25/30 samples=16 begin
+[BATCH] epoch=5/12 batch=25/30 loss=0.5791 accuracy=81.25% duration_ms=108.41 end
+[BATCH] epoch=5/12 batch=26/30 samples=16 begin
+[BATCH] epoch=5/12 batch=26/30 loss=0.8253 accuracy=50.00% duration_ms=107.04 end
+[BATCH] epoch=5/12 batch=27/30 samples=16 begin
+[BATCH] epoch=5/12 batch=27/30 loss=0.5829 accuracy=87.50% duration_ms=108.10 end
+[BATCH] epoch=5/12 batch=28/30 samples=16 begin
+[BATCH] epoch=5/12 batch=28/30 loss=0.7159 accuracy=68.75% duration_ms=107.94 end
+[BATCH] epoch=5/12 batch=29/30 samples=16 begin
+[BATCH] epoch=5/12 batch=29/30 loss=0.7021 accuracy=68.75% duration_ms=108.27 end
+[BATCH] epoch=5/12 batch=30/30 samples=16 begin
+[BATCH] epoch=5/12 batch=30/30 loss=0.6040 accuracy=87.50% duration_ms=110.35 end
+Epoch 5/12 - loss: 0.6497 - train accuracy: 71.04% - duration: 3.56 s - throughput: 134.85 images/s
+[BATCH] epoch=6/12 batch=1/30 samples=16 begin
+[BATCH] epoch=6/12 batch=1/30 loss=0.6344 accuracy=75.00% duration_ms=105.89 end
+[BATCH] epoch=6/12 batch=2/30 samples=16 begin
+[BATCH] epoch=6/12 batch=2/30 loss=0.6844 accuracy=62.50% duration_ms=111.81 end
+[BATCH] epoch=6/12 batch=3/30 samples=16 begin
+[BATCH] epoch=6/12 batch=3/30 loss=0.6683 accuracy=81.25% duration_ms=104.99 end
+[BATCH] epoch=6/12 batch=4/30 samples=16 begin
+[BATCH] epoch=6/12 batch=4/30 loss=0.6442 accuracy=68.75% duration_ms=107.57 end
+[BATCH] epoch=6/12 batch=5/30 samples=16 begin
+[BATCH] epoch=6/12 batch=5/30 loss=0.6495 accuracy=75.00% duration_ms=117.70 end
+[BATCH] epoch=6/12 batch=6/30 samples=16 begin
+[BATCH] epoch=6/12 batch=6/30 loss=0.5928 accuracy=68.75% duration_ms=117.48 end
+[BATCH] epoch=6/12 batch=7/30 samples=16 begin
+[BATCH] epoch=6/12 batch=7/30 loss=0.6767 accuracy=68.75% duration_ms=115.30 end
+[BATCH] epoch=6/12 batch=8/30 samples=16 begin
+[BATCH] epoch=6/12 batch=8/30 loss=0.6145 accuracy=75.00% duration_ms=111.57 end
+[BATCH] epoch=6/12 batch=9/30 samples=16 begin
+[BATCH] epoch=6/12 batch=9/30 loss=0.5264 accuracy=87.50% duration_ms=113.82 end
+[BATCH] epoch=6/12 batch=10/30 samples=16 begin
+[BATCH] epoch=6/12 batch=10/30 loss=0.5658 accuracy=81.25% duration_ms=114.50 end
+[BATCH] epoch=6/12 batch=11/30 samples=16 begin
+[BATCH] epoch=6/12 batch=11/30 loss=0.6153 accuracy=87.50% duration_ms=131.24 end
+[BATCH] epoch=6/12 batch=12/30 samples=16 begin
+[BATCH] epoch=6/12 batch=12/30 loss=0.6342 accuracy=81.25% duration_ms=107.07 end
+[BATCH] epoch=6/12 batch=13/30 samples=16 begin
+[BATCH] epoch=6/12 batch=13/30 loss=0.5957 accuracy=75.00% duration_ms=105.79 end
+[BATCH] epoch=6/12 batch=14/30 samples=16 begin
+[BATCH] epoch=6/12 batch=14/30 loss=0.7470 accuracy=68.75% duration_ms=106.69 end
+[BATCH] epoch=6/12 batch=15/30 samples=16 begin
+[BATCH] epoch=6/12 batch=15/30 loss=0.5338 accuracy=81.25% duration_ms=105.64 end
+[BATCH] epoch=6/12 batch=16/30 samples=16 begin
+[BATCH] epoch=6/12 batch=16/30 loss=0.6090 accuracy=87.50% duration_ms=109.54 end
+[BATCH] epoch=6/12 batch=17/30 samples=16 begin
+[BATCH] epoch=6/12 batch=17/30 loss=0.6362 accuracy=75.00% duration_ms=107.72 end
+[BATCH] epoch=6/12 batch=18/30 samples=16 begin
+[BATCH] epoch=6/12 batch=18/30 loss=0.8306 accuracy=43.75% duration_ms=106.44 end
+[BATCH] epoch=6/12 batch=19/30 samples=16 begin
+[BATCH] epoch=6/12 batch=19/30 loss=0.5997 accuracy=87.50% duration_ms=105.58 end
+[BATCH] epoch=6/12 batch=20/30 samples=16 begin
+[BATCH] epoch=6/12 batch=20/30 loss=0.6762 accuracy=68.75% duration_ms=105.57 end
+[BATCH] epoch=6/12 batch=21/30 samples=16 begin
+[BATCH] epoch=6/12 batch=21/30 loss=0.7534 accuracy=50.00% duration_ms=105.36 end
+[BATCH] epoch=6/12 batch=22/30 samples=16 begin
+[BATCH] epoch=6/12 batch=22/30 loss=0.6815 accuracy=75.00% duration_ms=104.92 end
+[BATCH] epoch=6/12 batch=23/30 samples=16 begin
+[BATCH] epoch=6/12 batch=23/30 loss=0.6002 accuracy=81.25% duration_ms=105.26 end
+[BATCH] epoch=6/12 batch=24/30 samples=16 begin
+[BATCH] epoch=6/12 batch=24/30 loss=0.5473 accuracy=87.50% duration_ms=111.26 end
+[BATCH] epoch=6/12 batch=25/30 samples=16 begin
+[BATCH] epoch=6/12 batch=25/30 loss=0.7139 accuracy=56.25% duration_ms=105.03 end
+[BATCH] epoch=6/12 batch=26/30 samples=16 begin
+[BATCH] epoch=6/12 batch=26/30 loss=0.7192 accuracy=68.75% duration_ms=109.11 end
+[BATCH] epoch=6/12 batch=27/30 samples=16 begin
+[BATCH] epoch=6/12 batch=27/30 loss=0.5732 accuracy=87.50% duration_ms=152.48 end
+[BATCH] epoch=6/12 batch=28/30 samples=16 begin
+[BATCH] epoch=6/12 batch=28/30 loss=0.6526 accuracy=68.75% duration_ms=122.01 end
+[BATCH] epoch=6/12 batch=29/30 samples=16 begin
+[BATCH] epoch=6/12 batch=29/30 loss=0.6321 accuracy=75.00% duration_ms=112.11 end
+[BATCH] epoch=6/12 batch=30/30 samples=16 begin
+[BATCH] epoch=6/12 batch=30/30 loss=0.5410 accuracy=75.00% duration_ms=109.90 end
+Epoch 6/12 - loss: 0.6383 - train accuracy: 74.17% - duration: 3.35 s - throughput: 143.30 images/s
+[BATCH] epoch=7/12 batch=1/30 samples=16 begin
+[BATCH] epoch=7/12 batch=1/30 loss=0.6057 accuracy=68.75% duration_ms=121.63 end
+[BATCH] epoch=7/12 batch=2/30 samples=16 begin
+[BATCH] epoch=7/12 batch=2/30 loss=0.6792 accuracy=68.75% duration_ms=131.59 end
+[BATCH] epoch=7/12 batch=3/30 samples=16 begin
+[BATCH] epoch=7/12 batch=3/30 loss=0.5587 accuracy=81.25% duration_ms=106.88 end
+[BATCH] epoch=7/12 batch=4/30 samples=16 begin
+[BATCH] epoch=7/12 batch=4/30 loss=0.4970 accuracy=87.50% duration_ms=107.00 end
+[BATCH] epoch=7/12 batch=5/30 samples=16 begin
+[BATCH] epoch=7/12 batch=5/30 loss=0.6161 accuracy=68.75% duration_ms=106.05 end
+[BATCH] epoch=7/12 batch=6/30 samples=16 begin
+[BATCH] epoch=7/12 batch=6/30 loss=0.7425 accuracy=62.50% duration_ms=108.67 end
+[BATCH] epoch=7/12 batch=7/30 samples=16 begin
+[BATCH] epoch=7/12 batch=7/30 loss=0.5547 accuracy=81.25% duration_ms=105.10 end
+[BATCH] epoch=7/12 batch=8/30 samples=16 begin
+[BATCH] epoch=7/12 batch=8/30 loss=0.7198 accuracy=75.00% duration_ms=106.95 end
+[BATCH] epoch=7/12 batch=9/30 samples=16 begin
+[BATCH] epoch=7/12 batch=9/30 loss=0.6131 accuracy=81.25% duration_ms=107.12 end
+[BATCH] epoch=7/12 batch=10/30 samples=16 begin
+[BATCH] epoch=7/12 batch=10/30 loss=0.8064 accuracy=62.50% duration_ms=104.86 end
+[BATCH] epoch=7/12 batch=11/30 samples=16 begin
+[BATCH] epoch=7/12 batch=11/30 loss=0.5765 accuracy=81.25% duration_ms=108.17 end
+[BATCH] epoch=7/12 batch=12/30 samples=16 begin
+[BATCH] epoch=7/12 batch=12/30 loss=0.6228 accuracy=68.75% duration_ms=105.60 end
+[BATCH] epoch=7/12 batch=13/30 samples=16 begin
+[BATCH] epoch=7/12 batch=13/30 loss=0.5952 accuracy=87.50% duration_ms=105.95 end
+[BATCH] epoch=7/12 batch=14/30 samples=16 begin
+[BATCH] epoch=7/12 batch=14/30 loss=0.6927 accuracy=75.00% duration_ms=105.22 end
+[BATCH] epoch=7/12 batch=15/30 samples=16 begin
+[BATCH] epoch=7/12 batch=15/30 loss=0.5751 accuracy=87.50% duration_ms=105.96 end
+[BATCH] epoch=7/12 batch=16/30 samples=16 begin
+[BATCH] epoch=7/12 batch=16/30 loss=0.4646 accuracy=93.75% duration_ms=112.38 end
+[BATCH] epoch=7/12 batch=17/30 samples=16 begin
+[BATCH] epoch=7/12 batch=17/30 loss=0.5211 accuracy=81.25% duration_ms=107.60 end
+[BATCH] epoch=7/12 batch=18/30 samples=16 begin
+[BATCH] epoch=7/12 batch=18/30 loss=0.5928 accuracy=75.00% duration_ms=107.76 end
+[BATCH] epoch=7/12 batch=19/30 samples=16 begin
+[BATCH] epoch=7/12 batch=19/30 loss=0.5782 accuracy=75.00% duration_ms=107.82 end
+[BATCH] epoch=7/12 batch=20/30 samples=16 begin
+[BATCH] epoch=7/12 batch=20/30 loss=0.6145 accuracy=75.00% duration_ms=107.72 end
+[BATCH] epoch=7/12 batch=21/30 samples=16 begin
+[BATCH] epoch=7/12 batch=21/30 loss=0.6401 accuracy=68.75% duration_ms=112.65 end
+[BATCH] epoch=7/12 batch=22/30 samples=16 begin
+[BATCH] epoch=7/12 batch=22/30 loss=0.5326 accuracy=81.25% duration_ms=105.35 end
+[BATCH] epoch=7/12 batch=23/30 samples=16 begin
+[BATCH] epoch=7/12 batch=23/30 loss=0.7629 accuracy=62.50% duration_ms=104.69 end
+[BATCH] epoch=7/12 batch=24/30 samples=16 begin
+[BATCH] epoch=7/12 batch=24/30 loss=0.6777 accuracy=62.50% duration_ms=104.76 end
+[BATCH] epoch=7/12 batch=25/30 samples=16 begin
+[BATCH] epoch=7/12 batch=25/30 loss=0.5197 accuracy=87.50% duration_ms=106.04 end
+[BATCH] epoch=7/12 batch=26/30 samples=16 begin
+[BATCH] epoch=7/12 batch=26/30 loss=0.5841 accuracy=81.25% duration_ms=104.66 end
+[BATCH] epoch=7/12 batch=27/30 samples=16 begin
+[BATCH] epoch=7/12 batch=27/30 loss=0.6860 accuracy=68.75% duration_ms=104.91 end
+[BATCH] epoch=7/12 batch=28/30 samples=16 begin
+[BATCH] epoch=7/12 batch=28/30 loss=0.7315 accuracy=62.50% duration_ms=104.79 end
+[BATCH] epoch=7/12 batch=29/30 samples=16 begin
+[BATCH] epoch=7/12 batch=29/30 loss=0.6587 accuracy=62.50% duration_ms=104.44 end
+[BATCH] epoch=7/12 batch=30/30 samples=16 begin
+[BATCH] epoch=7/12 batch=30/30 loss=0.7074 accuracy=75.00% duration_ms=105.01 end
+Epoch 7/12 - loss: 0.6242 - train accuracy: 75.00% - duration: 3.24 s - throughput: 148.26 images/s
+[BATCH] epoch=8/12 batch=1/30 samples=16 begin
+[BATCH] epoch=8/12 batch=1/30 loss=0.6075 accuracy=81.25% duration_ms=106.13 end
+[BATCH] epoch=8/12 batch=2/30 samples=16 begin
+[BATCH] epoch=8/12 batch=2/30 loss=0.7121 accuracy=68.75% duration_ms=105.30 end
+[BATCH] epoch=8/12 batch=3/30 samples=16 begin
+[BATCH] epoch=8/12 batch=3/30 loss=0.6431 accuracy=81.25% duration_ms=105.52 end
+[BATCH] epoch=8/12 batch=4/30 samples=16 begin
+[BATCH] epoch=8/12 batch=4/30 loss=0.6253 accuracy=56.25% duration_ms=110.84 end
+[BATCH] epoch=8/12 batch=5/30 samples=16 begin
+[BATCH] epoch=8/12 batch=5/30 loss=0.5384 accuracy=93.75% duration_ms=104.92 end
+[BATCH] epoch=8/12 batch=6/30 samples=16 begin
+[BATCH] epoch=8/12 batch=6/30 loss=0.6429 accuracy=87.50% duration_ms=104.80 end
+[BATCH] epoch=8/12 batch=7/30 samples=16 begin
+[BATCH] epoch=8/12 batch=7/30 loss=0.6851 accuracy=75.00% duration_ms=104.56 end
+[BATCH] epoch=8/12 batch=8/30 samples=16 begin
+[BATCH] epoch=8/12 batch=8/30 loss=0.6067 accuracy=81.25% duration_ms=104.58 end
+[BATCH] epoch=8/12 batch=9/30 samples=16 begin
+[BATCH] epoch=8/12 batch=9/30 loss=0.6358 accuracy=81.25% duration_ms=106.77 end
+[BATCH] epoch=8/12 batch=10/30 samples=16 begin
+[BATCH] epoch=8/12 batch=10/30 loss=0.6052 accuracy=75.00% duration_ms=104.66 end
+[BATCH] epoch=8/12 batch=11/30 samples=16 begin
+[BATCH] epoch=8/12 batch=11/30 loss=0.7560 accuracy=81.25% duration_ms=104.57 end
+[BATCH] epoch=8/12 batch=12/30 samples=16 begin
+[BATCH] epoch=8/12 batch=12/30 loss=0.5902 accuracy=75.00% duration_ms=104.82 end
+[BATCH] epoch=8/12 batch=13/30 samples=16 begin
+[BATCH] epoch=8/12 batch=13/30 loss=0.6745 accuracy=62.50% duration_ms=104.83 end
+[BATCH] epoch=8/12 batch=14/30 samples=16 begin
+[BATCH] epoch=8/12 batch=14/30 loss=0.5150 accuracy=93.75% duration_ms=104.38 end
+[BATCH] epoch=8/12 batch=15/30 samples=16 begin
+[BATCH] epoch=8/12 batch=15/30 loss=0.5185 accuracy=68.75% duration_ms=106.27 end
+[BATCH] epoch=8/12 batch=16/30 samples=16 begin
+[BATCH] epoch=8/12 batch=16/30 loss=0.7831 accuracy=62.50% duration_ms=104.71 end
+[BATCH] epoch=8/12 batch=17/30 samples=16 begin
+[BATCH] epoch=8/12 batch=17/30 loss=0.4907 accuracy=87.50% duration_ms=104.58 end
+[BATCH] epoch=8/12 batch=18/30 samples=16 begin
+[BATCH] epoch=8/12 batch=18/30 loss=0.6601 accuracy=56.25% duration_ms=116.11 end
+[BATCH] epoch=8/12 batch=19/30 samples=16 begin
+[BATCH] epoch=8/12 batch=19/30 loss=0.5063 accuracy=87.50% duration_ms=111.70 end
+[BATCH] epoch=8/12 batch=20/30 samples=16 begin
+[BATCH] epoch=8/12 batch=20/30 loss=0.6318 accuracy=62.50% duration_ms=111.94 end
+[BATCH] epoch=8/12 batch=21/30 samples=16 begin
+[BATCH] epoch=8/12 batch=21/30 loss=0.5889 accuracy=87.50% duration_ms=110.94 end
+[BATCH] epoch=8/12 batch=22/30 samples=16 begin
+[BATCH] epoch=8/12 batch=22/30 loss=0.7133 accuracy=75.00% duration_ms=111.88 end
+[BATCH] epoch=8/12 batch=23/30 samples=16 begin
+[BATCH] epoch=8/12 batch=23/30 loss=0.6084 accuracy=81.25% duration_ms=113.74 end
+[BATCH] epoch=8/12 batch=24/30 samples=16 begin
+[BATCH] epoch=8/12 batch=24/30 loss=0.6228 accuracy=75.00% duration_ms=113.53 end
+[BATCH] epoch=8/12 batch=25/30 samples=16 begin
+[BATCH] epoch=8/12 batch=25/30 loss=0.6402 accuracy=75.00% duration_ms=105.35 end
+[BATCH] epoch=8/12 batch=26/30 samples=16 begin
+[BATCH] epoch=8/12 batch=26/30 loss=0.5620 accuracy=81.25% duration_ms=106.24 end
+[BATCH] epoch=8/12 batch=27/30 samples=16 begin
+[BATCH] epoch=8/12 batch=27/30 loss=0.6180 accuracy=81.25% duration_ms=107.23 end
+[BATCH] epoch=8/12 batch=28/30 samples=16 begin
+[BATCH] epoch=8/12 batch=28/30 loss=0.6627 accuracy=81.25% duration_ms=105.19 end
+[BATCH] epoch=8/12 batch=29/30 samples=16 begin
+[BATCH] epoch=8/12 batch=29/30 loss=0.5543 accuracy=87.50% duration_ms=107.37 end
+[BATCH] epoch=8/12 batch=30/30 samples=16 begin
+[BATCH] epoch=8/12 batch=30/30 loss=0.7029 accuracy=68.75% duration_ms=147.92 end
+Epoch 8/12 - loss: 0.6234 - train accuracy: 77.08% - duration: 3.26 s - throughput: 147.17 images/s
+[BATCH] epoch=9/12 batch=1/30 samples=16 begin
+[BATCH] epoch=9/12 batch=1/30 loss=0.5730 accuracy=68.75% duration_ms=119.66 end
+[BATCH] epoch=9/12 batch=2/30 samples=16 begin
+[BATCH] epoch=9/12 batch=2/30 loss=0.6161 accuracy=81.25% duration_ms=108.75 end
+[BATCH] epoch=9/12 batch=3/30 samples=16 begin
+[BATCH] epoch=9/12 batch=3/30 loss=0.6315 accuracy=68.75% duration_ms=123.45 end
+[BATCH] epoch=9/12 batch=4/30 samples=16 begin
+[BATCH] epoch=9/12 batch=4/30 loss=0.6416 accuracy=81.25% duration_ms=135.32 end
+[BATCH] epoch=9/12 batch=5/30 samples=16 begin
+[BATCH] epoch=9/12 batch=5/30 loss=0.5273 accuracy=81.25% duration_ms=106.91 end
+[BATCH] epoch=9/12 batch=6/30 samples=16 begin
+[BATCH] epoch=9/12 batch=6/30 loss=0.7657 accuracy=62.50% duration_ms=109.07 end
+[BATCH] epoch=9/12 batch=7/30 samples=16 begin
+[BATCH] epoch=9/12 batch=7/30 loss=0.4365 accuracy=93.75% duration_ms=107.25 end
+[BATCH] epoch=9/12 batch=8/30 samples=16 begin
+[BATCH] epoch=9/12 batch=8/30 loss=0.7297 accuracy=81.25% duration_ms=106.20 end
+[BATCH] epoch=9/12 batch=9/30 samples=16 begin
+[BATCH] epoch=9/12 batch=9/30 loss=0.5605 accuracy=75.00% duration_ms=105.67 end
+[BATCH] epoch=9/12 batch=10/30 samples=16 begin
+[BATCH] epoch=9/12 batch=10/30 loss=0.4402 accuracy=93.75% duration_ms=115.83 end
+[BATCH] epoch=9/12 batch=11/30 samples=16 begin
+[BATCH] epoch=9/12 batch=11/30 loss=0.6671 accuracy=68.75% duration_ms=123.27 end
+[BATCH] epoch=9/12 batch=12/30 samples=16 begin
+[BATCH] epoch=9/12 batch=12/30 loss=0.5109 accuracy=87.50% duration_ms=292.08 end
+[BATCH] epoch=9/12 batch=13/30 samples=16 begin
+[BATCH] epoch=9/12 batch=13/30 loss=0.6682 accuracy=75.00% duration_ms=126.83 end
+[BATCH] epoch=9/12 batch=14/30 samples=16 begin
+[BATCH] epoch=9/12 batch=14/30 loss=0.6595 accuracy=68.75% duration_ms=128.89 end
+[BATCH] epoch=9/12 batch=15/30 samples=16 begin
+[BATCH] epoch=9/12 batch=15/30 loss=0.5391 accuracy=81.25% duration_ms=116.90 end
+[BATCH] epoch=9/12 batch=16/30 samples=16 begin
+[BATCH] epoch=9/12 batch=16/30 loss=0.6575 accuracy=81.25% duration_ms=108.73 end
+[BATCH] epoch=9/12 batch=17/30 samples=16 begin
+[BATCH] epoch=9/12 batch=17/30 loss=0.8341 accuracy=62.50% duration_ms=108.65 end
+[BATCH] epoch=9/12 batch=18/30 samples=16 begin
+[BATCH] epoch=9/12 batch=18/30 loss=0.5673 accuracy=81.25% duration_ms=109.52 end
+[BATCH] epoch=9/12 batch=19/30 samples=16 begin
+[BATCH] epoch=9/12 batch=19/30 loss=0.5164 accuracy=81.25% duration_ms=108.57 end
+[BATCH] epoch=9/12 batch=20/30 samples=16 begin
+[BATCH] epoch=9/12 batch=20/30 loss=0.6324 accuracy=87.50% duration_ms=107.35 end
+[BATCH] epoch=9/12 batch=21/30 samples=16 begin
+[BATCH] epoch=9/12 batch=21/30 loss=0.7406 accuracy=75.00% duration_ms=108.33 end
+[BATCH] epoch=9/12 batch=22/30 samples=16 begin
+[BATCH] epoch=9/12 batch=22/30 loss=0.6277 accuracy=75.00% duration_ms=111.01 end
+[BATCH] epoch=9/12 batch=23/30 samples=16 begin
+[BATCH] epoch=9/12 batch=23/30 loss=0.6933 accuracy=68.75% duration_ms=108.79 end
+[BATCH] epoch=9/12 batch=24/30 samples=16 begin
+[BATCH] epoch=9/12 batch=24/30 loss=0.5493 accuracy=81.25% duration_ms=105.66 end
+[BATCH] epoch=9/12 batch=25/30 samples=16 begin
+[BATCH] epoch=9/12 batch=25/30 loss=0.7088 accuracy=75.00% duration_ms=108.63 end
+[BATCH] epoch=9/12 batch=26/30 samples=16 begin
+[BATCH] epoch=9/12 batch=26/30 loss=0.6422 accuracy=75.00% duration_ms=106.88 end
+[BATCH] epoch=9/12 batch=27/30 samples=16 begin
+[BATCH] epoch=9/12 batch=27/30 loss=0.6588 accuracy=68.75% duration_ms=105.21 end
+[BATCH] epoch=9/12 batch=28/30 samples=16 begin
+[BATCH] epoch=9/12 batch=28/30 loss=0.6270 accuracy=75.00% duration_ms=106.73 end
+[BATCH] epoch=9/12 batch=29/30 samples=16 begin
+[BATCH] epoch=9/12 batch=29/30 loss=0.6059 accuracy=68.75% duration_ms=107.37 end
+[BATCH] epoch=9/12 batch=30/30 samples=16 begin
+[BATCH] epoch=9/12 batch=30/30 loss=0.5841 accuracy=81.25% duration_ms=109.75 end
+Epoch 9/12 - loss: 0.6204 - train accuracy: 76.88% - duration: 3.55 s - throughput: 135.31 images/s
+[BATCH] epoch=10/12 batch=1/30 samples=16 begin
+[BATCH] epoch=10/12 batch=1/30 loss=0.5631 accuracy=81.25% duration_ms=108.58 end
+[BATCH] epoch=10/12 batch=2/30 samples=16 begin
+[BATCH] epoch=10/12 batch=2/30 loss=0.6226 accuracy=81.25% duration_ms=108.11 end
+[BATCH] epoch=10/12 batch=3/30 samples=16 begin
+[BATCH] epoch=10/12 batch=3/30 loss=0.6921 accuracy=68.75% duration_ms=107.83 end
+[BATCH] epoch=10/12 batch=4/30 samples=16 begin
+[BATCH] epoch=10/12 batch=4/30 loss=0.5079 accuracy=93.75% duration_ms=115.11 end
+[BATCH] epoch=10/12 batch=5/30 samples=16 begin
+[BATCH] epoch=10/12 batch=5/30 loss=0.5829 accuracy=87.50% duration_ms=116.45 end
+[BATCH] epoch=10/12 batch=6/30 samples=16 begin
+[BATCH] epoch=10/12 batch=6/30 loss=0.6100 accuracy=81.25% duration_ms=107.35 end
+[BATCH] epoch=10/12 batch=7/30 samples=16 begin
+[BATCH] epoch=10/12 batch=7/30 loss=0.7521 accuracy=68.75% duration_ms=118.67 end
+[BATCH] epoch=10/12 batch=8/30 samples=16 begin
+[BATCH] epoch=10/12 batch=8/30 loss=0.6080 accuracy=75.00% duration_ms=109.67 end
+[BATCH] epoch=10/12 batch=9/30 samples=16 begin
+[BATCH] epoch=10/12 batch=9/30 loss=0.5576 accuracy=93.75% duration_ms=105.39 end
+[BATCH] epoch=10/12 batch=10/30 samples=16 begin
+[BATCH] epoch=10/12 batch=10/30 loss=0.6907 accuracy=81.25% duration_ms=106.48 end
+[BATCH] epoch=10/12 batch=11/30 samples=16 begin
+[BATCH] epoch=10/12 batch=11/30 loss=0.6401 accuracy=68.75% duration_ms=103.62 end
+[BATCH] epoch=10/12 batch=12/30 samples=16 begin
+[BATCH] epoch=10/12 batch=12/30 loss=0.6888 accuracy=81.25% duration_ms=109.64 end
+[BATCH] epoch=10/12 batch=13/30 samples=16 begin
+[BATCH] epoch=10/12 batch=13/30 loss=0.6401 accuracy=75.00% duration_ms=116.21 end
+[BATCH] epoch=10/12 batch=14/30 samples=16 begin
+[BATCH] epoch=10/12 batch=14/30 loss=0.5189 accuracy=81.25% duration_ms=110.83 end
+[BATCH] epoch=10/12 batch=15/30 samples=16 begin
+[BATCH] epoch=10/12 batch=15/30 loss=0.6259 accuracy=75.00% duration_ms=108.17 end
+[BATCH] epoch=10/12 batch=16/30 samples=16 begin
+[BATCH] epoch=10/12 batch=16/30 loss=0.5915 accuracy=87.50% duration_ms=108.47 end
+[BATCH] epoch=10/12 batch=17/30 samples=16 begin
+[BATCH] epoch=10/12 batch=17/30 loss=0.5087 accuracy=87.50% duration_ms=118.45 end
+[BATCH] epoch=10/12 batch=18/30 samples=16 begin
+[BATCH] epoch=10/12 batch=18/30 loss=0.6496 accuracy=81.25% duration_ms=108.95 end
+[BATCH] epoch=10/12 batch=19/30 samples=16 begin
+[BATCH] epoch=10/12 batch=19/30 loss=0.5929 accuracy=93.75% duration_ms=108.47 end
+[BATCH] epoch=10/12 batch=20/30 samples=16 begin
+[BATCH] epoch=10/12 batch=20/30 loss=0.4825 accuracy=87.50% duration_ms=106.47 end
+[BATCH] epoch=10/12 batch=21/30 samples=16 begin
+[BATCH] epoch=10/12 batch=21/30 loss=0.7183 accuracy=68.75% duration_ms=125.60 end
+[BATCH] epoch=10/12 batch=22/30 samples=16 begin
+[BATCH] epoch=10/12 batch=22/30 loss=0.5981 accuracy=87.50% duration_ms=106.32 end
+[BATCH] epoch=10/12 batch=23/30 samples=16 begin
+[BATCH] epoch=10/12 batch=23/30 loss=0.4912 accuracy=93.75% duration_ms=250.46 end
+[BATCH] epoch=10/12 batch=24/30 samples=16 begin
+[BATCH] epoch=10/12 batch=24/30 loss=0.6865 accuracy=87.50% duration_ms=180.09 end
+[BATCH] epoch=10/12 batch=25/30 samples=16 begin
+[BATCH] epoch=10/12 batch=25/30 loss=0.6192 accuracy=75.00% duration_ms=142.70 end
+[BATCH] epoch=10/12 batch=26/30 samples=16 begin
+[BATCH] epoch=10/12 batch=26/30 loss=0.5041 accuracy=87.50% duration_ms=121.06 end
+[BATCH] epoch=10/12 batch=27/30 samples=16 begin
+[BATCH] epoch=10/12 batch=27/30 loss=0.6587 accuracy=68.75% duration_ms=114.46 end
+[BATCH] epoch=10/12 batch=28/30 samples=16 begin
+[BATCH] epoch=10/12 batch=28/30 loss=0.5384 accuracy=81.25% duration_ms=113.31 end
+[BATCH] epoch=10/12 batch=29/30 samples=16 begin
+[BATCH] epoch=10/12 batch=29/30 loss=0.5219 accuracy=68.75% duration_ms=105.61 end
+[BATCH] epoch=10/12 batch=30/30 samples=16 begin
+[BATCH] epoch=10/12 batch=30/30 loss=0.5483 accuracy=75.00% duration_ms=104.91 end
+Epoch 10/12 - loss: 0.6003 - train accuracy: 80.83% - duration: 3.57 s - throughput: 134.51 images/s
+[BATCH] epoch=11/12 batch=1/30 samples=16 begin
+[BATCH] epoch=11/12 batch=1/30 loss=0.6778 accuracy=56.25% duration_ms=104.54 end
+[BATCH] epoch=11/12 batch=2/30 samples=16 begin
+[BATCH] epoch=11/12 batch=2/30 loss=0.6704 accuracy=81.25% duration_ms=107.12 end
+[BATCH] epoch=11/12 batch=3/30 samples=16 begin
+[BATCH] epoch=11/12 batch=3/30 loss=0.4382 accuracy=93.75% duration_ms=106.49 end
+[BATCH] epoch=11/12 batch=4/30 samples=16 begin
+[BATCH] epoch=11/12 batch=4/30 loss=0.6413 accuracy=81.25% duration_ms=103.60 end
+[BATCH] epoch=11/12 batch=5/30 samples=16 begin
+[BATCH] epoch=11/12 batch=5/30 loss=0.6582 accuracy=68.75% duration_ms=103.68 end
+[BATCH] epoch=11/12 batch=6/30 samples=16 begin
+[BATCH] epoch=11/12 batch=6/30 loss=0.6878 accuracy=75.00% duration_ms=107.86 end
+[BATCH] epoch=11/12 batch=7/30 samples=16 begin
+[BATCH] epoch=11/12 batch=7/30 loss=0.6906 accuracy=81.25% duration_ms=108.64 end
+[BATCH] epoch=11/12 batch=8/30 samples=16 begin
+[BATCH] epoch=11/12 batch=8/30 loss=0.6037 accuracy=81.25% duration_ms=105.05 end
+[BATCH] epoch=11/12 batch=9/30 samples=16 begin
+[BATCH] epoch=11/12 batch=9/30 loss=0.6128 accuracy=93.75% duration_ms=103.94 end
+[BATCH] epoch=11/12 batch=10/30 samples=16 begin
+[BATCH] epoch=11/12 batch=10/30 loss=0.4966 accuracy=93.75% duration_ms=104.32 end
+[BATCH] epoch=11/12 batch=11/30 samples=16 begin
+[BATCH] epoch=11/12 batch=11/30 loss=0.6670 accuracy=62.50% duration_ms=104.39 end
+[BATCH] epoch=11/12 batch=12/30 samples=16 begin
+[BATCH] epoch=11/12 batch=12/30 loss=0.4776 accuracy=93.75% duration_ms=104.52 end
+[BATCH] epoch=11/12 batch=13/30 samples=16 begin
+[BATCH] epoch=11/12 batch=13/30 loss=0.6663 accuracy=81.25% duration_ms=103.87 end
+[BATCH] epoch=11/12 batch=14/30 samples=16 begin
+[BATCH] epoch=11/12 batch=14/30 loss=0.7025 accuracy=68.75% duration_ms=104.72 end
+[BATCH] epoch=11/12 batch=15/30 samples=16 begin
+[BATCH] epoch=11/12 batch=15/30 loss=0.6139 accuracy=81.25% duration_ms=103.95 end
+[BATCH] epoch=11/12 batch=16/30 samples=16 begin
+[BATCH] epoch=11/12 batch=16/30 loss=0.6013 accuracy=81.25% duration_ms=103.41 end
+[BATCH] epoch=11/12 batch=17/30 samples=16 begin
+[BATCH] epoch=11/12 batch=17/30 loss=0.5891 accuracy=81.25% duration_ms=103.91 end
+[BATCH] epoch=11/12 batch=18/30 samples=16 begin
+[BATCH] epoch=11/12 batch=18/30 loss=0.5125 accuracy=93.75% duration_ms=103.57 end
+[BATCH] epoch=11/12 batch=19/30 samples=16 begin
+[BATCH] epoch=11/12 batch=19/30 loss=0.6191 accuracy=68.75% duration_ms=117.04 end
+[BATCH] epoch=11/12 batch=20/30 samples=16 begin
+[BATCH] epoch=11/12 batch=20/30 loss=0.6132 accuracy=68.75% duration_ms=113.79 end
+[BATCH] epoch=11/12 batch=21/30 samples=16 begin
+[BATCH] epoch=11/12 batch=21/30 loss=0.5352 accuracy=87.50% duration_ms=115.19 end
+[BATCH] epoch=11/12 batch=22/30 samples=16 begin
+[BATCH] epoch=11/12 batch=22/30 loss=0.5870 accuracy=87.50% duration_ms=114.65 end
+[BATCH] epoch=11/12 batch=23/30 samples=16 begin
+[BATCH] epoch=11/12 batch=23/30 loss=0.6813 accuracy=75.00% duration_ms=112.03 end
+[BATCH] epoch=11/12 batch=24/30 samples=16 begin
+[BATCH] epoch=11/12 batch=24/30 loss=0.6175 accuracy=75.00% duration_ms=114.90 end
+[BATCH] epoch=11/12 batch=25/30 samples=16 begin
+[BATCH] epoch=11/12 batch=25/30 loss=0.5842 accuracy=81.25% duration_ms=121.61 end
+[BATCH] epoch=11/12 batch=26/30 samples=16 begin
+[BATCH] epoch=11/12 batch=26/30 loss=0.5163 accuracy=87.50% duration_ms=110.76 end
+[BATCH] epoch=11/12 batch=27/30 samples=16 begin
+[BATCH] epoch=11/12 batch=27/30 loss=0.5604 accuracy=75.00% duration_ms=107.28 end
+[BATCH] epoch=11/12 batch=28/30 samples=16 begin
+[BATCH] epoch=11/12 batch=28/30 loss=0.7346 accuracy=75.00% duration_ms=104.48 end
+[BATCH] epoch=11/12 batch=29/30 samples=16 begin
+[BATCH] epoch=11/12 batch=29/30 loss=0.5799 accuracy=87.50% duration_ms=104.03 end
+[BATCH] epoch=11/12 batch=30/30 samples=16 begin
+[BATCH] epoch=11/12 batch=30/30 loss=0.5401 accuracy=81.25% duration_ms=110.80 end
+Epoch 11/12 - loss: 0.6059 - train accuracy: 80.00% - duration: 3.23 s - throughput: 148.41 images/s
+[BATCH] epoch=12/12 batch=1/30 samples=16 begin
+[BATCH] epoch=12/12 batch=1/30 loss=0.4959 accuracy=87.50% duration_ms=104.37 end
+[BATCH] epoch=12/12 batch=2/30 samples=16 begin
+[BATCH] epoch=12/12 batch=2/30 loss=0.6480 accuracy=75.00% duration_ms=103.46 end
+[BATCH] epoch=12/12 batch=3/30 samples=16 begin
+[BATCH] epoch=12/12 batch=3/30 loss=0.4653 accuracy=93.75% duration_ms=103.65 end
+[BATCH] epoch=12/12 batch=4/30 samples=16 begin
+[BATCH] epoch=12/12 batch=4/30 loss=0.7045 accuracy=68.75% duration_ms=188.66 end
+[BATCH] epoch=12/12 batch=5/30 samples=16 begin
+[BATCH] epoch=12/12 batch=5/30 loss=0.4155 accuracy=100.00% duration_ms=176.40 end
+[BATCH] epoch=12/12 batch=6/30 samples=16 begin
+[BATCH] epoch=12/12 batch=6/30 loss=0.6115 accuracy=87.50% duration_ms=110.97 end
+[BATCH] epoch=12/12 batch=7/30 samples=16 begin
+[BATCH] epoch=12/12 batch=7/30 loss=0.5941 accuracy=87.50% duration_ms=187.06 end
+[BATCH] epoch=12/12 batch=8/30 samples=16 begin
+[BATCH] epoch=12/12 batch=8/30 loss=0.5854 accuracy=68.75% duration_ms=216.86 end
+[BATCH] epoch=12/12 batch=9/30 samples=16 begin
+[BATCH] epoch=12/12 batch=9/30 loss=0.6406 accuracy=68.75% duration_ms=199.08 end
+[BATCH] epoch=12/12 batch=10/30 samples=16 begin
+[BATCH] epoch=12/12 batch=10/30 loss=0.5913 accuracy=87.50% duration_ms=149.56 end
+[BATCH] epoch=12/12 batch=11/30 samples=16 begin
+[BATCH] epoch=12/12 batch=11/30 loss=0.6373 accuracy=68.75% duration_ms=256.68 end
+[BATCH] epoch=12/12 batch=12/30 samples=16 begin
+[BATCH] epoch=12/12 batch=12/30 loss=0.6449 accuracy=75.00% duration_ms=149.79 end
+[BATCH] epoch=12/12 batch=13/30 samples=16 begin
+[BATCH] epoch=12/12 batch=13/30 loss=0.5244 accuracy=87.50% duration_ms=127.76 end
+[BATCH] epoch=12/12 batch=14/30 samples=16 begin
+[BATCH] epoch=12/12 batch=14/30 loss=0.6069 accuracy=75.00% duration_ms=117.07 end
+[BATCH] epoch=12/12 batch=15/30 samples=16 begin
+[BATCH] epoch=12/12 batch=15/30 loss=0.5554 accuracy=93.75% duration_ms=148.10 end
+[BATCH] epoch=12/12 batch=16/30 samples=16 begin
+[BATCH] epoch=12/12 batch=16/30 loss=0.6897 accuracy=75.00% duration_ms=174.63 end
+[BATCH] epoch=12/12 batch=17/30 samples=16 begin
+[BATCH] epoch=12/12 batch=17/30 loss=0.6267 accuracy=87.50% duration_ms=152.42 end
+[BATCH] epoch=12/12 batch=18/30 samples=16 begin
+[BATCH] epoch=12/12 batch=18/30 loss=0.5082 accuracy=81.25% duration_ms=123.48 end
+[BATCH] epoch=12/12 batch=19/30 samples=16 begin
+[BATCH] epoch=12/12 batch=19/30 loss=0.6994 accuracy=75.00% duration_ms=114.43 end
+[BATCH] epoch=12/12 batch=20/30 samples=16 begin
+[BATCH] epoch=12/12 batch=20/30 loss=0.5842 accuracy=62.50% duration_ms=118.60 end
+[BATCH] epoch=12/12 batch=21/30 samples=16 begin
+[BATCH] epoch=12/12 batch=21/30 loss=0.5663 accuracy=93.75% duration_ms=115.74 end
+[BATCH] epoch=12/12 batch=22/30 samples=16 begin
+[BATCH] epoch=12/12 batch=22/30 loss=0.7170 accuracy=68.75% duration_ms=129.50 end
+[BATCH] epoch=12/12 batch=23/30 samples=16 begin
+[BATCH] epoch=12/12 batch=23/30 loss=0.6210 accuracy=68.75% duration_ms=130.41 end
+[BATCH] epoch=12/12 batch=24/30 samples=16 begin
+[BATCH] epoch=12/12 batch=24/30 loss=0.5842 accuracy=81.25% duration_ms=124.69 end
+[BATCH] epoch=12/12 batch=25/30 samples=16 begin
+[BATCH] epoch=12/12 batch=25/30 loss=0.6109 accuracy=81.25% duration_ms=117.38 end
+[BATCH] epoch=12/12 batch=26/30 samples=16 begin
+[BATCH] epoch=12/12 batch=26/30 loss=0.5301 accuracy=93.75% duration_ms=126.97 end
+[BATCH] epoch=12/12 batch=27/30 samples=16 begin
+[BATCH] epoch=12/12 batch=27/30 loss=0.6000 accuracy=87.50% duration_ms=121.94 end
+[BATCH] epoch=12/12 batch=28/30 samples=16 begin
+[BATCH] epoch=12/12 batch=28/30 loss=0.7055 accuracy=75.00% duration_ms=122.39 end
+[BATCH] epoch=12/12 batch=29/30 samples=16 begin
+[BATCH] epoch=12/12 batch=29/30 loss=0.4952 accuracy=100.00% duration_ms=118.82 end
+[BATCH] epoch=12/12 batch=30/30 samples=16 begin
+[BATCH] epoch=12/12 batch=30/30 loss=0.5385 accuracy=87.50% duration_ms=116.85 end
+Epoch 12/12 - loss: 0.5933 - train accuracy: 81.46% - duration: 4.25 s - throughput: 112.99 images/s
+Trained OA weights saved to models/confidence_probe/oa_lr001_12epoch.weights
+TRAINING DURATION: 43.79 seconds (0.73 minutes)

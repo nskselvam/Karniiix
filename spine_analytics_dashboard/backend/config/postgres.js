@@ -71,12 +71,43 @@ const initializeDatabase = async () => {
         fracture_risk_10yr DECIMAL(5,2),
         disc_degeneration_grade INTEGER,
         instability_score INTEGER,
+        modality VARCHAR(20) DEFAULT 'XRAY',
+        trabecular_bone_score DECIMAL(6,4),
+        cortical_thinning_index DECIMAL(6,2),
+        marrow_dark_ratio DECIMAL(6,2),
+        marrow_signal VARCHAR(80),
         
         -- Metadata
         scan_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         image_path VARCHAR(500),
         processing_time_ms DECIMAL(10,2),
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    await client.query(`
+      ALTER TABLE patients
+        ADD COLUMN IF NOT EXISTS modality VARCHAR(20) DEFAULT 'XRAY',
+        ADD COLUMN IF NOT EXISTS trabecular_bone_score DECIMAL(6,4),
+        ADD COLUMN IF NOT EXISTS cortical_thinning_index DECIMAL(6,2),
+        ADD COLUMN IF NOT EXISTS marrow_dark_ratio DECIMAL(6,2),
+        ADD COLUMN IF NOT EXISTS marrow_signal VARCHAR(80)
+    `);
+
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS ml_model_weights (
+        id SERIAL PRIMARY KEY,
+        model_name VARCHAR(160) UNIQUE NOT NULL,
+        task VARCHAR(100),
+        format VARCHAR(40) DEFAULT 'KARNIX_SPINE_WEIGHTS',
+        parameter_count INTEGER,
+        size_bytes BIGINT NOT NULL,
+        sha256 CHAR(64) NOT NULL,
+        source_path VARCHAR(500),
+        weights BYTEA NOT NULL,
+        metadata JSONB DEFAULT '{}'::jsonb,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
 
@@ -124,9 +155,11 @@ const initializeDatabase = async () => {
     await client.query(`
       CREATE INDEX IF NOT EXISTS idx_patients_patient_id ON patients(patient_id);
       CREATE INDEX IF NOT EXISTS idx_patients_scan_date ON patients(scan_date);
+      CREATE INDEX IF NOT EXISTS idx_patients_modality ON patients(modality);
       CREATE INDEX IF NOT EXISTS idx_health_vitals_patient_id ON health_vitals(patient_id);
       CREATE INDEX IF NOT EXISTS idx_health_vitals_timestamp ON health_vitals(timestamp);
       CREATE INDEX IF NOT EXISTS idx_realtime_metrics_timestamp ON realtime_metrics(timestamp);
+      CREATE INDEX IF NOT EXISTS idx_ml_model_weights_task ON ml_model_weights(task);
     `);
 
     console.log('✅ Database schema initialized successfully');
@@ -180,6 +213,65 @@ const db = {
     
     const result = await pool.query(query, values);
     return result.rows[0];
+  },
+
+  upsertPatient: async (patientData) => {
+    const fields = Object.keys(patientData);
+    const values = Object.values(patientData);
+    const placeholders = values.map((_, i) => `$${i + 1}`).join(', ');
+    const updates = fields
+      .filter(field => field !== 'patient_id')
+      .map(field => `${field} = EXCLUDED.${field}`)
+      .join(', ');
+    const query = `
+      INSERT INTO patients (${fields.join(', ')})
+      VALUES (${placeholders})
+      ON CONFLICT (patient_id) DO UPDATE SET
+        ${updates},
+        created_at = patients.created_at
+      RETURNING *
+    `;
+    const result = await pool.query(query, values);
+    return result.rows[0];
+  },
+
+  upsertModelWeights: async (modelData) => {
+    const result = await pool.query(`
+      INSERT INTO ml_model_weights
+        (model_name, task, format, parameter_count, size_bytes, sha256, source_path, weights, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9::jsonb)
+      ON CONFLICT (model_name) DO UPDATE SET
+        task = EXCLUDED.task,
+        format = EXCLUDED.format,
+        parameter_count = EXCLUDED.parameter_count,
+        size_bytes = EXCLUDED.size_bytes,
+        sha256 = EXCLUDED.sha256,
+        source_path = EXCLUDED.source_path,
+        weights = EXCLUDED.weights,
+        metadata = EXCLUDED.metadata,
+        updated_at = CURRENT_TIMESTAMP
+      RETURNING id, model_name, task, format, parameter_count, size_bytes, sha256, source_path, metadata, updated_at
+    `, [
+      modelData.model_name,
+      modelData.task,
+      modelData.format,
+      modelData.parameter_count,
+      modelData.size_bytes,
+      modelData.sha256,
+      modelData.source_path,
+      modelData.weights,
+      JSON.stringify(modelData.metadata || {})
+    ]);
+    return result.rows[0];
+  },
+
+  getModelWeights: async () => {
+    const result = await pool.query(`
+      SELECT id, model_name, task, format, parameter_count, size_bytes, sha256, source_path, metadata, updated_at
+      FROM ml_model_weights
+      ORDER BY updated_at DESC
+    `);
+    return result.rows;
   },
   
   getAllPatients: async (limit = 100, offset = 0) => {

@@ -180,7 +180,7 @@ static std::vector<std::string> scan_images(const std::string& dir_path) {
         std::string ext = lname.substr(dot + 1);
 
         static const std::vector<std::string> SUPPORTED =
-            {"jpg","jpeg","png","ppm","pgm","pbm","tiff","tif","bmp"};
+            {"jpg","jpeg","png","ppm","pgm","pbm","tiff","tif","bmp","dcm","dicom"};
         if (std::find(SUPPORTED.begin(), SUPPORTED.end(), ext) == SUPPORTED.end())
             continue;
 
@@ -273,6 +273,7 @@ static void train_oa_cnn(const std::string& manifest_path,
                          const std::string& negative_name,
                          const std::string& positive_name,
                          int batch_size,
+                         double learning_rate,
                          const std::string& checkpoint_dir,
                          const std::string& resume_path) {
     std::vector<LabeledImage> samples = load_manifest(manifest_path);
@@ -285,7 +286,6 @@ static void train_oa_cnn(const std::string& manifest_path,
         std::cout << "[CHECKPOINT] Resumed weights from " << resume_path << "\n";
     }
     BatchLoader loader(samples, batch_size);
-    const double learning_rate = 0.0001;
     auto training_started = std::chrono::steady_clock::now();
     std::cout << "Training " << task_name << " CNN on " << samples.size() << " images\n";
     std::cout << "Epochs: " << epochs << " | Learning rate: " << learning_rate
@@ -457,6 +457,83 @@ static std::string probability_bar(double value, int width = 30) {
     return std::string(filled, '#') + std::string(width - filled, '.');
 }
 
+struct AdvancedImagingMetrics {
+    double trabecular_bone_score = 0.0;
+    double cortical_thinning_index = 0.0;
+    double marrow_dark_ratio = 0.0;
+    std::string marrow_signal;
+};
+
+static std::string upper_copy(std::string value) {
+    for (char& c : value) {
+        c = static_cast<char>(std::toupper(static_cast<unsigned char>(c)));
+    }
+    return value;
+}
+
+static AdvancedImagingMetrics analyze_advanced_imaging(const RawImage& image) {
+    AdvancedImagingMetrics metrics;
+    if (image.width < 3 || image.height < 3 || image.pixels.empty()) return metrics;
+
+    double local_variation = 0.0;
+    double edge_energy = 0.0;
+    int local_count = 0;
+    for (int y = 1; y < image.height - 1; ++y) {
+        for (int x = 1; x < image.width - 1; ++x) {
+            int idx = y * image.width + x;
+            double center = image.pixels[idx];
+            double dx = std::abs(center - image.pixels[idx - 1]) + std::abs(center - image.pixels[idx + 1]);
+            double dy = std::abs(center - image.pixels[idx - image.width]) + std::abs(center - image.pixels[idx + image.width]);
+            local_variation += dx + dy;
+            edge_energy += std::sqrt(dx * dx + dy * dy);
+            ++local_count;
+        }
+    }
+    local_variation /= std::max(1, local_count);
+    edge_energy /= std::max(1, local_count);
+
+    metrics.trabecular_bone_score = std::max(0.4, std::min(1.8, 1.45 - local_variation * 1.8));
+
+    double center_mean = 0.0;
+    double shell_mean = 0.0;
+    int center_count = 0;
+    int shell_count = 0;
+    double cx = (image.width - 1) * 0.5;
+    double cy = (image.height - 1) * 0.5;
+    double max_radius = std::sqrt(cx * cx + cy * cy);
+    for (int y = 0; y < image.height; ++y) {
+        for (int x = 0; x < image.width; ++x) {
+            double nx = x - cx;
+            double ny = y - cy;
+            double radius = std::sqrt(nx * nx + ny * ny) / std::max(1.0, max_radius);
+            double pixel = image.pixels[y * image.width + x];
+            if (radius < 0.33) {
+                center_mean += pixel;
+                ++center_count;
+            } else if (radius > 0.48 && radius < 0.78) {
+                shell_mean += pixel;
+                ++shell_count;
+            }
+        }
+    }
+    center_mean /= std::max(1, center_count);
+    shell_mean /= std::max(1, shell_count);
+    metrics.cortical_thinning_index = std::max(0.0, std::min(100.0, (center_mean / std::max(0.05, shell_mean)) * 55.0 + edge_energy * 35.0));
+
+    int marrow_pixels = 0;
+    int dark_pixels = 0;
+    for (int y = image.height / 4; y < (image.height * 3) / 4; ++y) {
+        for (int x = image.width / 4; x < (image.width * 3) / 4; ++x) {
+            double pixel = image.pixels[y * image.width + x];
+            ++marrow_pixels;
+            if (pixel < 0.38) ++dark_pixels;
+        }
+    }
+    metrics.marrow_dark_ratio = marrow_pixels == 0 ? 0.0 : 100.0 * dark_pixels / marrow_pixels;
+    metrics.marrow_signal = metrics.marrow_dark_ratio >= 45.0 ? "Dark marrow signal" : "Bright marrow signal";
+    return metrics;
+}
+
 static std::vector<std::string> image_preview(const RawImage& image) {
     static const std::string shades = " .:-=+*#%@";
     const int preview_width = 32;
@@ -620,6 +697,13 @@ static int option_int(int argc, char** argv,
     return std::max(1, std::atoi(value.c_str()));
 }
 
+static double option_double(int argc, char** argv,
+                            const std::string& option, double fallback) {
+    std::string value = option_value(argc, argv, option, std::to_string(fallback));
+    double parsed = std::atof(value.c_str());
+    return parsed > 0.0 ? parsed : fallback;
+}
+
 int main(int argc, char** argv) {
     try {
         bool verbose = std::find(argv + 1, argv + argc, std::string("--verbose")) != argv + argc;
@@ -627,14 +711,16 @@ int main(int argc, char** argv) {
         std::string task_name = option_value(argc, argv, "--task", "OSTEOARTHRITIS");
         std::string negative_name = option_value(argc, argv, "--negative", "NO_OA");
         std::string positive_name = option_value(argc, argv, "--positive", "OA");
+        std::string modality = upper_copy(option_value(argc, argv, "--modality", "AUTO"));
         int batch_size = option_int(argc, argv, "--batch-size", 16);
+        double learning_rate = option_double(argc, argv, "--learning-rate", 0.0001);
         std::string checkpoint_dir = option_value(argc, argv, "--checkpoint-dir", "");
         std::string resume_path = option_value(argc, argv, "--resume", "");
         if (argc >= 3 && std::string(argv[1]) == "--train") {
             int epochs = argc >= 4 ? std::max(1, std::atoi(argv[3])) : 3;
             train_oa_cnn(argv[2], model_path, epochs, verbose,
                          task_name, negative_name, positive_name,
-                         batch_size, checkpoint_dir, resume_path);
+                         batch_size, learning_rate, checkpoint_dir, resume_path);
             return 0;
         }
         if (argc >= 3 && std::string(argv[1]) == "--evaluate") {
@@ -665,11 +751,13 @@ int main(int argc, char** argv) {
     const std::string task_name = option_value(argc, argv, "--task", "OSTEOARTHRITIS");
     const std::string negative_name = option_value(argc, argv, "--negative", "NO_OA");
     const std::string positive_name = option_value(argc, argv, "--positive", "OA");
+    const std::string modality = upper_copy(option_value(argc, argv, "--modality", "AUTO"));
     const std::string db_path = "./data/spine_records.json";
 
     std::cout << "Configuration:\n";
     std::cout << "  Images Directory: " << images_dir << "\n";
     std::cout << "  Model: " << model_path << "\n";
+    std::cout << "  Modality: " << modality << " (XRAY/DEXA/CT/MRI/AUTO)\n";
     std::cout << "  Database: " << db_path << "\n\n";
 
     std::cout << "Initializing " << task_name << " CNN...\n";
@@ -756,6 +844,7 @@ int main(int argc, char** argv) {
             edge_score /= ((raw_img.height - 2) * (raw_img.width - 2));
             
             double texture_complexity = variance * edge_score;
+            AdvancedImagingMetrics advanced_metrics = analyze_advanced_imaging(raw_img);
             
             Tensor cnn_input = local_cnn.preprocess(img_path);
             Tensor prediction_tensor = local_cnn.forward(cnn_input);
@@ -818,6 +907,16 @@ int main(int argc, char** argv) {
                       << ClinicalScoringSystem::classify_bone_density(clinical_measures.t_score)
                       << " (T-score: " << std::fixed << std::setprecision(1) 
                       << clinical_measures.t_score << ")\n";
+
+            std::cout << "\n[ADVANCED MODALITY ASSESSMENT]\n";
+            std::cout << "  DEXA TBS Proxy:        " << std::fixed << std::setprecision(2)
+                      << advanced_metrics.trabecular_bone_score
+                      << " (pixel-to-pixel texture variation)\n";
+            std::cout << "  CT Cortical Thinning:  " << std::fixed << std::setprecision(1)
+                      << advanced_metrics.cortical_thinning_index
+                      << "/100 (marrow cavity widening + cortex edge loss proxy)\n";
+            std::cout << "  MRI Marrow Signal:     " << advanced_metrics.marrow_signal
+                      << " (dark ratio " << advanced_metrics.marrow_dark_ratio << "%)\n";
             
             std::cout << "  Disc Degeneration:     " 
                       << ClinicalScoringSystem::disc_degeneration_grade_name(
@@ -884,6 +983,11 @@ int main(int argc, char** argv) {
             record.abnormal_prob = prob_abnormal * 100.0;
             record.classification = prob_abnormal > 0.5 ? positive_name : negative_name;
             record.image_path = img_path;
+            record.modality = modality;
+            record.trabecular_bone_score = advanced_metrics.trabecular_bone_score;
+            record.cortical_thinning_index = advanced_metrics.cortical_thinning_index;
+            record.marrow_dark_ratio = advanced_metrics.marrow_dark_ratio;
+            record.marrow_signal = advanced_metrics.marrow_signal;
             
             database.append(record);
             

@@ -1,0 +1,1 @@
+/usr/bin/c++  -arch arm64 -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/brain_tumour_cli.dir/brain_tumour_cli.cpp.o -o brain_tumour_cli  -framework CoreGraphics -framework ImageIO -framework CoreFoundation

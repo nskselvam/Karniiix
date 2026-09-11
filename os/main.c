@@ -94,6 +94,7 @@ static int  g_active_panel  = 0;  /* 0=announce 1=diag 2=tools 3=dir 4=analysis 
 static char g_cmd_buf[256]  = {0};
 static int  g_cmd_len       = 0;
 static int  g_diag_scroll   = 0;
+static char g_search_query[MAX_STR] = {0};
 
 static const char *g_diagnoses[] = {
     "VERTEBRAL ALIGNMENT NOMINAL – No structural deviation detected.",
@@ -168,6 +169,20 @@ static void log_msg(const char *msg, int cp) {
         g_log[g_log_count].color_pair = cp;
         g_log_count++;
     }
+}
+
+static int contains_case_insensitive(const char *text, const char *query) {
+    if (!query[0]) return 1;
+    for (const char *start = text; *start; start++) {
+        const char *left = start;
+        const char *right = query;
+        while (*left && *right && tolower((unsigned char)*left) == tolower((unsigned char)*right)) {
+            left++;
+            right++;
+        }
+        if (!*right) return 1;
+    }
+    return 0;
 }
 
 /* ─────────────────────────────────────────────────────  JSON parser  ──────── */
@@ -423,13 +438,25 @@ static void render_directory(WINDOW *win, int y, int x, int h, int w) {
     char hdr[128];
     snprintf(hdr, sizeof(hdr), " %-16s %-8s %-6s %-5s %s",
              "PATIENT-ID", "DATE", "CLASS", "RISK", "ABN%");
+    if (g_search_query[0]) {
+        char search_header[128];
+        snprintf(search_header, sizeof(search_header), " SEARCH: %s", g_search_query);
+        strncat(hdr, search_header, sizeof(hdr) - strlen(hdr) - 1);
+    }
     mvwprint_clip(win, iy, ix, iw, hdr);
     draw_hline(win, iy + 1, ix, iw, CP_PANEL_MAG);
     wattroff(win, A_BOLD);
 
     int shown = 0;
-    for (int i = g_dir_offset; i < g_record_count && shown < max_rows - 3; i++, shown++) {
+    int matched = 0;
+    for (int i = 0; i < g_record_count; i++) {
         SpineRecord *r = &g_records[i];
+        char haystack[512];
+        snprintf(haystack, sizeof(haystack), "%s %s %s %s %s",
+                 r->patient_id, r->date, r->classification, r->image_path, r->sex);
+        if (g_search_query[0] && !contains_case_insensitive(haystack, g_search_query)) continue;
+        matched++;
+        if (matched <= g_dir_offset || shown >= max_rows - 3) continue;
 
         /* alternate colour; highlight selected */
         if (i == g_selected) {
@@ -453,8 +480,8 @@ static void render_directory(WINDOW *win, int y, int x, int h, int w) {
     wattron(win, COLOR_PAIR(CP_PANEL_MAG));
     if (g_record_count > 0) {
         char sc[64];
-        snprintf(sc, sizeof(sc), "[%d/%d records]  ^/v scroll",
-                 g_selected + 1, g_record_count);
+        snprintf(sc, sizeof(sc), "[%d matches]  ^/v scroll  search <text>  search clear",
+                 matched);
         mvwprint_clip(win, y + h - 2, ix, iw, sc);
     } else {
         mvwprint_clip(win, y + h - 2, ix, iw, "No records loaded. Type: scan");
@@ -590,7 +617,7 @@ static int run_host_command(const char *command) {
 static void exec_command(const char *cmd) {
     char buf[300];
     if (strcmp(cmd, "help") == 0) {
-        log_msg("Commands: help train scan dir uci clear quit up down", CP_PANEL_GRN);
+        log_msg("Commands: search <text>  search clear  help train scan brain spine3dData dir uci clear quit", CP_PANEL_GRN);
     } else if (strcmp(cmd, "train") == 0) {
         int result = run_host_command(
             "cd karnix_spine_edge && "
@@ -610,6 +637,30 @@ static void exec_command(const char *cmd) {
         log_msg(result == 0 ? "OA screening complete; records reloaded."
                             : "OA screening failed. Run karnix_spine_edge/setup.sh.",
                 result == 0 ? CP_PANEL_GRN : CP_PANEL_RED);
+    } else if (strcmp(cmd, "brain") == 0 || strcmp(cmd, "brain_tumour") == 0) {
+        int result = run_host_command(
+            "cd Brain_tumour && ./setup.sh --skip-train --skip-evaluate");
+        log_msg(result == 0 ? "Brain Tumour MRI visualizer launched."
+                            : "Brain Tumour launch failed. Run Brain_tumour/setup.sh.",
+                result == 0 ? CP_PANEL_GRN : CP_PANEL_RED);
+    } else if (strcmp(cmd, "spine3dData") == 0 || strcmp(cmd, "moonday") == 0 || strcmp(cmd, "jester") == 0) {
+        int result = run_host_command("cd jester && npm run app");
+        log_msg(result == 0 ? "Moonday Electron interface launched."
+                            : "Moonday launch failed. Run: cd jester && npm run app",
+                result == 0 ? CP_PANEL_GRN : CP_PANEL_RED);
+    } else if (strcmp(cmd, "search clear") == 0 || strcmp(cmd, "find clear") == 0) {
+        g_search_query[0] = '\0';
+        g_selected = 0;
+        g_dir_offset = 0;
+        log_msg("Patient search cleared.", CP_PANEL_GRN);
+    } else if (strncmp(cmd, "search ", 7) == 0 || strncmp(cmd, "find ", 5) == 0) {
+        const char *query = strncmp(cmd, "search ", 7) == 0 ? cmd + 7 : cmd + 5;
+        while (*query == ' ') query++;
+        strncpy(g_search_query, query, MAX_STR - 1);
+        g_search_query[MAX_STR - 1] = '\0';
+        g_selected = 0;
+        g_dir_offset = 0;
+        log_msg(g_search_query[0] ? "Patient search applied." : "Empty search; showing all records.", CP_PANEL_CYN);
     } else if (strcmp(cmd, "dir") == 0 || strcmp(cmd, "ls") == 0) {
         snprintf(buf, sizeof(buf), "Records loaded: %d  UCI: %d", g_record_count, g_uci_count);
         log_msg(buf, CP_PANEL_CYN);

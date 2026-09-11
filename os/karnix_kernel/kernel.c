@@ -656,7 +656,7 @@ static void exec_cmd(void) {
 
     if (kstrcmp(cmd,"help")==0) {
         log_push("scan dir uci stats db risk sel info heatmap back");
-        log_push("spine3d  clear  quit  calc <expr>  paint");
+        log_push("spine3d brain  clear  quit  calc <expr>  paint");
 
     } else if (kstrncmp(cmd,"calc ",5)==0) {
         int result;
@@ -741,6 +741,13 @@ static void exec_cmd(void) {
         kstrcpy(buf2+kstrlen(buf2)," Frac:"); kitoa(r->frac_grade,buf2+kstrlen(buf2));
         kstrcpy(buf2+kstrlen(buf2)," Disc:"); kitoa(r->disc_grade,buf2+kstrlen(buf2));
         log_push(buf2);
+        char buf3[72];
+        kstrcpy(buf3,"TBS:"); kitoa(r->tbs_x100/100,buf3+kstrlen(buf3));
+        kstrcpy(buf3+kstrlen(buf3),"."); kitoa((r->tbs_x100/10)%10,buf3+kstrlen(buf3));
+        kstrcpy(buf3+kstrlen(buf3)," CTthin:"); kitoa(r->cortical_idx,buf3+kstrlen(buf3));
+        kstrcpy(buf3+kstrlen(buf3)," MRI-dark:"); kitoa(r->marrow_dark_pct,buf3+kstrlen(buf3));
+        kstrcpy(buf3+kstrlen(buf3),"%");
+        log_push(buf3);
 
     } else if (kstrcmp(cmd,"heatmap")==0||kstrcmp(cmd,"hmap")==0) {
         g_view=1; g_hmap_offset=0;
@@ -753,6 +760,16 @@ static void exec_cmd(void) {
         log_push("Launching 3D Spine Viewer on host...");
         log_push("Check the host desktop for the viewer.");
         debug_puts("KARNIX_LAUNCH_SPINE3D\n");
+
+    } else if (kstrcmp(cmd,"brain")==0||kstrcmp(cmd,"brain_tumour")==0||kstrcmp(cmd,"braintumour")==0) {
+        log_push("Launching Brain Tumour CNN visualizer on host...");
+        log_push("Check the host desktop for the MRI CNN console.");
+        debug_puts("KARNIX_LAUNCH_BRAIN_TUMOUR\n");
+
+    } else if (kstrcmp(cmd,"spine3dData")==0 || kstrcmp(cmd,"moonday")==0 || kstrcmp(cmd,"jester")==0) {
+        log_push("Launching Moonday Spine Data interface on host...");
+        log_push("Electron app will provide macOS controls and the spine dashboard.");
+        debug_puts("KARNIX_LAUNCH_MOONDAY\n");
 
     } else if (kstrcmp(cmd,"clear")==0) {
         g_log_count=0; g_log_head=0; log_push("Log cleared.");
@@ -1057,6 +1074,20 @@ static void render_analysis(int y, int x, int h, int w) {
                           (r->disc_grade>=2) ? VGA_YELLOW : VGA_LGREEN;
             vga_puts(ix+18,row,b,fg2,VGA_BLACK,2);
         }
+        row++;
+    }
+
+    /* DEXA / CT / MRI advanced imaging support */
+    if (row < y+h-2) {
+        vga_puts(ix,row,"TBS:",VGA_WHITE,VGA_BLACK,4);
+        { char b[8]; kitoa(r->tbs_x100/100,b); vga_puts(ix+4,row,b,VGA_LGRAY,VGA_BLACK,2); }
+        vga_putc(ix+5,row,'.',VGA_LGRAY,VGA_BLACK);
+        { char b[4]; kitoa((r->tbs_x100/10)%10,b); vga_puts(ix+6,row,b,VGA_LGRAY,VGA_BLACK,1); }
+        vga_puts(ix+9,row,"CT:",VGA_WHITE,VGA_BLACK,3);
+        { char b[4]; kitoa(r->cortical_idx,b); vga_puts(ix+12,row,b,(r->cortical_idx>=65)?VGA_LRED:(r->cortical_idx>=40)?VGA_YELLOW:VGA_LGREEN,VGA_BLACK,3); }
+        vga_puts(ix+16,row,"MRI:",VGA_WHITE,VGA_BLACK,4);
+        { char b[4]; kitoa(r->marrow_dark_pct,b); vga_puts(ix+20,row,b,(r->marrow_dark_pct>=45)?VGA_LRED:VGA_LGREEN,VGA_BLACK,3); }
+        vga_putc(ix+23,row,'%',VGA_LGRAY,VGA_BLACK);
         row++;
     }
 

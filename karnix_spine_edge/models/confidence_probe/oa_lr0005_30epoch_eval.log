@@ -1,0 +1,7 @@
+OSTEOARTHRITIS TEST RESULTS
+Images: 120
+Accuracy: 58.33%
+Sensitivity: 45.00%
+Specificity: 71.67%
+TN=43 FP=17 FN=33 TP=27
+TEST DURATION: 0.23 seconds | 516.74 images/s | average 1.94 ms/image

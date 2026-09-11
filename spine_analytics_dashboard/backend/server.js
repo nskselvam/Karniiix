@@ -42,17 +42,28 @@ const setupDatabase = async () => {
       
       for (const patient of patients) {
         try {
-          // Check if patient already exists
-          const existing = await db.getPatientById(patient.patient_id);
-          if (!existing) {
-            // Map 'date' field to 'scan_date' for PostgreSQL compatibility
-            const patientData = { ...patient };
-            if (patientData.date && !patientData.scan_date) {
-              patientData.scan_date = patientData.date;
-              delete patientData.date;
-            }
-            await db.createPatient(patientData);
+          const patientData = {
+            patient_id: patient.patient_id,
+            age: patient.age,
+            sex: patient.sex,
+            abnormal_prob: patient.abnormal_prob,
+            dl_classification: patient.classification,
+            risk_score: patient.risk_score,
+            risk_category: patient.risk_category,
+            scan_date: patient.date,
+            image_path: patient.image_path,
+            modality: patient.modality || 'XRAY',
+            trabecular_bone_score: patient.trabecular_bone_score,
+            cortical_thinning_index: patient.cortical_thinning_index,
+            marrow_dark_ratio: patient.marrow_dark_ratio,
+            marrow_signal: patient.marrow_signal
+          };
+          if (patientData.date && !patientData.scan_date) {
+            patientData.scan_date = patientData.date;
+            delete patientData.date;
           }
+          Object.keys(patientData).forEach((key) => patientData[key] == null && delete patientData[key]);
+          await db.upsertPatient(patientData);
         } catch (error) {
           console.error(`Error loading patient ${patient.patient_id}:`, error.message);
         }
@@ -124,6 +135,7 @@ const authRoutes = require('./routes/auth');
 const patientRoutes = require('./routes/patients');
 const analyticsRoutes = require('./routes/analytics');
 const vitalsRoutes = require('./routes/vitalsRoutes');
+const modelRoutes = require('./routes/models');
 
 // Import Error Handlers
 const { notFoundHandler, errorHandler } = require('./middleware/errorHandler');
@@ -133,6 +145,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/patients', patientRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/vitals', vitalsRoutes);
+app.use('/api/models', modelRoutes);
 
 // Health Check
 app.get('/api/health', async (req, res) => {
@@ -183,6 +196,7 @@ const server = app.listen(PORT, () => {
     console.log(`  👤 Patients:  http://localhost:${PORT}/api/patients`);
     console.log(`  📈 Analytics: http://localhost:${PORT}/api/analytics`);
     console.log(`  ❤️  Health:    http://localhost:${PORT}/api/health`);
+    console.log(`  🧠 Models:    http://localhost:${PORT}/api/models`);
     console.log('='.repeat(50));
     console.log('');
 });

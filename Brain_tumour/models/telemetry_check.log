@@ -1,0 +1,921 @@
+KARNIX BRAIN TUMOUR CNN
+Classes: glioma | meningioma | no tumor | pituitary
+Training images: 800
+Epochs: 1 | Learning rate: 0.0005 | Batch size: 16
+Shared pipeline: grayscale -> 64x64 -> Conv/ReLU/Pool x3 -> Dense -> Softmax
+Disease model: four-class brain tumour head
+
+PIPELINE
+  [1] DATASET       validated manifest: data/brain_tumor/manifest.csv
+  [2] PREPROCESSING native C++ image decode -> grayscale -> 64x64
+  [3] BATCH LOADER  deterministic shuffle, 50 batches/epoch
+  [4] MODEL         Conv/ReLU/Pool x3 -> Dense -> Softmax(4)
+  [5] LOSS          multiclass cross-entropy
+  [6] BACKPROP      analytical gradients through all layers
+  [7] OPTIMIZER     online SGD per loaded sample
+  [8] CHECKPOINT    atomic save after every epoch
+
+[BATCH] epoch=1/1 batch=1/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=1/50 sample=1/800 label=no_tumor predicted=no_tumor confidence=1.0000 loss=0.0000 correct=yes time_ms=66.67 file=data/brain_tumor/Training/no_tumor/no_tumor_0026.jpg
+[TRAIN] epoch=1/1 batch=1/50 sample=2/800 label=meningioma_tumor predicted=meningioma_tumor confidence=1.0000 loss=23.0259 correct=yes time_ms=9.20 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0154.jpg
+[TRAIN] epoch=1/1 batch=1/50 sample=3/800 label=pituitary_tumor predicted=pituitary_tumor confidence=1.0000 loss=23.0259 correct=yes time_ms=9.75 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0135.jpg
+[TRAIN] epoch=1/1 batch=1/50 sample=4/800 label=no_tumor predicted=no_tumor confidence=0.9933 loss=20.1235 correct=yes time_ms=7.83 file=data/brain_tumor/Training/no_tumor/no_tumor_0067.jpg
+[TRAIN] epoch=1/1 batch=1/50 sample=5/800 label=no_tumor predicted=no_tumor confidence=1.0000 loss=2.3763 correct=yes time_ms=8.10 file=data/brain_tumor/Training/no_tumor/no_tumor_0086.jpg
+[TRAIN] epoch=1/1 batch=1/50 sample=6/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.9921 loss=23.0259 correct=yes time_ms=8.93 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0158.jpg
+[TRAIN] epoch=1/1 batch=1/50 sample=7/800 label=meningioma_tumor predicted=meningioma_tumor confidence=1.0000 loss=9.0293 correct=yes time_ms=9.60 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0152.jpg
+[TRAIN] epoch=1/1 batch=1/50 sample=8/800 label=glioma_tumor predicted=glioma_tumor confidence=0.9811 loss=16.5281 correct=yes time_ms=8.63 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0010.jpg
+[TRAIN] epoch=1/1 batch=1/50 sample=9/800 label=no_tumor predicted=no_tumor confidence=1.0000 loss=11.5762 correct=yes time_ms=7.76 file=data/brain_tumor/Training/no_tumor/no_tumor_0121.jpg
+[TRAIN] epoch=1/1 batch=1/50 sample=10/800 label=pituitary_tumor predicted=pituitary_tumor confidence=1.0000 loss=16.2718 correct=yes time_ms=14.33 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0030.jpg
+[TRAIN] epoch=1/1 batch=1/50 sample=11/800 label=pituitary_tumor predicted=pituitary_tumor confidence=1.0000 loss=1.4002 correct=yes time_ms=9.18 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0166.jpg
+[TRAIN] epoch=1/1 batch=1/50 sample=12/800 label=pituitary_tumor predicted=pituitary_tumor confidence=1.0000 loss=0.0000 correct=yes time_ms=9.43 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0159.jpg
+[TRAIN] epoch=1/1 batch=1/50 sample=13/800 label=meningioma_tumor predicted=meningioma_tumor confidence=1.0000 loss=17.9172 correct=yes time_ms=8.63 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0172.jpg
+[TRAIN] epoch=1/1 batch=1/50 sample=14/800 label=no_tumor predicted=no_tumor confidence=1.0000 loss=23.0259 correct=yes time_ms=8.14 file=data/brain_tumor/Training/no_tumor/no_tumor_0084.jpg
+[TRAIN] epoch=1/1 batch=1/50 sample=15/800 label=glioma_tumor predicted=glioma_tumor confidence=0.9979 loss=9.7099 correct=yes time_ms=8.76 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0029.jpg
+[TRAIN] epoch=1/1 batch=1/50 sample=16/800 label=no_tumor predicted=no_tumor confidence=0.9978 loss=6.0987 correct=yes time_ms=7.68 file=data/brain_tumor/Training/no_tumor/no_tumor_0043.jpg
+[BATCH] epoch=1/1 batch=1/50 loss=12.6959 accuracy=100.00% duration_ms=202.80 end
+[BATCH] epoch=1/1 batch=2/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=2/50 sample=17/800 label=meningioma_tumor predicted=meningioma_tumor confidence=1.0000 loss=1.8127 correct=yes time_ms=8.89 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0125.jpg
+[TRAIN] epoch=1/1 batch=2/50 sample=18/800 label=no_tumor predicted=no_tumor confidence=0.9998 loss=3.1905 correct=yes time_ms=7.90 file=data/brain_tumor/Training/no_tumor/no_tumor_0088.jpg
+[TRAIN] epoch=1/1 batch=2/50 sample=19/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.9905 loss=0.0265 correct=yes time_ms=8.43 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0186.jpg
+[TRAIN] epoch=1/1 batch=2/50 sample=20/800 label=no_tumor predicted=no_tumor confidence=0.9795 loss=0.0452 correct=yes time_ms=7.60 file=data/brain_tumor/Training/no_tumor/no_tumor_0072.jpg
+[TRAIN] epoch=1/1 batch=2/50 sample=21/800 label=no_tumor predicted=no_tumor confidence=0.9997 loss=0.0003 correct=yes time_ms=7.64 file=data/brain_tumor/Training/no_tumor/no_tumor_0199.jpg
+[TRAIN] epoch=1/1 batch=2/50 sample=22/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.9956 loss=0.0050 correct=yes time_ms=9.08 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0107.jpg
+[TRAIN] epoch=1/1 batch=2/50 sample=23/800 label=glioma_tumor predicted=glioma_tumor confidence=0.9989 loss=5.4073 correct=yes time_ms=8.73 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0131.jpg
+[TRAIN] epoch=1/1 batch=2/50 sample=24/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.9996 loss=0.2448 correct=yes time_ms=8.48 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0098.jpg
+[TRAIN] epoch=1/1 batch=2/50 sample=25/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.8540 loss=8.3586 correct=yes time_ms=8.73 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0073.jpg
+[TRAIN] epoch=1/1 batch=2/50 sample=26/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.9831 loss=0.1828 correct=yes time_ms=8.90 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0116.jpg
+[TRAIN] epoch=1/1 batch=2/50 sample=27/800 label=meningioma_tumor predicted=meningioma_tumor confidence=1.0000 loss=10.0145 correct=yes time_ms=9.33 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0029.jpg
+[TRAIN] epoch=1/1 batch=2/50 sample=28/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.9999 loss=0.0001 correct=yes time_ms=9.40 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0156.jpg
+[TRAIN] epoch=1/1 batch=2/50 sample=29/800 label=no_tumor predicted=glioma_tumor confidence=0.4860 loss=18.8837 correct=no time_ms=8.09 file=data/brain_tumor/Training/no_tumor/no_tumor_0144.jpg
+[TRAIN] epoch=1/1 batch=2/50 sample=30/800 label=glioma_tumor predicted=glioma_tumor confidence=0.5013 loss=5.5838 correct=yes time_ms=10.49 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0080.jpg
+[TRAIN] epoch=1/1 batch=2/50 sample=31/800 label=glioma_tumor predicted=glioma_tumor confidence=0.9138 loss=0.1164 correct=yes time_ms=10.11 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0068.jpg
+[TRAIN] epoch=1/1 batch=2/50 sample=32/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.8584 loss=11.5359 correct=yes time_ms=8.95 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0142.jpg
+[BATCH] epoch=1/1 batch=2/50 loss=4.0880 accuracy=93.75% duration_ms=140.89 end
+[BATCH] epoch=1/1 batch=3/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=3/50 sample=33/800 label=no_tumor predicted=no_tumor confidence=0.7801 loss=1.1590 correct=yes time_ms=8.97 file=data/brain_tumor/Training/no_tumor/no_tumor_0046.jpg
+[TRAIN] epoch=1/1 batch=3/50 sample=34/800 label=glioma_tumor predicted=glioma_tumor confidence=0.5980 loss=1.3297 correct=yes time_ms=8.51 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0070.jpg
+[TRAIN] epoch=1/1 batch=3/50 sample=35/800 label=no_tumor predicted=no_tumor confidence=0.8837 loss=4.6336 correct=yes time_ms=9.26 file=data/brain_tumor/Training/no_tumor/no_tumor_0167.jpg
+[TRAIN] epoch=1/1 batch=3/50 sample=36/800 label=pituitary_tumor predicted=no_tumor confidence=0.6555 loss=6.8473 correct=no time_ms=23.13 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0076.jpg
+[TRAIN] epoch=1/1 batch=3/50 sample=37/800 label=glioma_tumor predicted=glioma_tumor confidence=0.6894 loss=0.4873 correct=yes time_ms=12.50 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0189.jpg
+[TRAIN] epoch=1/1 batch=3/50 sample=38/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.9781 loss=2.6900 correct=yes time_ms=12.06 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0050.jpg
+[TRAIN] epoch=1/1 batch=3/50 sample=39/800 label=glioma_tumor predicted=glioma_tumor confidence=0.8336 loss=2.6470 correct=yes time_ms=9.46 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0042.jpg
+[TRAIN] epoch=1/1 batch=3/50 sample=40/800 label=pituitary_tumor predicted=glioma_tumor confidence=0.4123 loss=2.2559 correct=no time_ms=10.05 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0036.jpg
+[TRAIN] epoch=1/1 batch=3/50 sample=41/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.5938 loss=2.4445 correct=yes time_ms=9.80 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0173.jpg
+[TRAIN] epoch=1/1 batch=3/50 sample=42/800 label=pituitary_tumor predicted=glioma_tumor confidence=0.6334 loss=1.8044 correct=no time_ms=9.83 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0096.jpg
+[TRAIN] epoch=1/1 batch=3/50 sample=43/800 label=pituitary_tumor predicted=glioma_tumor confidence=0.6017 loss=1.6129 correct=no time_ms=10.42 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0198.jpg
+[TRAIN] epoch=1/1 batch=3/50 sample=44/800 label=no_tumor predicted=no_tumor confidence=0.6087 loss=1.6883 correct=yes time_ms=8.79 file=data/brain_tumor/Training/no_tumor/no_tumor_0109.jpg
+[TRAIN] epoch=1/1 batch=3/50 sample=45/800 label=glioma_tumor predicted=glioma_tumor confidence=0.5930 loss=1.2022 correct=yes time_ms=9.61 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0194.jpg
+[TRAIN] epoch=1/1 batch=3/50 sample=46/800 label=glioma_tumor predicted=glioma_tumor confidence=0.8514 loss=0.1798 correct=yes time_ms=9.20 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0157.jpg
+[TRAIN] epoch=1/1 batch=3/50 sample=47/800 label=no_tumor predicted=glioma_tumor confidence=0.4683 loss=1.3033 correct=no time_ms=10.59 file=data/brain_tumor/Training/no_tumor/no_tumor_0039.jpg
+[TRAIN] epoch=1/1 batch=3/50 sample=48/800 label=meningioma_tumor predicted=no_tumor confidence=0.3635 loss=5.1270 correct=no time_ms=10.07 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0038.jpg
+[BATCH] epoch=1/1 batch=3/50 loss=2.3383 accuracy=62.50% duration_ms=172.46 end
+[BATCH] epoch=1/1 batch=4/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=4/50 sample=49/800 label=no_tumor predicted=no_tumor confidence=0.7187 loss=0.8539 correct=yes time_ms=8.79 file=data/brain_tumor/Training/no_tumor/no_tumor_0133.jpg
+[TRAIN] epoch=1/1 batch=4/50 sample=50/800 label=no_tumor predicted=no_tumor confidence=0.7843 loss=0.3112 correct=yes time_ms=9.15 file=data/brain_tumor/Training/no_tumor/no_tumor_0070.jpg
+[TRAIN] epoch=1/1 batch=4/50 sample=51/800 label=meningioma_tumor predicted=no_tumor confidence=0.4463 loss=1.1034 correct=no time_ms=10.01 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0059.jpg
+[TRAIN] epoch=1/1 batch=4/50 sample=52/800 label=pituitary_tumor predicted=glioma_tumor confidence=0.3845 loss=1.6481 correct=no time_ms=10.35 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0170.jpg
+[TRAIN] epoch=1/1 batch=4/50 sample=53/800 label=glioma_tumor predicted=no_tumor confidence=0.3840 loss=1.7297 correct=no time_ms=9.97 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0078.jpg
+[TRAIN] epoch=1/1 batch=4/50 sample=54/800 label=glioma_tumor predicted=no_tumor confidence=0.3413 loss=1.5415 correct=no time_ms=10.07 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0146.jpg
+[TRAIN] epoch=1/1 batch=4/50 sample=55/800 label=pituitary_tumor predicted=glioma_tumor confidence=0.4559 loss=1.5737 correct=no time_ms=10.40 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0190.jpg
+[TRAIN] epoch=1/1 batch=4/50 sample=56/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.2506 loss=1.8604 correct=yes time_ms=10.17 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0089.jpg
+[TRAIN] epoch=1/1 batch=4/50 sample=57/800 label=meningioma_tumor predicted=pituitary_tumor confidence=0.2506 loss=1.3866 correct=no time_ms=11.95 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0133.jpg
+[TRAIN] epoch=1/1 batch=4/50 sample=58/800 label=pituitary_tumor predicted=glioma_tumor confidence=0.4641 loss=2.1787 correct=no time_ms=21.66 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0187.jpg
+[TRAIN] epoch=1/1 batch=4/50 sample=59/800 label=pituitary_tumor predicted=glioma_tumor confidence=0.4511 loss=1.2423 correct=no time_ms=13.47 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0099.jpg
+[TRAIN] epoch=1/1 batch=4/50 sample=60/800 label=no_tumor predicted=no_tumor confidence=0.2966 loss=1.3682 correct=yes time_ms=13.67 file=data/brain_tumor/Training/no_tumor/no_tumor_0000.jpg
+[TRAIN] epoch=1/1 batch=4/50 sample=61/800 label=meningioma_tumor predicted=no_tumor confidence=0.2903 loss=1.3398 correct=no time_ms=10.92 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0177.jpg
+[TRAIN] epoch=1/1 batch=4/50 sample=62/800 label=no_tumor predicted=glioma_tumor confidence=0.5866 loss=2.2249 correct=no time_ms=9.75 file=data/brain_tumor/Training/no_tumor/no_tumor_0058.jpg
+[TRAIN] epoch=1/1 batch=4/50 sample=63/800 label=glioma_tumor predicted=no_tumor confidence=0.2708 loss=1.4076 correct=no time_ms=11.07 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0116.jpg
+[TRAIN] epoch=1/1 batch=4/50 sample=64/800 label=no_tumor predicted=glioma_tumor confidence=0.4126 loss=1.6700 correct=no time_ms=10.68 file=data/brain_tumor/Training/no_tumor/no_tumor_0115.jpg
+[BATCH] epoch=1/1 batch=4/50 loss=1.4650 accuracy=25.00% duration_ms=182.31 end
+[BATCH] epoch=1/1 batch=5/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=5/50 sample=65/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.2506 loss=1.3884 correct=no time_ms=10.87 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0129.jpg
+[TRAIN] epoch=1/1 batch=5/50 sample=66/800 label=pituitary_tumor predicted=glioma_tumor confidence=0.3668 loss=1.2704 correct=no time_ms=11.06 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0024.jpg
+[TRAIN] epoch=1/1 batch=5/50 sample=67/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.2507 loss=1.6384 correct=no time_ms=10.82 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0170.jpg
+[TRAIN] epoch=1/1 batch=5/50 sample=68/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.2508 loss=1.3836 correct=yes time_ms=10.94 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0065.jpg
+[TRAIN] epoch=1/1 batch=5/50 sample=69/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.2507 loss=1.3881 correct=no time_ms=11.40 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0113.jpg
+[TRAIN] epoch=1/1 batch=5/50 sample=70/800 label=no_tumor predicted=no_tumor confidence=0.6764 loss=0.8206 correct=yes time_ms=9.78 file=data/brain_tumor/Training/no_tumor/no_tumor_0188.jpg
+[TRAIN] epoch=1/1 batch=5/50 sample=71/800 label=meningioma_tumor predicted=no_tumor confidence=0.3587 loss=1.1783 correct=no time_ms=11.20 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0075.jpg
+[TRAIN] epoch=1/1 batch=5/50 sample=72/800 label=meningioma_tumor predicted=no_tumor confidence=0.3612 loss=1.1564 correct=no time_ms=11.01 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0108.jpg
+[TRAIN] epoch=1/1 batch=5/50 sample=73/800 label=meningioma_tumor predicted=pituitary_tumor confidence=0.2507 loss=1.3862 correct=no time_ms=10.99 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0155.jpg
+[TRAIN] epoch=1/1 batch=5/50 sample=74/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.5509 loss=1.1537 correct=yes time_ms=11.45 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0198.jpg
+[TRAIN] epoch=1/1 batch=5/50 sample=75/800 label=no_tumor predicted=no_tumor confidence=0.3627 loss=1.2455 correct=yes time_ms=12.55 file=data/brain_tumor/Training/no_tumor/no_tumor_0015.jpg
+[TRAIN] epoch=1/1 batch=5/50 sample=76/800 label=no_tumor predicted=no_tumor confidence=0.8733 loss=0.1755 correct=yes time_ms=9.57 file=data/brain_tumor/Training/no_tumor/no_tumor_0187.jpg
+[TRAIN] epoch=1/1 batch=5/50 sample=77/800 label=no_tumor predicted=no_tumor confidence=0.7830 loss=0.9761 correct=yes time_ms=10.46 file=data/brain_tumor/Training/no_tumor/no_tumor_0124.jpg
+[TRAIN] epoch=1/1 batch=5/50 sample=78/800 label=no_tumor predicted=no_tumor confidence=0.8345 loss=0.3373 correct=yes time_ms=9.65 file=data/brain_tumor/Training/no_tumor/no_tumor_0146.jpg
+[TRAIN] epoch=1/1 batch=5/50 sample=79/800 label=pituitary_tumor predicted=no_tumor confidence=0.4326 loss=3.1006 correct=no time_ms=10.22 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0008.jpg
+[TRAIN] epoch=1/1 batch=5/50 sample=80/800 label=meningioma_tumor predicted=no_tumor confidence=0.3374 loss=1.6329 correct=no time_ms=11.93 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0148.jpg
+[BATCH] epoch=1/1 batch=5/50 loss=1.2645 accuracy=43.75% duration_ms=174.12 end
+[BATCH] epoch=1/1 batch=6/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=6/50 sample=81/800 label=no_tumor predicted=no_tumor confidence=0.3516 loss=1.2036 correct=yes time_ms=13.03 file=data/brain_tumor/Training/no_tumor/no_tumor_0173.jpg
+[TRAIN] epoch=1/1 batch=6/50 sample=82/800 label=no_tumor predicted=no_tumor confidence=0.3787 loss=1.0558 correct=yes time_ms=9.79 file=data/brain_tumor/Training/no_tumor/no_tumor_0125.jpg
+[TRAIN] epoch=1/1 batch=6/50 sample=83/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.6099 loss=0.9730 correct=yes time_ms=10.42 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0035.jpg
+[TRAIN] epoch=1/1 batch=6/50 sample=84/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.6868 loss=0.5435 correct=yes time_ms=10.72 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0056.jpg
+[TRAIN] epoch=1/1 batch=6/50 sample=85/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.7196 loss=0.4924 correct=yes time_ms=9.81 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0191.jpg
+[TRAIN] epoch=1/1 batch=6/50 sample=86/800 label=pituitary_tumor predicted=meningioma_tumor confidence=0.4472 loss=1.5362 correct=no time_ms=10.63 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0186.jpg
+[TRAIN] epoch=1/1 batch=6/50 sample=87/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.6953 loss=0.4951 correct=yes time_ms=10.96 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0066.jpg
+[TRAIN] epoch=1/1 batch=6/50 sample=88/800 label=pituitary_tumor predicted=meningioma_tumor confidence=0.5833 loss=2.0646 correct=no time_ms=10.16 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0039.jpg
+[TRAIN] epoch=1/1 batch=6/50 sample=89/800 label=no_tumor predicted=no_tumor confidence=0.4221 loss=1.2233 correct=yes time_ms=9.69 file=data/brain_tumor/Training/no_tumor/no_tumor_0130.jpg
+[TRAIN] epoch=1/1 batch=6/50 sample=90/800 label=no_tumor predicted=no_tumor confidence=0.3939 loss=1.0566 correct=yes time_ms=10.92 file=data/brain_tumor/Training/no_tumor/no_tumor_0150.jpg
+[TRAIN] epoch=1/1 batch=6/50 sample=91/800 label=pituitary_tumor predicted=meningioma_tumor confidence=0.4378 loss=1.1610 correct=no time_ms=10.32 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0102.jpg
+[TRAIN] epoch=1/1 batch=6/50 sample=92/800 label=no_tumor predicted=glioma_tumor confidence=0.3303 loss=1.3398 correct=no time_ms=13.90 file=data/brain_tumor/Training/no_tumor/no_tumor_0127.jpg
+[TRAIN] epoch=1/1 batch=6/50 sample=93/800 label=no_tumor predicted=no_tumor confidence=0.8041 loss=0.3924 correct=yes time_ms=8.72 file=data/brain_tumor/Training/no_tumor/no_tumor_0053.jpg
+[TRAIN] epoch=1/1 batch=6/50 sample=94/800 label=no_tumor predicted=meningioma_tumor confidence=0.4113 loss=1.4627 correct=no time_ms=11.49 file=data/brain_tumor/Training/no_tumor/no_tumor_0104.jpg
+[TRAIN] epoch=1/1 batch=6/50 sample=95/800 label=pituitary_tumor predicted=meningioma_tumor confidence=0.5220 loss=2.1692 correct=no time_ms=11.02 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0034.jpg
+[TRAIN] epoch=1/1 batch=6/50 sample=96/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.5532 loss=0.7519 correct=yes time_ms=10.61 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0112.jpg
+[BATCH] epoch=1/1 batch=6/50 loss=1.1201 accuracy=62.50% duration_ms=172.38 end
+[BATCH] epoch=1/1 batch=7/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=7/50 sample=97/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.2508 loss=2.3529 correct=no time_ms=11.32 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0018.jpg
+[TRAIN] epoch=1/1 batch=7/50 sample=98/800 label=glioma_tumor predicted=no_tumor confidence=0.3342 loss=1.6256 correct=no time_ms=11.83 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0063.jpg
+[TRAIN] epoch=1/1 batch=7/50 sample=99/800 label=glioma_tumor predicted=no_tumor confidence=0.2617 loss=3.3461 correct=no time_ms=10.41 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0067.jpg
+[TRAIN] epoch=1/1 batch=7/50 sample=100/800 label=no_tumor predicted=pituitary_tumor confidence=0.2507 loss=1.3867 correct=no time_ms=10.13 file=data/brain_tumor/Training/no_tumor/no_tumor_0177.jpg
+[TRAIN] epoch=1/1 batch=7/50 sample=101/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.2507 loss=1.3888 correct=no time_ms=10.81 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0072.jpg
+[TRAIN] epoch=1/1 batch=7/50 sample=102/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.2508 loss=1.3835 correct=yes time_ms=9.92 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0092.jpg
+[TRAIN] epoch=1/1 batch=7/50 sample=103/800 label=no_tumor predicted=no_tumor confidence=0.3665 loss=1.0981 correct=yes time_ms=11.28 file=data/brain_tumor/Training/no_tumor/no_tumor_0023.jpg
+[TRAIN] epoch=1/1 batch=7/50 sample=104/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.2507 loss=1.3886 correct=no time_ms=10.95 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0140.jpg
+[TRAIN] epoch=1/1 batch=7/50 sample=105/800 label=no_tumor predicted=pituitary_tumor confidence=0.2507 loss=1.3864 correct=no time_ms=10.28 file=data/brain_tumor/Training/no_tumor/no_tumor_0030.jpg
+[TRAIN] epoch=1/1 batch=7/50 sample=106/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.2507 loss=1.3884 correct=no time_ms=10.59 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0049.jpg
+[TRAIN] epoch=1/1 batch=7/50 sample=107/800 label=no_tumor predicted=pituitary_tumor confidence=0.2507 loss=1.3861 correct=no time_ms=9.62 file=data/brain_tumor/Training/no_tumor/no_tumor_0126.jpg
+[TRAIN] epoch=1/1 batch=7/50 sample=108/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.2506 loss=1.3881 correct=no time_ms=11.54 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0079.jpg
+[TRAIN] epoch=1/1 batch=7/50 sample=109/800 label=meningioma_tumor predicted=no_tumor confidence=0.4380 loss=1.0882 correct=no time_ms=11.80 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0110.jpg
+[TRAIN] epoch=1/1 batch=7/50 sample=110/800 label=no_tumor predicted=no_tumor confidence=0.6792 loss=0.8156 correct=yes time_ms=8.88 file=data/brain_tumor/Training/no_tumor/no_tumor_0180.jpg
+[TRAIN] epoch=1/1 batch=7/50 sample=111/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.9825 loss=0.6512 correct=yes time_ms=12.80 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0084.jpg
+[TRAIN] epoch=1/1 batch=7/50 sample=112/800 label=glioma_tumor predicted=no_tumor confidence=0.2889 loss=1.4962 correct=no time_ms=13.35 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0076.jpg
+[BATCH] epoch=1/1 batch=7/50 loss=1.4732 accuracy=25.00% duration_ms=175.81 end
+[BATCH] epoch=1/1 batch=8/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=8/50 sample=113/800 label=glioma_tumor predicted=no_tumor confidence=0.3804 loss=1.8639 correct=no time_ms=12.49 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0159.jpg
+[TRAIN] epoch=1/1 batch=8/50 sample=114/800 label=pituitary_tumor predicted=glioma_tumor confidence=0.3433 loss=1.3539 correct=no time_ms=11.12 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0105.jpg
+[TRAIN] epoch=1/1 batch=8/50 sample=115/800 label=pituitary_tumor predicted=glioma_tumor confidence=0.3649 loss=1.2513 correct=no time_ms=13.56 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0097.jpg
+[TRAIN] epoch=1/1 batch=8/50 sample=116/800 label=meningioma_tumor predicted=pituitary_tumor confidence=0.2507 loss=1.3877 correct=no time_ms=16.78 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0027.jpg
+[TRAIN] epoch=1/1 batch=8/50 sample=117/800 label=no_tumor predicted=no_tumor confidence=0.9843 loss=0.5032 correct=yes time_ms=16.43 file=data/brain_tumor/Training/no_tumor/no_tumor_0181.jpg
+[TRAIN] epoch=1/1 batch=8/50 sample=118/800 label=glioma_tumor predicted=no_tumor confidence=0.3011 loss=1.4984 correct=no time_ms=17.92 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0039.jpg
+[TRAIN] epoch=1/1 batch=8/50 sample=119/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.2506 loss=1.3874 correct=no time_ms=15.79 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0028.jpg
+[TRAIN] epoch=1/1 batch=8/50 sample=120/800 label=meningioma_tumor predicted=no_tumor confidence=0.3666 loss=1.1389 correct=no time_ms=21.19 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0023.jpg
+[TRAIN] epoch=1/1 batch=8/50 sample=121/800 label=no_tumor predicted=no_tumor confidence=0.3201 loss=1.2138 correct=yes time_ms=13.08 file=data/brain_tumor/Training/no_tumor/no_tumor_0065.jpg
+[TRAIN] epoch=1/1 batch=8/50 sample=122/800 label=no_tumor predicted=glioma_tumor confidence=0.4817 loss=1.2390 correct=no time_ms=13.74 file=data/brain_tumor/Training/no_tumor/no_tumor_0090.jpg
+[TRAIN] epoch=1/1 batch=8/50 sample=123/800 label=no_tumor predicted=no_tumor confidence=0.3502 loss=1.2280 correct=yes time_ms=19.70 file=data/brain_tumor/Training/no_tumor/no_tumor_0106.jpg
+[TRAIN] epoch=1/1 batch=8/50 sample=124/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.2507 loss=1.3840 correct=yes time_ms=14.94 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0169.jpg
+[TRAIN] epoch=1/1 batch=8/50 sample=125/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.2508 loss=1.3837 correct=yes time_ms=22.57 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0192.jpg
+[TRAIN] epoch=1/1 batch=8/50 sample=126/800 label=glioma_tumor predicted=no_tumor confidence=0.2860 loss=1.4635 correct=no time_ms=13.13 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0122.jpg
+[TRAIN] epoch=1/1 batch=8/50 sample=127/800 label=no_tumor predicted=no_tumor confidence=0.6160 loss=0.8233 correct=yes time_ms=13.36 file=data/brain_tumor/Training/no_tumor/no_tumor_0006.jpg
+[TRAIN] epoch=1/1 batch=8/50 sample=128/800 label=glioma_tumor predicted=no_tumor confidence=0.3270 loss=1.5509 correct=no time_ms=36.71 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0040.jpg
+[BATCH] epoch=1/1 batch=8/50 loss=1.2919 accuracy=37.50% duration_ms=272.70 end
+[BATCH] epoch=1/1 batch=9/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=9/50 sample=129/800 label=no_tumor predicted=no_tumor confidence=0.7342 loss=0.5148 correct=yes time_ms=21.10 file=data/brain_tumor/Training/no_tumor/no_tumor_0005.jpg
+[TRAIN] epoch=1/1 batch=9/50 sample=130/800 label=meningioma_tumor predicted=no_tumor confidence=0.3793 loss=1.1352 correct=no time_ms=13.34 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0011.jpg
+[TRAIN] epoch=1/1 batch=9/50 sample=131/800 label=meningioma_tumor predicted=no_tumor confidence=0.4063 loss=1.0560 correct=no time_ms=12.46 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0189.jpg
+[TRAIN] epoch=1/1 batch=9/50 sample=132/800 label=meningioma_tumor predicted=no_tumor confidence=0.4112 loss=1.0099 correct=no time_ms=13.42 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0093.jpg
+[TRAIN] epoch=1/1 batch=9/50 sample=133/800 label=glioma_tumor predicted=no_tumor confidence=0.3367 loss=1.6397 correct=no time_ms=10.18 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0106.jpg
+[TRAIN] epoch=1/1 batch=9/50 sample=134/800 label=no_tumor predicted=no_tumor confidence=0.3973 loss=0.9681 correct=yes time_ms=9.40 file=data/brain_tumor/Training/no_tumor/no_tumor_0063.jpg
+[TRAIN] epoch=1/1 batch=9/50 sample=135/800 label=pituitary_tumor predicted=glioma_tumor confidence=0.3803 loss=1.2944 correct=no time_ms=13.29 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0110.jpg
+[TRAIN] epoch=1/1 batch=9/50 sample=136/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.2508 loss=1.3834 correct=yes time_ms=12.95 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0168.jpg
+[TRAIN] epoch=1/1 batch=9/50 sample=137/800 label=meningioma_tumor predicted=no_tumor confidence=0.3912 loss=1.0264 correct=no time_ms=11.37 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0196.jpg
+[TRAIN] epoch=1/1 batch=9/50 sample=138/800 label=no_tumor predicted=no_tumor confidence=0.2933 loss=1.3630 correct=yes time_ms=12.03 file=data/brain_tumor/Training/no_tumor/no_tumor_0105.jpg
+[TRAIN] epoch=1/1 batch=9/50 sample=139/800 label=glioma_tumor predicted=no_tumor confidence=0.3204 loss=1.5747 correct=no time_ms=11.18 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0088.jpg
+[TRAIN] epoch=1/1 batch=9/50 sample=140/800 label=pituitary_tumor predicted=glioma_tumor confidence=0.3688 loss=1.2697 correct=no time_ms=10.29 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0144.jpg
+[TRAIN] epoch=1/1 batch=9/50 sample=141/800 label=glioma_tumor predicted=no_tumor confidence=0.3347 loss=1.6084 correct=no time_ms=14.37 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0192.jpg
+[TRAIN] epoch=1/1 batch=9/50 sample=142/800 label=glioma_tumor predicted=glioma_tumor confidence=0.4467 loss=1.1797 correct=yes time_ms=12.91 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0038.jpg
+[TRAIN] epoch=1/1 batch=9/50 sample=143/800 label=glioma_tumor predicted=no_tumor confidence=0.2642 loss=1.4051 correct=no time_ms=12.15 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0163.jpg
+[TRAIN] epoch=1/1 batch=9/50 sample=144/800 label=no_tumor predicted=no_tumor confidence=0.3568 loss=1.0928 correct=yes time_ms=14.57 file=data/brain_tumor/Training/no_tumor/no_tumor_0012.jpg
+[BATCH] epoch=1/1 batch=9/50 loss=1.2201 accuracy=37.50% duration_ms=205.25 end
+[BATCH] epoch=1/1 batch=10/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=10/50 sample=145/800 label=pituitary_tumor predicted=glioma_tumor confidence=0.4339 loss=1.2203 correct=no time_ms=11.27 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0020.jpg
+[TRAIN] epoch=1/1 batch=10/50 sample=146/800 label=glioma_tumor predicted=glioma_tumor confidence=0.4461 loss=1.0376 correct=yes time_ms=11.41 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0087.jpg
+[TRAIN] epoch=1/1 batch=10/50 sample=147/800 label=pituitary_tumor predicted=glioma_tumor confidence=0.3643 loss=1.3362 correct=no time_ms=11.65 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0069.jpg
+[TRAIN] epoch=1/1 batch=10/50 sample=148/800 label=meningioma_tumor predicted=no_tumor confidence=0.3746 loss=1.0452 correct=no time_ms=10.19 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0089.jpg
+[TRAIN] epoch=1/1 batch=10/50 sample=149/800 label=glioma_tumor predicted=glioma_tumor confidence=0.4943 loss=0.8092 correct=yes time_ms=13.42 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0105.jpg
+[TRAIN] epoch=1/1 batch=10/50 sample=150/800 label=pituitary_tumor predicted=glioma_tumor confidence=0.6565 loss=1.8033 correct=no time_ms=12.73 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0151.jpg
+[TRAIN] epoch=1/1 batch=10/50 sample=151/800 label=glioma_tumor predicted=no_tumor confidence=0.3350 loss=1.5923 correct=no time_ms=13.53 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0095.jpg
+[TRAIN] epoch=1/1 batch=10/50 sample=152/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.6896 loss=1.0379 correct=yes time_ms=11.65 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0098.jpg
+[TRAIN] epoch=1/1 batch=10/50 sample=153/800 label=no_tumor predicted=no_tumor confidence=0.3786 loss=1.0156 correct=yes time_ms=13.03 file=data/brain_tumor/Training/no_tumor/no_tumor_0018.jpg
+[TRAIN] epoch=1/1 batch=10/50 sample=154/800 label=glioma_tumor predicted=no_tumor confidence=0.3495 loss=1.6156 correct=no time_ms=12.92 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0012.jpg
+[TRAIN] epoch=1/1 batch=10/50 sample=155/800 label=no_tumor predicted=no_tumor confidence=0.9926 loss=0.5779 correct=yes time_ms=10.27 file=data/brain_tumor/Training/no_tumor/no_tumor_0112.jpg
+[TRAIN] epoch=1/1 batch=10/50 sample=156/800 label=meningioma_tumor predicted=no_tumor confidence=0.3397 loss=1.1573 correct=no time_ms=11.89 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0076.jpg
+[TRAIN] epoch=1/1 batch=10/50 sample=157/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.3989 loss=0.9741 correct=yes time_ms=12.95 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0021.jpg
+[TRAIN] epoch=1/1 batch=10/50 sample=158/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4242 loss=0.9209 correct=yes time_ms=12.96 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0068.jpg
+[TRAIN] epoch=1/1 batch=10/50 sample=159/800 label=glioma_tumor predicted=glioma_tumor confidence=0.4296 loss=1.2023 correct=yes time_ms=13.03 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0121.jpg
+[TRAIN] epoch=1/1 batch=10/50 sample=160/800 label=no_tumor predicted=no_tumor confidence=0.9813 loss=0.7086 correct=yes time_ms=10.14 file=data/brain_tumor/Training/no_tumor/no_tumor_0049.jpg
+[BATCH] epoch=1/1 batch=10/50 loss=1.1284 accuracy=56.25% duration_ms=193.29 end
+[BATCH] epoch=1/1 batch=11/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=11/50 sample=161/800 label=no_tumor predicted=no_tumor confidence=0.9484 loss=0.4779 correct=yes time_ms=11.78 file=data/brain_tumor/Training/no_tumor/no_tumor_0120.jpg
+[TRAIN] epoch=1/1 batch=11/50 sample=162/800 label=glioma_tumor predicted=glioma_tumor confidence=0.4770 loss=4.4381 correct=yes time_ms=12.39 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0118.jpg
+[TRAIN] epoch=1/1 batch=11/50 sample=163/800 label=no_tumor predicted=no_tumor confidence=0.5163 loss=0.9395 correct=yes time_ms=10.81 file=data/brain_tumor/Training/no_tumor/no_tumor_0096.jpg
+[TRAIN] epoch=1/1 batch=11/50 sample=164/800 label=no_tumor predicted=no_tumor confidence=0.3449 loss=1.2160 correct=yes time_ms=10.98 file=data/brain_tumor/Training/no_tumor/no_tumor_0117.jpg
+[TRAIN] epoch=1/1 batch=11/50 sample=165/800 label=no_tumor predicted=glioma_tumor confidence=0.6306 loss=2.8097 correct=no time_ms=11.79 file=data/brain_tumor/Training/no_tumor/no_tumor_0123.jpg
+[TRAIN] epoch=1/1 batch=11/50 sample=166/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.6536 loss=0.7817 correct=yes time_ms=11.68 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0121.jpg
+[TRAIN] epoch=1/1 batch=11/50 sample=167/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.7847 loss=0.5252 correct=yes time_ms=11.74 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0055.jpg
+[TRAIN] epoch=1/1 batch=11/50 sample=168/800 label=glioma_tumor predicted=glioma_tumor confidence=0.4472 loss=1.1393 correct=yes time_ms=12.12 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0058.jpg
+[TRAIN] epoch=1/1 batch=11/50 sample=169/800 label=glioma_tumor predicted=glioma_tumor confidence=0.5215 loss=0.7153 correct=yes time_ms=10.85 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0143.jpg
+[TRAIN] epoch=1/1 batch=11/50 sample=170/800 label=pituitary_tumor predicted=glioma_tumor confidence=0.4551 loss=1.1696 correct=no time_ms=11.39 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0172.jpg
+[TRAIN] epoch=1/1 batch=11/50 sample=171/800 label=glioma_tumor predicted=glioma_tumor confidence=0.4062 loss=1.3289 correct=yes time_ms=11.23 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0020.jpg
+[TRAIN] epoch=1/1 batch=11/50 sample=172/800 label=pituitary_tumor predicted=glioma_tumor confidence=0.5464 loss=1.3077 correct=no time_ms=10.44 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0143.jpg
+[TRAIN] epoch=1/1 batch=11/50 sample=173/800 label=no_tumor predicted=no_tumor confidence=0.9943 loss=0.0060 correct=yes time_ms=12.32 file=data/brain_tumor/Training/no_tumor/no_tumor_0099.jpg
+[TRAIN] epoch=1/1 batch=11/50 sample=174/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.6892 loss=0.9351 correct=yes time_ms=12.10 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0075.jpg
+[TRAIN] epoch=1/1 batch=11/50 sample=175/800 label=no_tumor predicted=no_tumor confidence=0.4500 loss=1.1389 correct=yes time_ms=12.69 file=data/brain_tumor/Training/no_tumor/no_tumor_0024.jpg
+[TRAIN] epoch=1/1 batch=11/50 sample=176/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.3845 loss=2.8577 correct=yes time_ms=11.59 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0034.jpg
+[BATCH] epoch=1/1 batch=11/50 loss=1.3617 accuracy=81.25% duration_ms=186.10 end
+[BATCH] epoch=1/1 batch=12/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=12/50 sample=177/800 label=glioma_tumor predicted=glioma_tumor confidence=0.4055 loss=2.6583 correct=yes time_ms=15.67 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0130.jpg
+[TRAIN] epoch=1/1 batch=12/50 sample=178/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.3951 loss=1.3898 correct=yes time_ms=13.31 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0127.jpg
+[TRAIN] epoch=1/1 batch=12/50 sample=179/800 label=pituitary_tumor predicted=glioma_tumor confidence=0.3594 loss=1.7351 correct=no time_ms=14.08 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0026.jpg
+[TRAIN] epoch=1/1 batch=12/50 sample=180/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.3953 loss=0.9902 correct=yes time_ms=13.10 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0193.jpg
+[TRAIN] epoch=1/1 batch=12/50 sample=181/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.3351 loss=1.1933 correct=yes time_ms=11.62 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0022.jpg
+[TRAIN] epoch=1/1 batch=12/50 sample=182/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.2511 loss=1.3821 correct=yes time_ms=12.06 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0068.jpg
+[TRAIN] epoch=1/1 batch=12/50 sample=183/800 label=pituitary_tumor predicted=meningioma_tumor confidence=0.3212 loss=2.6143 correct=no time_ms=11.51 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0112.jpg
+[TRAIN] epoch=1/1 batch=12/50 sample=184/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4195 loss=0.9290 correct=yes time_ms=11.15 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0129.jpg
+[TRAIN] epoch=1/1 batch=12/50 sample=185/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.3025 loss=1.3760 correct=yes time_ms=10.42 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0100.jpg
+[TRAIN] epoch=1/1 batch=12/50 sample=186/800 label=no_tumor predicted=no_tumor confidence=0.7497 loss=0.6388 correct=yes time_ms=9.68 file=data/brain_tumor/Training/no_tumor/no_tumor_0064.jpg
+[TRAIN] epoch=1/1 batch=12/50 sample=187/800 label=no_tumor predicted=pituitary_tumor confidence=0.2512 loss=1.4328 correct=no time_ms=15.61 file=data/brain_tumor/Training/no_tumor/no_tumor_0186.jpg
+[TRAIN] epoch=1/1 batch=12/50 sample=188/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4883 loss=0.8693 correct=yes time_ms=9.79 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0090.jpg
+[TRAIN] epoch=1/1 batch=12/50 sample=189/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4081 loss=1.3546 correct=yes time_ms=11.03 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0158.jpg
+[TRAIN] epoch=1/1 batch=12/50 sample=190/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.5539 loss=0.6634 correct=yes time_ms=10.90 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0118.jpg
+[TRAIN] epoch=1/1 batch=12/50 sample=191/800 label=no_tumor predicted=no_tumor confidence=0.9357 loss=0.7839 correct=yes time_ms=9.54 file=data/brain_tumor/Training/no_tumor/no_tumor_0055.jpg
+[TRAIN] epoch=1/1 batch=12/50 sample=192/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.5406 loss=0.6780 correct=yes time_ms=12.10 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0078.jpg
+[BATCH] epoch=1/1 batch=12/50 loss=1.2931 accuracy=81.25% duration_ms=191.95 end
+[BATCH] epoch=1/1 batch=13/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=13/50 sample=193/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.4561 loss=2.3968 correct=no time_ms=11.30 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0173.jpg
+[TRAIN] epoch=1/1 batch=13/50 sample=194/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.4694 loss=2.1992 correct=no time_ms=10.00 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0196.jpg
+[TRAIN] epoch=1/1 batch=13/50 sample=195/800 label=no_tumor predicted=meningioma_tumor confidence=0.3975 loss=1.1796 correct=no time_ms=11.89 file=data/brain_tumor/Training/no_tumor/no_tumor_0164.jpg
+[TRAIN] epoch=1/1 batch=13/50 sample=196/800 label=no_tumor predicted=meningioma_tumor confidence=0.3046 loss=1.3615 correct=no time_ms=9.10 file=data/brain_tumor/Training/no_tumor/no_tumor_0087.jpg
+[TRAIN] epoch=1/1 batch=13/50 sample=197/800 label=pituitary_tumor predicted=glioma_tumor confidence=0.3667 loss=1.2199 correct=no time_ms=11.65 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0049.jpg
+[TRAIN] epoch=1/1 batch=13/50 sample=198/800 label=glioma_tumor predicted=glioma_tumor confidence=0.3451 loss=1.2325 correct=yes time_ms=11.28 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0096.jpg
+[TRAIN] epoch=1/1 batch=13/50 sample=199/800 label=pituitary_tumor predicted=glioma_tumor confidence=0.4242 loss=0.9629 correct=no time_ms=9.97 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0152.jpg
+[TRAIN] epoch=1/1 batch=13/50 sample=200/800 label=glioma_tumor predicted=glioma_tumor confidence=0.3970 loss=0.9727 correct=yes time_ms=11.18 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0009.jpg
+[TRAIN] epoch=1/1 batch=13/50 sample=201/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.4329 loss=0.9117 correct=yes time_ms=11.09 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0140.jpg
+[TRAIN] epoch=1/1 batch=13/50 sample=202/800 label=no_tumor predicted=glioma_tumor confidence=0.4469 loss=1.4608 correct=no time_ms=9.32 file=data/brain_tumor/Training/no_tumor/no_tumor_0114.jpg
+[TRAIN] epoch=1/1 batch=13/50 sample=203/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.3945 loss=1.2666 correct=yes time_ms=17.34 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0088.jpg
+[TRAIN] epoch=1/1 batch=13/50 sample=204/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.2513 loss=1.3816 correct=yes time_ms=11.11 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0120.jpg
+[TRAIN] epoch=1/1 batch=13/50 sample=205/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.4022 loss=1.4728 correct=yes time_ms=11.34 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0009.jpg
+[TRAIN] epoch=1/1 batch=13/50 sample=206/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.3615 loss=1.0677 correct=yes time_ms=10.20 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0182.jpg
+[TRAIN] epoch=1/1 batch=13/50 sample=207/800 label=no_tumor predicted=meningioma_tumor confidence=0.4185 loss=1.1317 correct=no time_ms=12.00 file=data/brain_tumor/Training/no_tumor/no_tumor_0014.jpg
+[TRAIN] epoch=1/1 batch=13/50 sample=208/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.4006 loss=1.7367 correct=no time_ms=11.13 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0109.jpg
+[BATCH] epoch=1/1 batch=13/50 loss=1.3722 accuracy=43.75% duration_ms=180.10 end
+[BATCH] epoch=1/1 batch=14/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=14/50 sample=209/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.3614 loss=1.5555 correct=yes time_ms=9.94 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0177.jpg
+[TRAIN] epoch=1/1 batch=14/50 sample=210/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.4879 loss=0.8355 correct=yes time_ms=11.36 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0174.jpg
+[TRAIN] epoch=1/1 batch=14/50 sample=211/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.2517 loss=1.6942 correct=yes time_ms=10.92 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0178.jpg
+[TRAIN] epoch=1/1 batch=14/50 sample=212/800 label=meningioma_tumor predicted=pituitary_tumor confidence=0.3273 loss=1.3819 correct=no time_ms=9.67 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0194.jpg
+[TRAIN] epoch=1/1 batch=14/50 sample=213/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.6065 loss=0.5749 correct=yes time_ms=10.56 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0094.jpg
+[TRAIN] epoch=1/1 batch=14/50 sample=214/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.9982 loss=1.1924 correct=yes time_ms=10.15 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0037.jpg
+[TRAIN] epoch=1/1 batch=14/50 sample=215/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.4856 loss=0.9574 correct=yes time_ms=10.35 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0005.jpg
+[TRAIN] epoch=1/1 batch=14/50 sample=216/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.8047 loss=0.3213 correct=yes time_ms=9.44 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0136.jpg
+[TRAIN] epoch=1/1 batch=14/50 sample=217/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.8463 loss=0.2843 correct=yes time_ms=9.51 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0155.jpg
+[TRAIN] epoch=1/1 batch=14/50 sample=218/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.4765 loss=5.8571 correct=no time_ms=10.26 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0172.jpg
+[TRAIN] epoch=1/1 batch=14/50 sample=219/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4336 loss=0.9390 correct=yes time_ms=9.03 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0048.jpg
+[TRAIN] epoch=1/1 batch=14/50 sample=220/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.9706 loss=0.3156 correct=yes time_ms=9.57 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0126.jpg
+[TRAIN] epoch=1/1 batch=14/50 sample=221/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.9623 loss=0.2097 correct=yes time_ms=10.14 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0052.jpg
+[TRAIN] epoch=1/1 batch=14/50 sample=222/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.9762 loss=0.6968 correct=yes time_ms=9.19 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0130.jpg
+[TRAIN] epoch=1/1 batch=14/50 sample=223/800 label=no_tumor predicted=pituitary_tumor confidence=0.3858 loss=2.6599 correct=no time_ms=9.05 file=data/brain_tumor/Training/no_tumor/no_tumor_0085.jpg
+[TRAIN] epoch=1/1 batch=14/50 sample=224/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.7329 loss=0.5663 correct=yes time_ms=10.15 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0183.jpg
+[BATCH] epoch=1/1 batch=14/50 loss=1.2526 accuracy=81.25% duration_ms=159.47 end
+[BATCH] epoch=1/1 batch=15/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=15/50 sample=225/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.9611 loss=0.0536 correct=yes time_ms=9.44 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0184.jpg
+[TRAIN] epoch=1/1 batch=15/50 sample=226/800 label=no_tumor predicted=meningioma_tumor confidence=0.6334 loss=6.0820 correct=no time_ms=8.54 file=data/brain_tumor/Training/no_tumor/no_tumor_0081.jpg
+[TRAIN] epoch=1/1 batch=15/50 sample=227/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.3650 loss=2.0536 correct=no time_ms=9.29 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0031.jpg
+[TRAIN] epoch=1/1 batch=15/50 sample=228/800 label=no_tumor predicted=meningioma_tumor confidence=0.3756 loss=1.1810 correct=no time_ms=11.33 file=data/brain_tumor/Training/no_tumor/no_tumor_0035.jpg
+[TRAIN] epoch=1/1 batch=15/50 sample=229/800 label=no_tumor predicted=pituitary_tumor confidence=0.2516 loss=1.3897 correct=no time_ms=8.96 file=data/brain_tumor/Training/no_tumor/no_tumor_0001.jpg
+[TRAIN] epoch=1/1 batch=15/50 sample=230/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.9667 loss=0.3633 correct=yes time_ms=9.53 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0095.jpg
+[TRAIN] epoch=1/1 batch=15/50 sample=231/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.3486 loss=1.1558 correct=no time_ms=9.87 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0099.jpg
+[TRAIN] epoch=1/1 batch=15/50 sample=232/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.3881 loss=1.2388 correct=yes time_ms=9.63 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0164.jpg
+[TRAIN] epoch=1/1 batch=15/50 sample=233/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.3653 loss=1.0645 correct=no time_ms=9.20 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0127.jpg
+[TRAIN] epoch=1/1 batch=15/50 sample=234/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.6803 loss=0.7605 correct=yes time_ms=9.60 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0106.jpg
+[TRAIN] epoch=1/1 batch=15/50 sample=235/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.3361 loss=3.5237 correct=yes time_ms=9.96 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0140.jpg
+[TRAIN] epoch=1/1 batch=15/50 sample=236/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.6928 loss=0.6970 correct=yes time_ms=9.65 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0149.jpg
+[TRAIN] epoch=1/1 batch=15/50 sample=237/800 label=pituitary_tumor predicted=meningioma_tumor confidence=0.2816 loss=1.9889 correct=no time_ms=9.40 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0189.jpg
+[TRAIN] epoch=1/1 batch=15/50 sample=238/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4578 loss=0.9207 correct=yes time_ms=9.31 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0114.jpg
+[TRAIN] epoch=1/1 batch=15/50 sample=239/800 label=no_tumor predicted=meningioma_tumor confidence=0.2797 loss=1.3776 correct=no time_ms=9.33 file=data/brain_tumor/Training/no_tumor/no_tumor_0166.jpg
+[TRAIN] epoch=1/1 batch=15/50 sample=240/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.3297 loss=2.9870 correct=no time_ms=9.51 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0123.jpg
+[BATCH] epoch=1/1 batch=15/50 loss=1.6774 accuracy=43.75% duration_ms=152.70 end
+[BATCH] epoch=1/1 batch=16/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=16/50 sample=241/800 label=no_tumor predicted=no_tumor confidence=0.6280 loss=1.0208 correct=yes time_ms=8.53 file=data/brain_tumor/Training/no_tumor/no_tumor_0172.jpg
+[TRAIN] epoch=1/1 batch=16/50 sample=242/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.2518 loss=1.5114 correct=yes time_ms=13.72 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0037.jpg
+[TRAIN] epoch=1/1 batch=16/50 sample=243/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.6224 loss=1.0262 correct=yes time_ms=10.54 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0085.jpg
+[TRAIN] epoch=1/1 batch=16/50 sample=244/800 label=meningioma_tumor predicted=pituitary_tumor confidence=0.4143 loss=1.2938 correct=no time_ms=10.84 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0136.jpg
+[TRAIN] epoch=1/1 batch=16/50 sample=245/800 label=no_tumor predicted=meningioma_tumor confidence=0.4590 loss=1.0784 correct=no time_ms=9.06 file=data/brain_tumor/Training/no_tumor/no_tumor_0007.jpg
+[TRAIN] epoch=1/1 batch=16/50 sample=246/800 label=no_tumor predicted=no_tumor confidence=0.9215 loss=0.1518 correct=yes time_ms=10.23 file=data/brain_tumor/Training/no_tumor/no_tumor_0031.jpg
+[TRAIN] epoch=1/1 batch=16/50 sample=247/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.3617 loss=1.1351 correct=yes time_ms=10.02 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0195.jpg
+[TRAIN] epoch=1/1 batch=16/50 sample=248/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.3744 loss=1.0548 correct=yes time_ms=10.00 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0120.jpg
+[TRAIN] epoch=1/1 batch=16/50 sample=249/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.6274 loss=0.5467 correct=yes time_ms=10.24 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0157.jpg
+[TRAIN] epoch=1/1 batch=16/50 sample=250/800 label=no_tumor predicted=meningioma_tumor confidence=0.4905 loss=1.1467 correct=no time_ms=9.66 file=data/brain_tumor/Training/no_tumor/no_tumor_0111.jpg
+[TRAIN] epoch=1/1 batch=16/50 sample=251/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.3134 loss=1.5271 correct=no time_ms=9.12 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0187.jpg
+[TRAIN] epoch=1/1 batch=16/50 sample=252/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4647 loss=0.8830 correct=yes time_ms=9.26 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0013.jpg
+[TRAIN] epoch=1/1 batch=16/50 sample=253/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.2518 loss=1.3886 correct=no time_ms=9.84 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0092.jpg
+[TRAIN] epoch=1/1 batch=16/50 sample=254/800 label=no_tumor predicted=pituitary_tumor confidence=0.9984 loss=2.6100 correct=no time_ms=8.38 file=data/brain_tumor/Training/no_tumor/no_tumor_0010.jpg
+[TRAIN] epoch=1/1 batch=16/50 sample=255/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.2517 loss=1.3882 correct=no time_ms=9.32 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0027.jpg
+[TRAIN] epoch=1/1 batch=16/50 sample=256/800 label=pituitary_tumor predicted=meningioma_tumor confidence=0.2636 loss=1.9076 correct=no time_ms=9.95 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0165.jpg
+[BATCH] epoch=1/1 batch=16/50 loss=1.2294 accuracy=50.00% duration_ms=158.88 end
+[BATCH] epoch=1/1 batch=17/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=17/50 sample=257/800 label=no_tumor predicted=pituitary_tumor confidence=0.2518 loss=1.3902 correct=no time_ms=8.14 file=data/brain_tumor/Training/no_tumor/no_tumor_0060.jpg
+[TRAIN] epoch=1/1 batch=17/50 sample=258/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.3454 loss=1.5821 correct=no time_ms=9.63 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0034.jpg
+[TRAIN] epoch=1/1 batch=17/50 sample=259/800 label=no_tumor predicted=pituitary_tumor confidence=0.2518 loss=1.3900 correct=no time_ms=10.78 file=data/brain_tumor/Training/no_tumor/no_tumor_0198.jpg
+[TRAIN] epoch=1/1 batch=17/50 sample=260/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.2517 loss=2.4228 correct=no time_ms=9.61 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0056.jpg
+[TRAIN] epoch=1/1 batch=17/50 sample=261/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.3829 loss=1.0136 correct=yes time_ms=10.02 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0018.jpg
+[TRAIN] epoch=1/1 batch=17/50 sample=262/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.5508 loss=1.1295 correct=yes time_ms=9.52 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0196.jpg
+[TRAIN] epoch=1/1 batch=17/50 sample=263/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.7470 loss=0.5085 correct=yes time_ms=10.67 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0118.jpg
+[TRAIN] epoch=1/1 batch=17/50 sample=264/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.3585 loss=2.0263 correct=no time_ms=9.67 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0104.jpg
+[TRAIN] epoch=1/1 batch=17/50 sample=265/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.3546 loss=1.1656 correct=no time_ms=9.23 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0097.jpg
+[TRAIN] epoch=1/1 batch=17/50 sample=266/800 label=no_tumor predicted=pituitary_tumor confidence=0.2517 loss=1.3904 correct=no time_ms=8.48 file=data/brain_tumor/Training/no_tumor/no_tumor_0179.jpg
+[TRAIN] epoch=1/1 batch=17/50 sample=267/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.4530 loss=0.8378 correct=yes time_ms=9.37 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0191.jpg
+[TRAIN] epoch=1/1 batch=17/50 sample=268/800 label=no_tumor predicted=meningioma_tumor confidence=0.3431 loss=1.1842 correct=no time_ms=9.33 file=data/brain_tumor/Training/no_tumor/no_tumor_0143.jpg
+[TRAIN] epoch=1/1 batch=17/50 sample=269/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.3489 loss=1.6860 correct=yes time_ms=9.77 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0044.jpg
+[TRAIN] epoch=1/1 batch=17/50 sample=270/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.2518 loss=1.6195 correct=yes time_ms=10.28 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0043.jpg
+[TRAIN] epoch=1/1 batch=17/50 sample=271/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.2920 loss=1.3440 correct=yes time_ms=9.52 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0168.jpg
+[TRAIN] epoch=1/1 batch=17/50 sample=272/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.4999 loss=1.1536 correct=yes time_ms=9.97 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0175.jpg
+[BATCH] epoch=1/1 batch=17/50 loss=1.3653 accuracy=50.00% duration_ms=154.15 end
+[BATCH] epoch=1/1 batch=18/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=18/50 sample=273/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.2518 loss=1.3878 correct=no time_ms=10.13 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0055.jpg
+[TRAIN] epoch=1/1 batch=18/50 sample=274/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.2518 loss=1.3874 correct=no time_ms=10.26 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0158.jpg
+[TRAIN] epoch=1/1 batch=18/50 sample=275/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.2989 loss=1.3205 correct=yes time_ms=10.36 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0166.jpg
+[TRAIN] epoch=1/1 batch=18/50 sample=276/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.2862 loss=1.4325 correct=no time_ms=9.89 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0074.jpg
+[TRAIN] epoch=1/1 batch=18/50 sample=277/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.2519 loss=1.3793 correct=yes time_ms=9.68 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0003.jpg
+[TRAIN] epoch=1/1 batch=18/50 sample=278/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.3531 loss=1.5806 correct=no time_ms=9.81 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0134.jpg
+[TRAIN] epoch=1/1 batch=18/50 sample=279/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.3421 loss=1.3687 correct=yes time_ms=10.25 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0064.jpg
+[TRAIN] epoch=1/1 batch=18/50 sample=280/800 label=meningioma_tumor predicted=pituitary_tumor confidence=0.2519 loss=1.3888 correct=no time_ms=9.54 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0144.jpg
+[TRAIN] epoch=1/1 batch=18/50 sample=281/800 label=no_tumor predicted=no_tumor confidence=0.3857 loss=1.0849 correct=yes time_ms=9.00 file=data/brain_tumor/Training/no_tumor/no_tumor_0069.jpg
+[TRAIN] epoch=1/1 batch=18/50 sample=282/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.2818 loss=1.4164 correct=no time_ms=12.86 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0120.jpg
+[TRAIN] epoch=1/1 batch=18/50 sample=283/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.6965 loss=0.5072 correct=yes time_ms=9.89 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0180.jpg
+[TRAIN] epoch=1/1 batch=18/50 sample=284/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4062 loss=0.9496 correct=yes time_ms=9.09 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0178.jpg
+[TRAIN] epoch=1/1 batch=18/50 sample=285/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.4084 loss=1.0486 correct=no time_ms=9.53 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0141.jpg
+[TRAIN] epoch=1/1 batch=18/50 sample=286/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4171 loss=0.9345 correct=yes time_ms=9.77 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0071.jpg
+[TRAIN] epoch=1/1 batch=18/50 sample=287/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4651 loss=0.8233 correct=yes time_ms=9.13 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0067.jpg
+[TRAIN] epoch=1/1 batch=18/50 sample=288/800 label=no_tumor predicted=no_tumor confidence=0.6462 loss=0.9786 correct=yes time_ms=8.34 file=data/brain_tumor/Training/no_tumor/no_tumor_0051.jpg
+[BATCH] epoch=1/1 batch=18/50 loss=1.1868 accuracy=56.25% duration_ms=157.69 end
+[BATCH] epoch=1/1 batch=19/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=19/50 sample=289/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.5269 loss=0.7069 correct=yes time_ms=9.37 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0087.jpg
+[TRAIN] epoch=1/1 batch=19/50 sample=290/800 label=no_tumor predicted=no_tumor confidence=0.6477 loss=0.8593 correct=yes time_ms=8.95 file=data/brain_tumor/Training/no_tumor/no_tumor_0034.jpg
+[TRAIN] epoch=1/1 batch=19/50 sample=291/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.3872 loss=1.3780 correct=yes time_ms=9.32 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0047.jpg
+[TRAIN] epoch=1/1 batch=19/50 sample=292/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4462 loss=0.8786 correct=yes time_ms=10.05 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0010.jpg
+[TRAIN] epoch=1/1 batch=19/50 sample=293/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4903 loss=0.9517 correct=yes time_ms=9.48 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0002.jpg
+[TRAIN] epoch=1/1 batch=19/50 sample=294/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.5226 loss=0.7167 correct=yes time_ms=9.89 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0042.jpg
+[TRAIN] epoch=1/1 batch=19/50 sample=295/800 label=no_tumor predicted=no_tumor confidence=0.7859 loss=0.3727 correct=yes time_ms=10.01 file=data/brain_tumor/Training/no_tumor/no_tumor_0192.jpg
+[TRAIN] epoch=1/1 batch=19/50 sample=296/800 label=pituitary_tumor predicted=meningioma_tumor confidence=0.2796 loss=2.0441 correct=no time_ms=9.58 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0062.jpg
+[TRAIN] epoch=1/1 batch=19/50 sample=297/800 label=pituitary_tumor predicted=glioma_tumor confidence=0.3258 loss=1.5584 correct=no time_ms=10.15 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0188.jpg
+[TRAIN] epoch=1/1 batch=19/50 sample=298/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4951 loss=0.7679 correct=yes time_ms=9.14 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0123.jpg
+[TRAIN] epoch=1/1 batch=19/50 sample=299/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.7043 loss=0.7241 correct=yes time_ms=9.82 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0194.jpg
+[TRAIN] epoch=1/1 batch=19/50 sample=300/800 label=glioma_tumor predicted=glioma_tumor confidence=0.3588 loss=1.2576 correct=yes time_ms=10.40 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0136.jpg
+[TRAIN] epoch=1/1 batch=19/50 sample=301/800 label=no_tumor predicted=glioma_tumor confidence=0.3811 loss=1.5935 correct=no time_ms=9.40 file=data/brain_tumor/Training/no_tumor/no_tumor_0107.jpg
+[TRAIN] epoch=1/1 batch=19/50 sample=302/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.5271 loss=0.7073 correct=yes time_ms=9.39 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0132.jpg
+[TRAIN] epoch=1/1 batch=19/50 sample=303/800 label=glioma_tumor predicted=glioma_tumor confidence=0.3588 loss=1.0677 correct=yes time_ms=9.25 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0004.jpg
+[TRAIN] epoch=1/1 batch=19/50 sample=304/800 label=pituitary_tumor predicted=glioma_tumor confidence=0.3739 loss=1.8597 correct=no time_ms=10.53 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0010.jpg
+[BATCH] epoch=1/1 batch=19/50 loss=1.0903 accuracy=75.00% duration_ms=154.88 end
+[BATCH] epoch=1/1 batch=20/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=20/50 sample=305/800 label=glioma_tumor predicted=no_tumor confidence=0.3733 loss=1.1772 correct=no time_ms=11.65 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0180.jpg
+[TRAIN] epoch=1/1 batch=20/50 sample=306/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.5002 loss=0.7888 correct=yes time_ms=9.81 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0004.jpg
+[TRAIN] epoch=1/1 batch=20/50 sample=307/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.4742 loss=0.7915 correct=yes time_ms=11.25 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0131.jpg
+[TRAIN] epoch=1/1 batch=20/50 sample=308/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.6902 loss=1.1331 correct=yes time_ms=9.37 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0014.jpg
+[TRAIN] epoch=1/1 batch=20/50 sample=309/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.5946 loss=0.5823 correct=yes time_ms=10.07 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0014.jpg
+[TRAIN] epoch=1/1 batch=20/50 sample=310/800 label=no_tumor predicted=meningioma_tumor confidence=0.6258 loss=1.5556 correct=no time_ms=9.81 file=data/brain_tumor/Training/no_tumor/no_tumor_0108.jpg
+[TRAIN] epoch=1/1 batch=20/50 sample=311/800 label=no_tumor predicted=meningioma_tumor confidence=0.5165 loss=1.2295 correct=no time_ms=8.40 file=data/brain_tumor/Training/no_tumor/no_tumor_0165.jpg
+[TRAIN] epoch=1/1 batch=20/50 sample=312/800 label=no_tumor predicted=no_tumor confidence=0.4113 loss=1.6230 correct=yes time_ms=8.64 file=data/brain_tumor/Training/no_tumor/no_tumor_0122.jpg
+[TRAIN] epoch=1/1 batch=20/50 sample=313/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.7148 loss=0.7438 correct=yes time_ms=9.66 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0025.jpg
+[TRAIN] epoch=1/1 batch=20/50 sample=314/800 label=glioma_tumor predicted=glioma_tumor confidence=0.3366 loss=1.2266 correct=yes time_ms=9.89 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0117.jpg
+[TRAIN] epoch=1/1 batch=20/50 sample=315/800 label=glioma_tumor predicted=glioma_tumor confidence=0.3905 loss=0.9830 correct=yes time_ms=9.12 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0132.jpg
+[TRAIN] epoch=1/1 batch=20/50 sample=316/800 label=no_tumor predicted=no_tumor confidence=0.5316 loss=1.0561 correct=yes time_ms=12.26 file=data/brain_tumor/Training/no_tumor/no_tumor_0154.jpg
+[TRAIN] epoch=1/1 batch=20/50 sample=317/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.7187 loss=0.6938 correct=yes time_ms=9.48 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0124.jpg
+[TRAIN] epoch=1/1 batch=20/50 sample=318/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.8735 loss=0.1829 correct=yes time_ms=9.18 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0084.jpg
+[TRAIN] epoch=1/1 batch=20/50 sample=319/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.6010 loss=0.5850 correct=yes time_ms=9.89 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0028.jpg
+[TRAIN] epoch=1/1 batch=20/50 sample=320/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.7266 loss=0.3692 correct=yes time_ms=9.35 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0105.jpg
+[BATCH] epoch=1/1 batch=20/50 loss=0.9201 accuracy=81.25% duration_ms=158.00 end
+[BATCH] epoch=1/1 batch=21/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=21/50 sample=321/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.6451 loss=1.1651 correct=yes time_ms=10.14 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0017.jpg
+[TRAIN] epoch=1/1 batch=21/50 sample=322/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.8292 loss=0.2348 correct=yes time_ms=10.12 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0091.jpg
+[TRAIN] epoch=1/1 batch=21/50 sample=323/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.5320 loss=4.6964 correct=no time_ms=9.58 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0008.jpg
+[TRAIN] epoch=1/1 batch=21/50 sample=324/800 label=glioma_tumor predicted=glioma_tumor confidence=0.4688 loss=1.4948 correct=yes time_ms=10.71 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0003.jpg
+[TRAIN] epoch=1/1 batch=21/50 sample=325/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.4608 loss=0.8179 correct=yes time_ms=9.97 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0072.jpg
+[TRAIN] epoch=1/1 batch=21/50 sample=326/800 label=glioma_tumor predicted=glioma_tumor confidence=0.4519 loss=0.8450 correct=yes time_ms=10.09 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0069.jpg
+[TRAIN] epoch=1/1 batch=21/50 sample=327/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.6532 loss=0.4868 correct=yes time_ms=11.08 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0016.jpg
+[TRAIN] epoch=1/1 batch=21/50 sample=328/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.6828 loss=1.1728 correct=yes time_ms=9.09 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0017.jpg
+[TRAIN] epoch=1/1 batch=21/50 sample=329/800 label=glioma_tumor predicted=glioma_tumor confidence=0.3971 loss=1.2320 correct=yes time_ms=9.44 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0054.jpg
+[TRAIN] epoch=1/1 batch=21/50 sample=330/800 label=glioma_tumor predicted=glioma_tumor confidence=0.4653 loss=0.8180 correct=yes time_ms=9.61 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0057.jpg
+[TRAIN] epoch=1/1 batch=21/50 sample=331/800 label=no_tumor predicted=no_tumor confidence=0.4310 loss=0.9012 correct=yes time_ms=9.51 file=data/brain_tumor/Training/no_tumor/no_tumor_0009.jpg
+[TRAIN] epoch=1/1 batch=21/50 sample=332/800 label=glioma_tumor predicted=glioma_tumor confidence=0.4534 loss=1.4508 correct=yes time_ms=9.99 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0169.jpg
+[TRAIN] epoch=1/1 batch=21/50 sample=333/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.7305 loss=1.5684 correct=yes time_ms=9.51 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0000.jpg
+[TRAIN] epoch=1/1 batch=21/50 sample=334/800 label=pituitary_tumor predicted=glioma_tumor confidence=0.4145 loss=1.1677 correct=no time_ms=9.27 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0083.jpg
+[TRAIN] epoch=1/1 batch=21/50 sample=335/800 label=pituitary_tumor predicted=meningioma_tumor confidence=0.4783 loss=3.4493 correct=no time_ms=9.34 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0162.jpg
+[TRAIN] epoch=1/1 batch=21/50 sample=336/800 label=no_tumor predicted=no_tumor confidence=0.7767 loss=0.5570 correct=yes time_ms=146.56 file=data/brain_tumor/Training/no_tumor/no_tumor_0138.jpg
+[BATCH] epoch=1/1 batch=21/50 loss=1.3786 accuracy=81.25% duration_ms=294.21 end
+[BATCH] epoch=1/1 batch=22/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=22/50 sample=337/800 label=glioma_tumor predicted=glioma_tumor confidence=0.4235 loss=0.9445 correct=yes time_ms=8.58 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0006.jpg
+[TRAIN] epoch=1/1 batch=22/50 sample=338/800 label=glioma_tumor predicted=glioma_tumor confidence=0.3954 loss=1.0520 correct=yes time_ms=8.47 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0077.jpg
+[TRAIN] epoch=1/1 batch=22/50 sample=339/800 label=no_tumor predicted=no_tumor confidence=0.4039 loss=1.2550 correct=yes time_ms=8.28 file=data/brain_tumor/Training/no_tumor/no_tumor_0149.jpg
+[TRAIN] epoch=1/1 batch=22/50 sample=340/800 label=no_tumor predicted=no_tumor confidence=0.3579 loss=1.0891 correct=yes time_ms=7.33 file=data/brain_tumor/Training/no_tumor/no_tumor_0020.jpg
+[TRAIN] epoch=1/1 batch=22/50 sample=341/800 label=no_tumor predicted=no_tumor confidence=0.6030 loss=0.7518 correct=yes time_ms=9.52 file=data/brain_tumor/Training/no_tumor/no_tumor_0097.jpg
+[TRAIN] epoch=1/1 batch=22/50 sample=342/800 label=no_tumor predicted=no_tumor confidence=0.5086 loss=1.9114 correct=yes time_ms=8.37 file=data/brain_tumor/Training/no_tumor/no_tumor_0092.jpg
+[TRAIN] epoch=1/1 batch=22/50 sample=343/800 label=glioma_tumor predicted=glioma_tumor confidence=0.4467 loss=0.8667 correct=yes time_ms=8.58 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0148.jpg
+[TRAIN] epoch=1/1 batch=22/50 sample=344/800 label=glioma_tumor predicted=no_tumor confidence=0.4122 loss=1.3907 correct=no time_ms=8.25 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0199.jpg
+[TRAIN] epoch=1/1 batch=22/50 sample=345/800 label=glioma_tumor predicted=glioma_tumor confidence=0.4961 loss=0.7647 correct=yes time_ms=8.77 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0188.jpg
+[TRAIN] epoch=1/1 batch=22/50 sample=346/800 label=pituitary_tumor predicted=glioma_tumor confidence=0.4973 loss=1.9699 correct=no time_ms=9.38 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0114.jpg
+[TRAIN] epoch=1/1 batch=22/50 sample=347/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.6111 loss=0.5566 correct=yes time_ms=8.38 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0012.jpg
+[TRAIN] epoch=1/1 batch=22/50 sample=348/800 label=no_tumor predicted=pituitary_tumor confidence=0.4665 loss=2.3225 correct=no time_ms=10.25 file=data/brain_tumor/Training/no_tumor/no_tumor_0189.jpg
+[TRAIN] epoch=1/1 batch=22/50 sample=349/800 label=no_tumor predicted=no_tumor confidence=0.6714 loss=0.6175 correct=yes time_ms=8.71 file=data/brain_tumor/Training/no_tumor/no_tumor_0161.jpg
+[TRAIN] epoch=1/1 batch=22/50 sample=350/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.4095 loss=1.3172 correct=yes time_ms=8.37 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0160.jpg
+[TRAIN] epoch=1/1 batch=22/50 sample=351/800 label=no_tumor predicted=no_tumor confidence=0.6665 loss=0.9766 correct=yes time_ms=7.54 file=data/brain_tumor/Training/no_tumor/no_tumor_0050.jpg
+[TRAIN] epoch=1/1 batch=22/50 sample=352/800 label=no_tumor predicted=no_tumor confidence=0.7003 loss=0.6341 correct=yes time_ms=9.48 file=data/brain_tumor/Training/no_tumor/no_tumor_0196.jpg
+[BATCH] epoch=1/1 batch=22/50 loss=1.1513 accuracy=81.25% duration_ms=138.37 end
+[BATCH] epoch=1/1 batch=23/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=23/50 sample=353/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.6453 loss=1.4589 correct=yes time_ms=8.73 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0054.jpg
+[TRAIN] epoch=1/1 batch=23/50 sample=354/800 label=glioma_tumor predicted=no_tumor confidence=0.4567 loss=1.1019 correct=no time_ms=8.34 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0019.jpg
+[TRAIN] epoch=1/1 batch=23/50 sample=355/800 label=no_tumor predicted=glioma_tumor confidence=0.4084 loss=3.3616 correct=no time_ms=7.97 file=data/brain_tumor/Training/no_tumor/no_tumor_0118.jpg
+[TRAIN] epoch=1/1 batch=23/50 sample=356/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4544 loss=11.2804 correct=yes time_ms=8.22 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0033.jpg
+[TRAIN] epoch=1/1 batch=23/50 sample=357/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.4214 loss=1.0850 correct=no time_ms=9.55 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0065.jpg
+[TRAIN] epoch=1/1 batch=23/50 sample=358/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.6795 loss=0.7145 correct=yes time_ms=8.09 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0029.jpg
+[TRAIN] epoch=1/1 batch=23/50 sample=359/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.5782 loss=0.6433 correct=yes time_ms=8.13 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0143.jpg
+[TRAIN] epoch=1/1 batch=23/50 sample=360/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.5675 loss=0.6481 correct=yes time_ms=8.70 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0102.jpg
+[TRAIN] epoch=1/1 batch=23/50 sample=361/800 label=no_tumor predicted=meningioma_tumor confidence=0.4904 loss=1.2816 correct=no time_ms=7.78 file=data/brain_tumor/Training/no_tumor/no_tumor_0139.jpg
+[TRAIN] epoch=1/1 batch=23/50 sample=362/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.5166 loss=1.6808 correct=yes time_ms=8.40 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0150.jpg
+[TRAIN] epoch=1/1 batch=23/50 sample=363/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.5723 loss=2.4353 correct=no time_ms=8.45 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0107.jpg
+[TRAIN] epoch=1/1 batch=23/50 sample=364/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.6071 loss=2.5231 correct=no time_ms=9.04 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0167.jpg
+[TRAIN] epoch=1/1 batch=23/50 sample=365/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.2588 loss=1.9446 correct=no time_ms=8.52 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0071.jpg
+[TRAIN] epoch=1/1 batch=23/50 sample=366/800 label=no_tumor predicted=no_tumor confidence=0.8667 loss=0.3459 correct=yes time_ms=7.38 file=data/brain_tumor/Training/no_tumor/no_tumor_0062.jpg
+[TRAIN] epoch=1/1 batch=23/50 sample=367/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.4363 loss=1.7168 correct=no time_ms=8.25 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0191.jpg
+[TRAIN] epoch=1/1 batch=23/50 sample=368/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.3710 loss=1.4843 correct=yes time_ms=8.35 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0117.jpg
+[BATCH] epoch=1/1 batch=23/50 loss=2.1066 accuracy=50.00% duration_ms=134.01 end
+[BATCH] epoch=1/1 batch=24/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=24/50 sample=369/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.4435 loss=0.8552 correct=yes time_ms=9.55 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0154.jpg
+[TRAIN] epoch=1/1 batch=24/50 sample=370/800 label=no_tumor predicted=no_tumor confidence=0.9983 loss=0.0017 correct=yes time_ms=7.36 file=data/brain_tumor/Training/no_tumor/no_tumor_0054.jpg
+[TRAIN] epoch=1/1 batch=24/50 sample=371/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4107 loss=0.9746 correct=yes time_ms=8.40 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0188.jpg
+[TRAIN] epoch=1/1 batch=24/50 sample=372/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.3497 loss=1.4762 correct=no time_ms=8.31 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0033.jpg
+[TRAIN] epoch=1/1 batch=24/50 sample=373/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.4285 loss=0.9013 correct=yes time_ms=8.36 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0138.jpg
+[TRAIN] epoch=1/1 batch=24/50 sample=374/800 label=no_tumor predicted=meningioma_tumor confidence=0.4835 loss=1.2941 correct=no time_ms=8.26 file=data/brain_tumor/Training/no_tumor/no_tumor_0170.jpg
+[TRAIN] epoch=1/1 batch=24/50 sample=375/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.3726 loss=1.1464 correct=yes time_ms=8.42 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0163.jpg
+[TRAIN] epoch=1/1 batch=24/50 sample=376/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4067 loss=0.9969 correct=yes time_ms=8.22 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0171.jpg
+[TRAIN] epoch=1/1 batch=24/50 sample=377/800 label=pituitary_tumor predicted=meningioma_tumor confidence=0.2673 loss=2.0176 correct=no time_ms=8.62 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0012.jpg
+[TRAIN] epoch=1/1 batch=24/50 sample=378/800 label=glioma_tumor predicted=glioma_tumor confidence=0.3697 loss=1.4891 correct=yes time_ms=8.34 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0166.jpg
+[TRAIN] epoch=1/1 batch=24/50 sample=379/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.3523 loss=1.1992 correct=yes time_ms=8.18 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0008.jpg
+[TRAIN] epoch=1/1 batch=24/50 sample=380/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.3168 loss=2.0433 correct=yes time_ms=8.11 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0053.jpg
+[TRAIN] epoch=1/1 batch=24/50 sample=381/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.4289 loss=0.9763 correct=yes time_ms=8.37 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0027.jpg
+[TRAIN] epoch=1/1 batch=24/50 sample=382/800 label=no_tumor predicted=pituitary_tumor confidence=0.2524 loss=1.3953 correct=no time_ms=11.08 file=data/brain_tumor/Training/no_tumor/no_tumor_0193.jpg
+[TRAIN] epoch=1/1 batch=24/50 sample=383/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.4138 loss=1.5963 correct=no time_ms=8.63 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0165.jpg
+[TRAIN] epoch=1/1 batch=24/50 sample=384/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.4696 loss=1.0348 correct=yes time_ms=8.42 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0115.jpg
+[BATCH] epoch=1/1 batch=24/50 loss=1.2124 accuracy=68.75% duration_ms=136.75 end
+[BATCH] epoch=1/1 batch=25/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=25/50 sample=385/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.3664 loss=1.1102 correct=yes time_ms=8.29 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0164.jpg
+[TRAIN] epoch=1/1 batch=25/50 sample=386/800 label=no_tumor predicted=meningioma_tumor confidence=0.3036 loss=1.3378 correct=no time_ms=8.84 file=data/brain_tumor/Training/no_tumor/no_tumor_0033.jpg
+[TRAIN] epoch=1/1 batch=25/50 sample=387/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4253 loss=0.9297 correct=yes time_ms=8.51 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0180.jpg
+[TRAIN] epoch=1/1 batch=25/50 sample=388/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.3485 loss=1.5232 correct=no time_ms=8.33 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0021.jpg
+[TRAIN] epoch=1/1 batch=25/50 sample=389/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.3645 loss=1.2587 correct=no time_ms=8.77 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0102.jpg
+[TRAIN] epoch=1/1 batch=25/50 sample=390/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.3447 loss=1.4126 correct=no time_ms=8.88 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0032.jpg
+[TRAIN] epoch=1/1 batch=25/50 sample=391/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.3434 loss=1.8479 correct=yes time_ms=8.24 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0134.jpg
+[TRAIN] epoch=1/1 batch=25/50 sample=392/800 label=no_tumor predicted=pituitary_tumor confidence=0.3961 loss=1.4637 correct=no time_ms=8.90 file=data/brain_tumor/Training/no_tumor/no_tumor_0160.jpg
+[TRAIN] epoch=1/1 batch=25/50 sample=393/800 label=no_tumor predicted=no_tumor confidence=0.9410 loss=0.3280 correct=yes time_ms=7.60 file=data/brain_tumor/Training/no_tumor/no_tumor_0032.jpg
+[TRAIN] epoch=1/1 batch=25/50 sample=394/800 label=meningioma_tumor predicted=pituitary_tumor confidence=0.2523 loss=3.3090 correct=no time_ms=10.32 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0138.jpg
+[TRAIN] epoch=1/1 batch=25/50 sample=395/800 label=no_tumor predicted=no_tumor confidence=0.7484 loss=0.3371 correct=yes time_ms=7.36 file=data/brain_tumor/Training/no_tumor/no_tumor_0135.jpg
+[TRAIN] epoch=1/1 batch=25/50 sample=396/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.3538 loss=1.3595 correct=yes time_ms=8.76 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0061.jpg
+[TRAIN] epoch=1/1 batch=25/50 sample=397/800 label=glioma_tumor predicted=no_tumor confidence=0.3816 loss=2.1371 correct=no time_ms=8.43 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0144.jpg
+[TRAIN] epoch=1/1 batch=25/50 sample=398/800 label=no_tumor predicted=meningioma_tumor confidence=0.3215 loss=1.3200 correct=no time_ms=9.35 file=data/brain_tumor/Training/no_tumor/no_tumor_0011.jpg
+[TRAIN] epoch=1/1 batch=25/50 sample=399/800 label=meningioma_tumor predicted=pituitary_tumor confidence=0.2523 loss=1.3872 correct=no time_ms=8.41 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0153.jpg
+[TRAIN] epoch=1/1 batch=25/50 sample=400/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.2523 loss=1.3860 correct=no time_ms=9.04 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0011.jpg
+[BATCH] epoch=1/1 batch=25/50 loss=1.4030 accuracy=37.50% duration_ms=138.16 end
+[BATCH] epoch=1/1 batch=26/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=26/50 sample=401/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.3158 loss=1.3895 correct=no time_ms=8.36 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0168.jpg
+[TRAIN] epoch=1/1 batch=26/50 sample=402/800 label=no_tumor predicted=meningioma_tumor confidence=0.3163 loss=1.3293 correct=no time_ms=10.12 file=data/brain_tumor/Training/no_tumor/no_tumor_0037.jpg
+[TRAIN] epoch=1/1 batch=26/50 sample=403/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.3333 loss=1.2438 correct=yes time_ms=8.50 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0081.jpg
+[TRAIN] epoch=1/1 batch=26/50 sample=404/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.3794 loss=1.4476 correct=no time_ms=8.26 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0176.jpg
+[TRAIN] epoch=1/1 batch=26/50 sample=405/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.3996 loss=0.9927 correct=yes time_ms=8.30 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0074.jpg
+[TRAIN] epoch=1/1 batch=26/50 sample=406/800 label=meningioma_tumor predicted=pituitary_tumor confidence=0.2522 loss=1.3868 correct=no time_ms=8.74 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0099.jpg
+[TRAIN] epoch=1/1 batch=26/50 sample=407/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4081 loss=1.6417 correct=yes time_ms=8.37 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0181.jpg
+[TRAIN] epoch=1/1 batch=26/50 sample=408/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.5026 loss=0.7590 correct=yes time_ms=8.73 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0103.jpg
+[TRAIN] epoch=1/1 batch=26/50 sample=409/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.3555 loss=1.4151 correct=no time_ms=9.18 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0083.jpg
+[TRAIN] epoch=1/1 batch=26/50 sample=410/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.5319 loss=0.6975 correct=yes time_ms=8.94 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0046.jpg
+[TRAIN] epoch=1/1 batch=26/50 sample=411/800 label=meningioma_tumor predicted=pituitary_tumor confidence=0.2521 loss=1.3857 correct=no time_ms=8.84 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0137.jpg
+[TRAIN] epoch=1/1 batch=26/50 sample=412/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.3903 loss=1.4436 correct=no time_ms=8.24 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0090.jpg
+[TRAIN] epoch=1/1 batch=26/50 sample=413/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.5502 loss=0.6728 correct=yes time_ms=7.95 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0128.jpg
+[TRAIN] epoch=1/1 batch=26/50 sample=414/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.4470 loss=1.5164 correct=no time_ms=8.02 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0119.jpg
+[TRAIN] epoch=1/1 batch=26/50 sample=415/800 label=no_tumor predicted=meningioma_tumor confidence=0.4680 loss=1.4486 correct=no time_ms=9.47 file=data/brain_tumor/Training/no_tumor/no_tumor_0017.jpg
+[TRAIN] epoch=1/1 batch=26/50 sample=416/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.3290 loss=1.3697 correct=no time_ms=8.39 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0100.jpg
+[BATCH] epoch=1/1 batch=26/50 loss=1.2587 accuracy=37.50% duration_ms=138.56 end
+[BATCH] epoch=1/1 batch=27/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=27/50 sample=417/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.5983 loss=0.5780 correct=yes time_ms=9.03 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0065.jpg
+[TRAIN] epoch=1/1 batch=27/50 sample=418/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.4292 loss=1.4590 correct=no time_ms=8.33 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0197.jpg
+[TRAIN] epoch=1/1 batch=27/50 sample=419/800 label=no_tumor predicted=meningioma_tumor confidence=0.4247 loss=1.5953 correct=no time_ms=7.70 file=data/brain_tumor/Training/no_tumor/no_tumor_0102.jpg
+[TRAIN] epoch=1/1 batch=27/50 sample=420/800 label=no_tumor predicted=meningioma_tumor confidence=0.4139 loss=1.3381 correct=no time_ms=7.31 file=data/brain_tumor/Training/no_tumor/no_tumor_0158.jpg
+[TRAIN] epoch=1/1 batch=27/50 sample=421/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.2521 loss=1.3783 correct=yes time_ms=8.39 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0193.jpg
+[TRAIN] epoch=1/1 batch=27/50 sample=422/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4540 loss=0.8562 correct=yes time_ms=8.72 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0163.jpg
+[TRAIN] epoch=1/1 batch=27/50 sample=423/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.3316 loss=1.3712 correct=no time_ms=8.50 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0089.jpg
+[TRAIN] epoch=1/1 batch=27/50 sample=424/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4107 loss=0.9860 correct=yes time_ms=8.13 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0031.jpg
+[TRAIN] epoch=1/1 batch=27/50 sample=425/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.3810 loss=1.0668 correct=yes time_ms=8.37 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0135.jpg
+[TRAIN] epoch=1/1 batch=27/50 sample=426/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.3010 loss=1.3657 correct=no time_ms=8.19 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0017.jpg
+[TRAIN] epoch=1/1 batch=27/50 sample=427/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.2521 loss=1.5457 correct=yes time_ms=7.50 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0042.jpg
+[TRAIN] epoch=1/1 batch=27/50 sample=428/800 label=no_tumor predicted=pituitary_tumor confidence=0.2521 loss=1.3970 correct=no time_ms=7.75 file=data/brain_tumor/Training/no_tumor/no_tumor_0083.jpg
+[TRAIN] epoch=1/1 batch=27/50 sample=429/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.4417 loss=1.4786 correct=no time_ms=8.44 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0062.jpg
+[TRAIN] epoch=1/1 batch=27/50 sample=430/800 label=meningioma_tumor predicted=pituitary_tumor confidence=0.2521 loss=1.3864 correct=no time_ms=8.70 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0157.jpg
+[TRAIN] epoch=1/1 batch=27/50 sample=431/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.4684 loss=1.4808 correct=no time_ms=8.26 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0156.jpg
+[TRAIN] epoch=1/1 batch=27/50 sample=432/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4242 loss=0.9350 correct=yes time_ms=8.18 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0174.jpg
+[BATCH] epoch=1/1 batch=27/50 loss=1.2636 accuracy=43.75% duration_ms=131.63 end
+[BATCH] epoch=1/1 batch=28/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=28/50 sample=433/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.2520 loss=1.3840 correct=no time_ms=9.80 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0108.jpg
+[TRAIN] epoch=1/1 batch=28/50 sample=434/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.3652 loss=1.1152 correct=yes time_ms=8.59 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0179.jpg
+[TRAIN] epoch=1/1 batch=28/50 sample=435/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.3971 loss=1.3505 correct=no time_ms=8.65 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0043.jpg
+[TRAIN] epoch=1/1 batch=28/50 sample=436/800 label=no_tumor predicted=meningioma_tumor confidence=0.4716 loss=1.5101 correct=no time_ms=8.01 file=data/brain_tumor/Training/no_tumor/no_tumor_0159.jpg
+[TRAIN] epoch=1/1 batch=28/50 sample=437/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.3654 loss=1.3259 correct=no time_ms=8.24 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0045.jpg
+[TRAIN] epoch=1/1 batch=28/50 sample=438/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.2519 loss=1.3831 correct=no time_ms=8.27 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0013.jpg
+[TRAIN] epoch=1/1 batch=28/50 sample=439/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.2913 loss=1.3437 correct=no time_ms=8.35 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0091.jpg
+[TRAIN] epoch=1/1 batch=28/50 sample=440/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.2977 loss=1.3347 correct=no time_ms=8.00 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0051.jpg
+[TRAIN] epoch=1/1 batch=28/50 sample=441/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.3050 loss=1.3261 correct=no time_ms=8.54 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0125.jpg
+[TRAIN] epoch=1/1 batch=28/50 sample=442/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.3806 loss=1.3334 correct=yes time_ms=8.34 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0119.jpg
+[TRAIN] epoch=1/1 batch=28/50 sample=443/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.2520 loss=1.5238 correct=yes time_ms=23.53 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0038.jpg
+[TRAIN] epoch=1/1 batch=28/50 sample=444/800 label=pituitary_tumor predicted=meningioma_tumor confidence=0.2607 loss=2.2118 correct=no time_ms=8.42 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0000.jpg
+[TRAIN] epoch=1/1 batch=28/50 sample=445/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.3333 loss=1.1817 correct=yes time_ms=8.21 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0091.jpg
+[TRAIN] epoch=1/1 batch=28/50 sample=446/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.2521 loss=1.3821 correct=no time_ms=8.27 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0037.jpg
+[TRAIN] epoch=1/1 batch=28/50 sample=447/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.2521 loss=1.3818 correct=no time_ms=8.44 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0190.jpg
+[TRAIN] epoch=1/1 batch=28/50 sample=448/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.3545 loss=1.2918 correct=no time_ms=8.74 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0061.jpg
+[BATCH] epoch=1/1 batch=28/50 loss=1.3987 accuracy=25.00% duration_ms=150.51 end
+[BATCH] epoch=1/1 batch=29/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=29/50 sample=449/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.2668 loss=1.3778 correct=no time_ms=8.33 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0024.jpg
+[TRAIN] epoch=1/1 batch=29/50 sample=450/800 label=no_tumor predicted=pituitary_tumor confidence=0.2520 loss=1.3988 correct=no time_ms=7.35 file=data/brain_tumor/Training/no_tumor/no_tumor_0140.jpg
+[TRAIN] epoch=1/1 batch=29/50 sample=451/800 label=no_tumor predicted=meningioma_tumor confidence=0.2889 loss=1.3655 correct=no time_ms=8.02 file=data/brain_tumor/Training/no_tumor/no_tumor_0094.jpg
+[TRAIN] epoch=1/1 batch=29/50 sample=452/800 label=no_tumor predicted=no_tumor confidence=0.4795 loss=1.1403 correct=yes time_ms=7.84 file=data/brain_tumor/Training/no_tumor/no_tumor_0095.jpg
+[TRAIN] epoch=1/1 batch=29/50 sample=453/800 label=pituitary_tumor predicted=meningioma_tumor confidence=0.2547 loss=1.8718 correct=no time_ms=8.26 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0167.jpg
+[TRAIN] epoch=1/1 batch=29/50 sample=454/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.3838 loss=1.0801 correct=yes time_ms=8.40 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0051.jpg
+[TRAIN] epoch=1/1 batch=29/50 sample=455/800 label=meningioma_tumor predicted=pituitary_tumor confidence=0.2521 loss=1.3881 correct=no time_ms=8.32 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0060.jpg
+[TRAIN] epoch=1/1 batch=29/50 sample=456/800 label=no_tumor predicted=pituitary_tumor confidence=0.2520 loss=1.3981 correct=no time_ms=7.91 file=data/brain_tumor/Training/no_tumor/no_tumor_0076.jpg
+[TRAIN] epoch=1/1 batch=29/50 sample=457/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.2520 loss=1.3816 correct=no time_ms=8.70 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0093.jpg
+[TRAIN] epoch=1/1 batch=29/50 sample=458/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.3874 loss=1.0747 correct=yes time_ms=9.72 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0080.jpg
+[TRAIN] epoch=1/1 batch=29/50 sample=459/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.3794 loss=1.0326 correct=yes time_ms=8.61 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0167.jpg
+[TRAIN] epoch=1/1 batch=29/50 sample=460/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.3787 loss=1.1606 correct=no time_ms=8.59 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0059.jpg
+[TRAIN] epoch=1/1 batch=29/50 sample=461/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.3678 loss=1.0758 correct=yes time_ms=8.30 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0106.jpg
+[TRAIN] epoch=1/1 batch=29/50 sample=462/800 label=no_tumor predicted=pituitary_tumor confidence=0.5118 loss=1.5482 correct=no time_ms=10.09 file=data/brain_tumor/Training/no_tumor/no_tumor_0174.jpg
+[TRAIN] epoch=1/1 batch=29/50 sample=463/800 label=no_tumor predicted=meningioma_tumor confidence=0.3636 loss=1.3561 correct=no time_ms=9.66 file=data/brain_tumor/Training/no_tumor/no_tumor_0068.jpg
+[TRAIN] epoch=1/1 batch=29/50 sample=464/800 label=meningioma_tumor predicted=pituitary_tumor confidence=0.2519 loss=1.8044 correct=no time_ms=8.82 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0139.jpg
+[BATCH] epoch=1/1 batch=29/50 loss=1.3409 accuracy=31.25% duration_ms=137.02 end
+[BATCH] epoch=1/1 batch=30/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=30/50 sample=465/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.2519 loss=1.3817 correct=no time_ms=8.42 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0064.jpg
+[TRAIN] epoch=1/1 batch=30/50 sample=466/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4039 loss=0.9865 correct=yes time_ms=8.20 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0043.jpg
+[TRAIN] epoch=1/1 batch=30/50 sample=467/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.3177 loss=1.3296 correct=no time_ms=8.35 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0186.jpg
+[TRAIN] epoch=1/1 batch=30/50 sample=468/800 label=no_tumor predicted=no_tumor confidence=0.9253 loss=0.1957 correct=yes time_ms=8.08 file=data/brain_tumor/Training/no_tumor/no_tumor_0162.jpg
+[TRAIN] epoch=1/1 batch=30/50 sample=469/800 label=no_tumor predicted=no_tumor confidence=0.6228 loss=0.5499 correct=yes time_ms=7.80 file=data/brain_tumor/Training/no_tumor/no_tumor_0163.jpg
+[TRAIN] epoch=1/1 batch=30/50 sample=470/800 label=no_tumor predicted=pituitary_tumor confidence=0.2518 loss=1.7209 correct=no time_ms=9.07 file=data/brain_tumor/Training/no_tumor/no_tumor_0147.jpg
+[TRAIN] epoch=1/1 batch=30/50 sample=471/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.2518 loss=1.3813 correct=no time_ms=8.66 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0114.jpg
+[TRAIN] epoch=1/1 batch=30/50 sample=472/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.5113 loss=0.7426 correct=yes time_ms=8.70 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0086.jpg
+[TRAIN] epoch=1/1 batch=30/50 sample=473/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.2517 loss=1.3811 correct=no time_ms=8.68 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0075.jpg
+[TRAIN] epoch=1/1 batch=30/50 sample=474/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.2517 loss=1.3807 correct=no time_ms=8.61 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0171.jpg
+[TRAIN] epoch=1/1 batch=30/50 sample=475/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.3929 loss=1.0998 correct=yes time_ms=8.45 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0141.jpg
+[TRAIN] epoch=1/1 batch=30/50 sample=476/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.5243 loss=0.9124 correct=yes time_ms=8.54 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0111.jpg
+[TRAIN] epoch=1/1 batch=30/50 sample=477/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4606 loss=0.8525 correct=yes time_ms=8.42 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0079.jpg
+[TRAIN] epoch=1/1 batch=30/50 sample=478/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.2519 loss=1.3793 correct=yes time_ms=8.27 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0095.jpg
+[TRAIN] epoch=1/1 batch=30/50 sample=479/800 label=no_tumor predicted=meningioma_tumor confidence=0.3570 loss=1.3643 correct=no time_ms=12.15 file=data/brain_tumor/Training/no_tumor/no_tumor_0098.jpg
+[TRAIN] epoch=1/1 batch=30/50 sample=480/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.2518 loss=1.3810 correct=no time_ms=8.44 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0081.jpg
+[BATCH] epoch=1/1 batch=30/50 loss=1.1275 accuracy=50.00% duration_ms=138.97 end
+[BATCH] epoch=1/1 batch=31/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=31/50 sample=481/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.2518 loss=1.3806 correct=no time_ms=8.27 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0101.jpg
+[TRAIN] epoch=1/1 batch=31/50 sample=482/800 label=pituitary_tumor predicted=meningioma_tumor confidence=0.3065 loss=2.3730 correct=no time_ms=8.32 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0145.jpg
+[TRAIN] epoch=1/1 batch=31/50 sample=483/800 label=no_tumor predicted=no_tumor confidence=0.6363 loss=0.5575 correct=yes time_ms=8.36 file=data/brain_tumor/Training/no_tumor/no_tumor_0100.jpg
+[TRAIN] epoch=1/1 batch=31/50 sample=484/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.3308 loss=1.2722 correct=yes time_ms=8.30 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0032.jpg
+[TRAIN] epoch=1/1 batch=31/50 sample=485/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.2519 loss=1.3789 correct=yes time_ms=8.41 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0077.jpg
+[TRAIN] epoch=1/1 batch=31/50 sample=486/800 label=meningioma_tumor predicted=pituitary_tumor confidence=0.2519 loss=1.3876 correct=no time_ms=8.35 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0159.jpg
+[TRAIN] epoch=1/1 batch=31/50 sample=487/800 label=pituitary_tumor predicted=no_tumor confidence=0.3259 loss=1.5603 correct=no time_ms=8.64 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0015.jpg
+[TRAIN] epoch=1/1 batch=31/50 sample=488/800 label=no_tumor predicted=meningioma_tumor confidence=0.3675 loss=1.3454 correct=no time_ms=8.59 file=data/brain_tumor/Training/no_tumor/no_tumor_0175.jpg
+[TRAIN] epoch=1/1 batch=31/50 sample=489/800 label=no_tumor predicted=meningioma_tumor confidence=0.3843 loss=1.3341 correct=no time_ms=8.69 file=data/brain_tumor/Training/no_tumor/no_tumor_0103.jpg
+[TRAIN] epoch=1/1 batch=31/50 sample=490/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4748 loss=0.8165 correct=yes time_ms=8.33 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0045.jpg
+[TRAIN] epoch=1/1 batch=31/50 sample=491/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.2521 loss=1.3784 correct=yes time_ms=8.49 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0090.jpg
+[TRAIN] epoch=1/1 batch=31/50 sample=492/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.2522 loss=1.3780 correct=yes time_ms=8.57 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0109.jpg
+[TRAIN] epoch=1/1 batch=31/50 sample=493/800 label=no_tumor predicted=meningioma_tumor confidence=0.5623 loss=1.5937 correct=no time_ms=7.38 file=data/brain_tumor/Training/no_tumor/no_tumor_0041.jpg
+[TRAIN] epoch=1/1 batch=31/50 sample=494/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.2521 loss=1.3818 correct=no time_ms=8.45 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0126.jpg
+[TRAIN] epoch=1/1 batch=31/50 sample=495/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.2522 loss=1.3778 correct=yes time_ms=8.42 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0060.jpg
+[TRAIN] epoch=1/1 batch=31/50 sample=496/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.3728 loss=1.3494 correct=yes time_ms=9.21 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0057.jpg
+[BATCH] epoch=1/1 batch=31/50 loss=1.3666 accuracy=50.00% duration_ms=137.29 end
+[BATCH] epoch=1/1 batch=32/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=32/50 sample=497/800 label=no_tumor predicted=no_tumor confidence=0.9600 loss=0.0789 correct=yes time_ms=7.59 file=data/brain_tumor/Training/no_tumor/no_tumor_0168.jpg
+[TRAIN] epoch=1/1 batch=32/50 sample=498/800 label=no_tumor predicted=meningioma_tumor confidence=0.3168 loss=1.3160 correct=no time_ms=7.70 file=data/brain_tumor/Training/no_tumor/no_tumor_0182.jpg
+[TRAIN] epoch=1/1 batch=32/50 sample=499/800 label=meningioma_tumor predicted=pituitary_tumor confidence=0.2523 loss=1.3884 correct=no time_ms=8.58 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0151.jpg
+[TRAIN] epoch=1/1 batch=32/50 sample=500/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.3710 loss=1.4337 correct=no time_ms=9.21 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0133.jpg
+[TRAIN] epoch=1/1 batch=32/50 sample=501/800 label=no_tumor predicted=no_tumor confidence=0.9848 loss=0.4934 correct=yes time_ms=7.35 file=data/brain_tumor/Training/no_tumor/no_tumor_0080.jpg
+[TRAIN] epoch=1/1 batch=32/50 sample=502/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.3679 loss=1.4072 correct=no time_ms=10.02 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0110.jpg
+[TRAIN] epoch=1/1 batch=32/50 sample=503/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.2522 loss=1.5725 correct=no time_ms=8.35 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0015.jpg
+[TRAIN] epoch=1/1 batch=32/50 sample=504/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.3866 loss=1.0362 correct=yes time_ms=8.69 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0061.jpg
+[TRAIN] epoch=1/1 batch=32/50 sample=505/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4259 loss=0.9239 correct=yes time_ms=8.28 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0006.jpg
+[TRAIN] epoch=1/1 batch=32/50 sample=506/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.4833 loss=0.7778 correct=yes time_ms=8.48 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0104.jpg
+[TRAIN] epoch=1/1 batch=32/50 sample=507/800 label=no_tumor predicted=meningioma_tumor confidence=0.4007 loss=1.2891 correct=no time_ms=8.21 file=data/brain_tumor/Training/no_tumor/no_tumor_0004.jpg
+[TRAIN] epoch=1/1 batch=32/50 sample=508/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.3828 loss=1.4237 correct=no time_ms=8.74 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0178.jpg
+[TRAIN] epoch=1/1 batch=32/50 sample=509/800 label=no_tumor predicted=meningioma_tumor confidence=0.3736 loss=1.2728 correct=no time_ms=7.66 file=data/brain_tumor/Training/no_tumor/no_tumor_0141.jpg
+[TRAIN] epoch=1/1 batch=32/50 sample=510/800 label=no_tumor predicted=meningioma_tumor confidence=0.4493 loss=1.2611 correct=no time_ms=8.22 file=data/brain_tumor/Training/no_tumor/no_tumor_0110.jpg
+[TRAIN] epoch=1/1 batch=32/50 sample=511/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.3834 loss=1.0174 correct=yes time_ms=8.55 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0057.jpg
+[TRAIN] epoch=1/1 batch=32/50 sample=512/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.4556 loss=0.8500 correct=yes time_ms=9.72 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0181.jpg
+[BATCH] epoch=1/1 batch=32/50 loss=1.0964 accuracy=43.75% duration_ms=135.50 end
+[BATCH] epoch=1/1 batch=33/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=33/50 sample=513/800 label=no_tumor predicted=no_tumor confidence=0.5345 loss=0.8781 correct=yes time_ms=9.21 file=data/brain_tumor/Training/no_tumor/no_tumor_0190.jpg
+[TRAIN] epoch=1/1 batch=33/50 sample=514/800 label=no_tumor predicted=meningioma_tumor confidence=0.4328 loss=1.1791 correct=no time_ms=7.41 file=data/brain_tumor/Training/no_tumor/no_tumor_0048.jpg
+[TRAIN] epoch=1/1 batch=33/50 sample=515/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.3997 loss=0.9779 correct=yes time_ms=8.34 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0096.jpg
+[TRAIN] epoch=1/1 batch=33/50 sample=516/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.3746 loss=1.4722 correct=no time_ms=8.50 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0139.jpg
+[TRAIN] epoch=1/1 batch=33/50 sample=517/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4091 loss=0.9533 correct=yes time_ms=9.67 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0054.jpg
+[TRAIN] epoch=1/1 batch=33/50 sample=518/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.3255 loss=1.3830 correct=no time_ms=8.65 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0053.jpg
+[TRAIN] epoch=1/1 batch=33/50 sample=519/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4474 loss=1.2712 correct=yes time_ms=8.65 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0119.jpg
+[TRAIN] epoch=1/1 batch=33/50 sample=520/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.5420 loss=0.6771 correct=yes time_ms=8.17 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0104.jpg
+[TRAIN] epoch=1/1 batch=33/50 sample=521/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.3864 loss=1.0382 correct=yes time_ms=9.41 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0146.jpg
+[TRAIN] epoch=1/1 batch=33/50 sample=522/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4876 loss=0.7863 correct=yes time_ms=8.25 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0170.jpg
+[TRAIN] epoch=1/1 batch=33/50 sample=523/800 label=no_tumor predicted=meningioma_tumor confidence=0.4690 loss=1.3034 correct=no time_ms=12.59 file=data/brain_tumor/Training/no_tumor/no_tumor_0021.jpg
+[TRAIN] epoch=1/1 batch=33/50 sample=524/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.2516 loss=1.8844 correct=yes time_ms=8.53 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0059.jpg
+[TRAIN] epoch=1/1 batch=33/50 sample=525/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4771 loss=0.8011 correct=yes time_ms=8.65 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0019.jpg
+[TRAIN] epoch=1/1 batch=33/50 sample=526/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.5535 loss=0.6581 correct=yes time_ms=8.95 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0083.jpg
+[TRAIN] epoch=1/1 batch=33/50 sample=527/800 label=no_tumor predicted=meningioma_tumor confidence=0.4609 loss=1.2990 correct=no time_ms=7.62 file=data/brain_tumor/Training/no_tumor/no_tumor_0129.jpg
+[TRAIN] epoch=1/1 batch=33/50 sample=528/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.2524 loss=1.7638 correct=yes time_ms=8.40 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0063.jpg
+[BATCH] epoch=1/1 batch=33/50 loss=1.1454 accuracy=68.75% duration_ms=141.13 end
+[BATCH] epoch=1/1 batch=34/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=34/50 sample=529/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.4086 loss=1.1534 correct=no time_ms=8.67 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0007.jpg
+[TRAIN] epoch=1/1 batch=34/50 sample=530/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.4650 loss=0.8252 correct=yes time_ms=8.33 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0146.jpg
+[TRAIN] epoch=1/1 batch=34/50 sample=531/800 label=no_tumor predicted=no_tumor confidence=0.3907 loss=0.9922 correct=yes time_ms=7.37 file=data/brain_tumor/Training/no_tumor/no_tumor_0137.jpg
+[TRAIN] epoch=1/1 batch=34/50 sample=532/800 label=no_tumor predicted=meningioma_tumor confidence=0.4023 loss=1.2257 correct=no time_ms=7.44 file=data/brain_tumor/Training/no_tumor/no_tumor_0148.jpg
+[TRAIN] epoch=1/1 batch=34/50 sample=533/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.3921 loss=1.1642 correct=no time_ms=8.39 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0086.jpg
+[TRAIN] epoch=1/1 batch=34/50 sample=534/800 label=no_tumor predicted=meningioma_tumor confidence=0.5410 loss=1.2933 correct=no time_ms=7.22 file=data/brain_tumor/Training/no_tumor/no_tumor_0066.jpg
+[TRAIN] epoch=1/1 batch=34/50 sample=535/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.5692 loss=0.6166 correct=yes time_ms=8.41 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0103.jpg
+[TRAIN] epoch=1/1 batch=34/50 sample=536/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4281 loss=0.9135 correct=yes time_ms=8.16 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0175.jpg
+[TRAIN] epoch=1/1 batch=34/50 sample=537/800 label=no_tumor predicted=no_tumor confidence=0.3313 loss=1.3229 correct=yes time_ms=7.69 file=data/brain_tumor/Training/no_tumor/no_tumor_0134.jpg
+[TRAIN] epoch=1/1 batch=34/50 sample=538/800 label=pituitary_tumor predicted=glioma_tumor confidence=0.3572 loss=1.9040 correct=no time_ms=8.26 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0002.jpg
+[TRAIN] epoch=1/1 batch=34/50 sample=539/800 label=no_tumor predicted=no_tumor confidence=0.4700 loss=0.8371 correct=yes time_ms=8.13 file=data/brain_tumor/Training/no_tumor/no_tumor_0025.jpg
+[TRAIN] epoch=1/1 batch=34/50 sample=540/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.5085 loss=0.7372 correct=yes time_ms=8.17 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0058.jpg
+[TRAIN] epoch=1/1 batch=34/50 sample=541/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.3596 loss=1.8636 correct=yes time_ms=9.09 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0035.jpg
+[TRAIN] epoch=1/1 batch=34/50 sample=542/800 label=no_tumor predicted=no_tumor confidence=0.4786 loss=0.8378 correct=yes time_ms=8.85 file=data/brain_tumor/Training/no_tumor/no_tumor_0002.jpg
+[TRAIN] epoch=1/1 batch=34/50 sample=543/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.3466 loss=1.5427 correct=no time_ms=8.33 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0000.jpg
+[TRAIN] epoch=1/1 batch=34/50 sample=544/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.4307 loss=1.2369 correct=no time_ms=8.31 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0082.jpg
+[BATCH] epoch=1/1 batch=34/50 loss=1.1541 accuracy=56.25% duration_ms=130.93 end
+[BATCH] epoch=1/1 batch=35/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=35/50 sample=545/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.4189 loss=1.1545 correct=no time_ms=8.44 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0014.jpg
+[TRAIN] epoch=1/1 batch=35/50 sample=546/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4297 loss=0.9214 correct=yes time_ms=8.17 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0082.jpg
+[TRAIN] epoch=1/1 batch=35/50 sample=547/800 label=no_tumor predicted=meningioma_tumor confidence=0.3749 loss=1.2005 correct=no time_ms=8.06 file=data/brain_tumor/Training/no_tumor/no_tumor_0145.jpg
+[TRAIN] epoch=1/1 batch=35/50 sample=548/800 label=no_tumor predicted=no_tumor confidence=0.9140 loss=0.2375 correct=yes time_ms=7.76 file=data/brain_tumor/Training/no_tumor/no_tumor_0082.jpg
+[TRAIN] epoch=1/1 batch=35/50 sample=549/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.7229 loss=0.3793 correct=yes time_ms=9.14 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0195.jpg
+[TRAIN] epoch=1/1 batch=35/50 sample=550/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.3949 loss=1.4429 correct=yes time_ms=9.66 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0001.jpg
+[TRAIN] epoch=1/1 batch=35/50 sample=551/800 label=no_tumor predicted=no_tumor confidence=0.9991 loss=1.2661 correct=yes time_ms=7.99 file=data/brain_tumor/Training/no_tumor/no_tumor_0116.jpg
+[TRAIN] epoch=1/1 batch=35/50 sample=552/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.4784 loss=2.7008 correct=no time_ms=8.34 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0137.jpg
+[TRAIN] epoch=1/1 batch=35/50 sample=553/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.7025 loss=0.4108 correct=yes time_ms=8.79 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0153.jpg
+[TRAIN] epoch=1/1 batch=35/50 sample=554/800 label=no_tumor predicted=no_tumor confidence=0.7295 loss=0.6672 correct=yes time_ms=7.32 file=data/brain_tumor/Training/no_tumor/no_tumor_0185.jpg
+[TRAIN] epoch=1/1 batch=35/50 sample=555/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4909 loss=2.5186 correct=yes time_ms=8.27 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0026.jpg
+[TRAIN] epoch=1/1 batch=35/50 sample=556/800 label=no_tumor predicted=no_tumor confidence=0.9924 loss=0.8983 correct=yes time_ms=9.57 file=data/brain_tumor/Training/no_tumor/no_tumor_0156.jpg
+[TRAIN] epoch=1/1 batch=35/50 sample=557/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4898 loss=0.7738 correct=yes time_ms=8.46 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0025.jpg
+[TRAIN] epoch=1/1 batch=35/50 sample=558/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.4998 loss=2.2542 correct=no time_ms=8.22 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0195.jpg
+[TRAIN] epoch=1/1 batch=35/50 sample=559/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.3839 loss=1.7340 correct=yes time_ms=9.67 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0028.jpg
+[TRAIN] epoch=1/1 batch=35/50 sample=560/800 label=glioma_tumor predicted=glioma_tumor confidence=0.3538 loss=1.0713 correct=yes time_ms=8.72 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0181.jpg
+[BATCH] epoch=1/1 batch=35/50 loss=1.2269 accuracy=75.00% duration_ms=136.70 end
+[BATCH] epoch=1/1 batch=36/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=36/50 sample=561/800 label=pituitary_tumor predicted=meningioma_tumor confidence=0.3034 loss=2.4157 correct=no time_ms=8.40 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0056.jpg
+[TRAIN] epoch=1/1 batch=36/50 sample=562/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4086 loss=0.9662 correct=yes time_ms=8.76 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0162.jpg
+[TRAIN] epoch=1/1 batch=36/50 sample=563/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.7202 loss=0.3812 correct=yes time_ms=9.17 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0148.jpg
+[TRAIN] epoch=1/1 batch=36/50 sample=564/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.3768 loss=1.4098 correct=yes time_ms=8.85 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0116.jpg
+[TRAIN] epoch=1/1 batch=36/50 sample=565/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.3564 loss=1.2662 correct=no time_ms=8.28 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0098.jpg
+[TRAIN] epoch=1/1 batch=36/50 sample=566/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.5711 loss=0.6244 correct=yes time_ms=8.35 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0073.jpg
+[TRAIN] epoch=1/1 batch=36/50 sample=567/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4824 loss=0.7905 correct=yes time_ms=8.02 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0049.jpg
+[TRAIN] epoch=1/1 batch=36/50 sample=568/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.6346 loss=0.6704 correct=yes time_ms=8.56 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0176.jpg
+[TRAIN] epoch=1/1 batch=36/50 sample=569/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.7361 loss=0.8988 correct=yes time_ms=8.36 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0081.jpg
+[TRAIN] epoch=1/1 batch=36/50 sample=570/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.4880 loss=0.8585 correct=yes time_ms=8.45 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0122.jpg
+[TRAIN] epoch=1/1 batch=36/50 sample=571/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.8896 loss=0.1330 correct=yes time_ms=9.88 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0108.jpg
+[TRAIN] epoch=1/1 batch=36/50 sample=572/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.4230 loss=1.6432 correct=no time_ms=9.35 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0050.jpg
+[TRAIN] epoch=1/1 batch=36/50 sample=573/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.3507 loss=1.2409 correct=yes time_ms=8.99 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0003.jpg
+[TRAIN] epoch=1/1 batch=36/50 sample=574/800 label=no_tumor predicted=meningioma_tumor confidence=0.3643 loss=1.2616 correct=no time_ms=9.14 file=data/brain_tumor/Training/no_tumor/no_tumor_0194.jpg
+[TRAIN] epoch=1/1 batch=36/50 sample=575/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.5629 loss=0.7761 correct=yes time_ms=8.48 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0022.jpg
+[TRAIN] epoch=1/1 batch=36/50 sample=576/800 label=no_tumor predicted=no_tumor confidence=0.9627 loss=0.4212 correct=yes time_ms=7.52 file=data/brain_tumor/Training/no_tumor/no_tumor_0157.jpg
+[BATCH] epoch=1/1 batch=36/50 loss=0.9849 accuracy=75.00% duration_ms=138.64 end
+[BATCH] epoch=1/1 batch=37/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=37/50 sample=577/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.6173 loss=0.5419 correct=yes time_ms=8.40 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0063.jpg
+[TRAIN] epoch=1/1 batch=37/50 sample=578/800 label=no_tumor predicted=no_tumor confidence=0.9957 loss=1.1911 correct=yes time_ms=8.61 file=data/brain_tumor/Training/no_tumor/no_tumor_0008.jpg
+[TRAIN] epoch=1/1 batch=37/50 sample=579/800 label=no_tumor predicted=no_tumor confidence=0.9274 loss=0.1108 correct=yes time_ms=7.98 file=data/brain_tumor/Training/no_tumor/no_tumor_0059.jpg
+[TRAIN] epoch=1/1 batch=37/50 sample=580/800 label=glioma_tumor predicted=glioma_tumor confidence=0.3151 loss=8.0325 correct=yes time_ms=11.22 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0073.jpg
+[TRAIN] epoch=1/1 batch=37/50 sample=581/800 label=glioma_tumor predicted=no_tumor confidence=0.3714 loss=1.4614 correct=no time_ms=13.31 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0035.jpg
+[TRAIN] epoch=1/1 batch=37/50 sample=582/800 label=no_tumor predicted=no_tumor confidence=0.9662 loss=0.0631 correct=yes time_ms=8.71 file=data/brain_tumor/Training/no_tumor/no_tumor_0132.jpg
+[TRAIN] epoch=1/1 batch=37/50 sample=583/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.5437 loss=0.6785 correct=yes time_ms=12.73 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0173.jpg
+[TRAIN] epoch=1/1 batch=37/50 sample=584/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.4482 loss=1.7337 correct=no time_ms=15.44 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0044.jpg
+[TRAIN] epoch=1/1 batch=37/50 sample=585/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.4575 loss=1.0354 correct=yes time_ms=21.18 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0086.jpg
+[TRAIN] epoch=1/1 batch=37/50 sample=586/800 label=no_tumor predicted=no_tumor confidence=0.3601 loss=1.2397 correct=yes time_ms=16.21 file=data/brain_tumor/Training/no_tumor/no_tumor_0197.jpg
+[TRAIN] epoch=1/1 batch=37/50 sample=587/800 label=no_tumor predicted=no_tumor confidence=0.4785 loss=0.8506 correct=yes time_ms=13.44 file=data/brain_tumor/Training/no_tumor/no_tumor_0153.jpg
+[TRAIN] epoch=1/1 batch=37/50 sample=588/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.8717 loss=0.1678 correct=yes time_ms=18.83 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0053.jpg
+[TRAIN] epoch=1/1 batch=37/50 sample=589/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4169 loss=3.0421 correct=yes time_ms=14.33 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0115.jpg
+[TRAIN] epoch=1/1 batch=37/50 sample=590/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.7338 loss=0.4839 correct=yes time_ms=12.15 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0113.jpg
+[TRAIN] epoch=1/1 batch=37/50 sample=591/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.6047 loss=0.5603 correct=yes time_ms=16.21 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0040.jpg
+[TRAIN] epoch=1/1 batch=37/50 sample=592/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.6436 loss=0.5081 correct=yes time_ms=23.21 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0094.jpg
+[BATCH] epoch=1/1 batch=37/50 loss=1.3563 accuracy=87.50% duration_ms=222.24 end
+[BATCH] epoch=1/1 batch=38/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=38/50 sample=593/800 label=no_tumor predicted=meningioma_tumor confidence=0.5367 loss=1.3604 correct=no time_ms=27.60 file=data/brain_tumor/Training/no_tumor/no_tumor_0028.jpg
+[TRAIN] epoch=1/1 batch=38/50 sample=594/800 label=glioma_tumor predicted=glioma_tumor confidence=0.3180 loss=1.2136 correct=yes time_ms=21.43 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0048.jpg
+[TRAIN] epoch=1/1 batch=38/50 sample=595/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4653 loss=0.8464 correct=yes time_ms=16.94 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0185.jpg
+[TRAIN] epoch=1/1 batch=38/50 sample=596/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.5300 loss=1.0478 correct=yes time_ms=17.86 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0182.jpg
+[TRAIN] epoch=1/1 batch=38/50 sample=597/800 label=no_tumor predicted=meningioma_tumor confidence=0.5473 loss=1.3540 correct=no time_ms=16.23 file=data/brain_tumor/Training/no_tumor/no_tumor_0195.jpg
+[TRAIN] epoch=1/1 batch=38/50 sample=598/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.6394 loss=0.5054 correct=yes time_ms=16.10 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0145.jpg
+[TRAIN] epoch=1/1 batch=38/50 sample=599/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.6972 loss=0.7875 correct=yes time_ms=17.16 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0133.jpg
+[TRAIN] epoch=1/1 batch=38/50 sample=600/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.4540 loss=2.0727 correct=no time_ms=17.51 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0094.jpg
+[TRAIN] epoch=1/1 batch=38/50 sample=601/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.2528 loss=1.3757 correct=yes time_ms=16.97 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0066.jpg
+[TRAIN] epoch=1/1 batch=38/50 sample=602/800 label=pituitary_tumor predicted=meningioma_tumor confidence=0.3252 loss=2.5645 correct=no time_ms=22.31 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0078.jpg
+[TRAIN] epoch=1/1 batch=38/50 sample=603/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.3647 loss=1.5311 correct=no time_ms=16.08 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0145.jpg
+[TRAIN] epoch=1/1 batch=38/50 sample=604/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.5524 loss=0.6713 correct=yes time_ms=11.56 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0117.jpg
+[TRAIN] epoch=1/1 batch=38/50 sample=605/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.2528 loss=1.5738 correct=no time_ms=12.83 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0138.jpg
+[TRAIN] epoch=1/1 batch=38/50 sample=606/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.6189 loss=0.5383 correct=yes time_ms=12.74 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0139.jpg
+[TRAIN] epoch=1/1 batch=38/50 sample=607/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.5089 loss=0.8382 correct=yes time_ms=41.95 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0101.jpg
+[TRAIN] epoch=1/1 batch=38/50 sample=608/800 label=meningioma_tumor predicted=pituitary_tumor confidence=0.2529 loss=1.3872 correct=no time_ms=15.20 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0141.jpg
+[BATCH] epoch=1/1 batch=38/50 loss=1.2293 accuracy=56.25% duration_ms=300.77 end
+[BATCH] epoch=1/1 batch=39/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=39/50 sample=609/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4945 loss=0.7792 correct=yes time_ms=12.90 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0041.jpg
+[TRAIN] epoch=1/1 batch=39/50 sample=610/800 label=no_tumor predicted=meningioma_tumor confidence=0.4753 loss=1.3139 correct=no time_ms=12.69 file=data/brain_tumor/Training/no_tumor/no_tumor_0029.jpg
+[TRAIN] epoch=1/1 batch=39/50 sample=611/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.5005 loss=0.7778 correct=yes time_ms=11.63 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0079.jpg
+[TRAIN] epoch=1/1 batch=39/50 sample=612/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.5333 loss=0.7020 correct=yes time_ms=11.04 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0129.jpg
+[TRAIN] epoch=1/1 batch=39/50 sample=613/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.5273 loss=1.3430 correct=no time_ms=12.83 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0103.jpg
+[TRAIN] epoch=1/1 batch=39/50 sample=614/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.5091 loss=1.3707 correct=no time_ms=11.65 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0150.jpg
+[TRAIN] epoch=1/1 batch=39/50 sample=615/800 label=no_tumor predicted=meningioma_tumor confidence=0.4714 loss=1.2673 correct=no time_ms=10.49 file=data/brain_tumor/Training/no_tumor/no_tumor_0022.jpg
+[TRAIN] epoch=1/1 batch=39/50 sample=616/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4326 loss=0.9364 correct=yes time_ms=11.37 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0199.jpg
+[TRAIN] epoch=1/1 batch=39/50 sample=617/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.4361 loss=1.2823 correct=yes time_ms=9.86 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0161.jpg
+[TRAIN] epoch=1/1 batch=39/50 sample=618/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4539 loss=0.8816 correct=yes time_ms=9.83 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0131.jpg
+[TRAIN] epoch=1/1 batch=39/50 sample=619/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.5752 loss=0.6286 correct=yes time_ms=9.83 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0101.jpg
+[TRAIN] epoch=1/1 batch=39/50 sample=620/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.5762 loss=0.6167 correct=yes time_ms=9.61 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0092.jpg
+[TRAIN] epoch=1/1 batch=39/50 sample=621/800 label=no_tumor predicted=meningioma_tumor confidence=0.5751 loss=1.4327 correct=no time_ms=10.18 file=data/brain_tumor/Training/no_tumor/no_tumor_0036.jpg
+[TRAIN] epoch=1/1 batch=39/50 sample=622/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.5166 loss=0.7392 correct=yes time_ms=10.34 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0176.jpg
+[TRAIN] epoch=1/1 batch=39/50 sample=623/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.5573 loss=0.6676 correct=yes time_ms=10.12 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0005.jpg
+[TRAIN] epoch=1/1 batch=39/50 sample=624/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.5911 loss=0.5803 correct=yes time_ms=12.68 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0071.jpg
+[BATCH] epoch=1/1 batch=39/50 loss=0.9575 accuracy=68.75% duration_ms=177.27 end
+[BATCH] epoch=1/1 batch=40/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=40/50 sample=625/800 label=no_tumor predicted=meningioma_tumor confidence=0.5347 loss=1.3223 correct=no time_ms=11.42 file=data/brain_tumor/Training/no_tumor/no_tumor_0176.jpg
+[TRAIN] epoch=1/1 batch=40/50 sample=626/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.6528 loss=0.4813 correct=yes time_ms=11.00 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0020.jpg
+[TRAIN] epoch=1/1 batch=40/50 sample=627/800 label=no_tumor predicted=no_tumor confidence=0.9855 loss=1.1364 correct=yes time_ms=12.15 file=data/brain_tumor/Training/no_tumor/no_tumor_0019.jpg
+[TRAIN] epoch=1/1 batch=40/50 sample=628/800 label=no_tumor predicted=no_tumor confidence=0.9980 loss=0.0021 correct=yes time_ms=12.13 file=data/brain_tumor/Training/no_tumor/no_tumor_0003.jpg
+[TRAIN] epoch=1/1 batch=40/50 sample=629/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.5410 loss=2.2431 correct=yes time_ms=10.03 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0147.jpg
+[TRAIN] epoch=1/1 batch=40/50 sample=630/800 label=no_tumor predicted=no_tumor confidence=0.5843 loss=1.5095 correct=yes time_ms=9.34 file=data/brain_tumor/Training/no_tumor/no_tumor_0171.jpg
+[TRAIN] epoch=1/1 batch=40/50 sample=631/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.6433 loss=0.4952 correct=yes time_ms=10.02 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0132.jpg
+[TRAIN] epoch=1/1 batch=40/50 sample=632/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.7449 loss=0.3406 correct=yes time_ms=9.69 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0072.jpg
+[TRAIN] epoch=1/1 batch=40/50 sample=633/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.7155 loss=0.3829 correct=yes time_ms=9.80 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0109.jpg
+[TRAIN] epoch=1/1 batch=40/50 sample=634/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.3577 loss=1.1220 correct=no time_ms=9.92 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0060.jpg
+[TRAIN] epoch=1/1 batch=40/50 sample=635/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.5983 loss=2.5537 correct=no time_ms=10.14 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0184.jpg
+[TRAIN] epoch=1/1 batch=40/50 sample=636/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.5637 loss=2.1904 correct=no time_ms=9.46 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0161.jpg
+[TRAIN] epoch=1/1 batch=40/50 sample=637/800 label=no_tumor predicted=no_tumor confidence=0.9014 loss=0.2904 correct=yes time_ms=12.86 file=data/brain_tumor/Training/no_tumor/no_tumor_0184.jpg
+[TRAIN] epoch=1/1 batch=40/50 sample=638/800 label=pituitary_tumor predicted=glioma_tumor confidence=0.3574 loss=2.0186 correct=no time_ms=10.98 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0006.jpg
+[TRAIN] epoch=1/1 batch=40/50 sample=639/800 label=glioma_tumor predicted=glioma_tumor confidence=0.3430 loss=1.1084 correct=yes time_ms=10.50 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0124.jpg
+[TRAIN] epoch=1/1 batch=40/50 sample=640/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.7204 loss=0.6449 correct=yes time_ms=9.40 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0062.jpg
+[BATCH] epoch=1/1 batch=40/50 loss=1.1151 accuracy=68.75% duration_ms=169.04 end
+[BATCH] epoch=1/1 batch=41/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=41/50 sample=641/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.4954 loss=1.8383 correct=no time_ms=11.23 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0001.jpg
+[TRAIN] epoch=1/1 batch=41/50 sample=642/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.3720 loss=1.4740 correct=no time_ms=10.35 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0154.jpg
+[TRAIN] epoch=1/1 batch=41/50 sample=643/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.4868 loss=0.8065 correct=yes time_ms=14.41 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0128.jpg
+[TRAIN] epoch=1/1 batch=41/50 sample=644/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.4235 loss=1.2867 correct=yes time_ms=14.78 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0040.jpg
+[TRAIN] epoch=1/1 batch=41/50 sample=645/800 label=glioma_tumor predicted=glioma_tumor confidence=0.3647 loss=1.0507 correct=yes time_ms=12.51 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0005.jpg
+[TRAIN] epoch=1/1 batch=41/50 sample=646/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.7080 loss=0.3859 correct=yes time_ms=13.62 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0070.jpg
+[TRAIN] epoch=1/1 batch=41/50 sample=647/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4154 loss=5.5991 correct=yes time_ms=10.60 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0124.jpg
+[TRAIN] epoch=1/1 batch=41/50 sample=648/800 label=glioma_tumor predicted=glioma_tumor confidence=0.4092 loss=0.9645 correct=yes time_ms=11.74 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0182.jpg
+[TRAIN] epoch=1/1 batch=41/50 sample=649/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.5695 loss=0.6184 correct=yes time_ms=11.07 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0171.jpg
+[TRAIN] epoch=1/1 batch=41/50 sample=650/800 label=glioma_tumor predicted=glioma_tumor confidence=0.3613 loss=1.0909 correct=yes time_ms=10.71 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0128.jpg
+[TRAIN] epoch=1/1 batch=41/50 sample=651/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.5222 loss=1.7595 correct=no time_ms=9.40 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0047.jpg
+[TRAIN] epoch=1/1 batch=41/50 sample=652/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.4158 loss=1.1472 correct=yes time_ms=10.00 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0125.jpg
+[TRAIN] epoch=1/1 batch=41/50 sample=653/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.4605 loss=1.5222 correct=no time_ms=9.88 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0112.jpg
+[TRAIN] epoch=1/1 batch=41/50 sample=654/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4846 loss=0.9983 correct=yes time_ms=9.31 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0055.jpg
+[TRAIN] epoch=1/1 batch=41/50 sample=655/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.5214 loss=1.6181 correct=no time_ms=9.63 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0177.jpg
+[TRAIN] epoch=1/1 batch=41/50 sample=656/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.3567 loss=1.6206 correct=no time_ms=10.11 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0193.jpg
+[BATCH] epoch=1/1 batch=41/50 loss=1.4863 accuracy=62.50% duration_ms=179.53 end
+[BATCH] epoch=1/1 batch=42/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=42/50 sample=657/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.3110 loss=1.3427 correct=yes time_ms=9.60 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0160.jpg
+[TRAIN] epoch=1/1 batch=42/50 sample=658/800 label=glioma_tumor predicted=glioma_tumor confidence=0.3968 loss=1.0376 correct=yes time_ms=9.85 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0151.jpg
+[TRAIN] epoch=1/1 batch=42/50 sample=659/800 label=glioma_tumor predicted=glioma_tumor confidence=0.4763 loss=0.8376 correct=yes time_ms=9.20 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0025.jpg
+[TRAIN] epoch=1/1 batch=42/50 sample=660/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.5305 loss=0.7023 correct=yes time_ms=9.37 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0197.jpg
+[TRAIN] epoch=1/1 batch=42/50 sample=661/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.5796 loss=0.6963 correct=yes time_ms=9.29 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0130.jpg
+[TRAIN] epoch=1/1 batch=42/50 sample=662/800 label=no_tumor predicted=meningioma_tumor confidence=0.4468 loss=1.4817 correct=no time_ms=8.67 file=data/brain_tumor/Training/no_tumor/no_tumor_0089.jpg
+[TRAIN] epoch=1/1 batch=42/50 sample=663/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.5818 loss=0.6078 correct=yes time_ms=9.90 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0069.jpg
+[TRAIN] epoch=1/1 batch=42/50 sample=664/800 label=pituitary_tumor predicted=meningioma_tumor confidence=0.2844 loss=1.9759 correct=no time_ms=8.11 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0031.jpg
+[TRAIN] epoch=1/1 batch=42/50 sample=665/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4539 loss=0.8510 correct=yes time_ms=9.25 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0051.jpg
+[TRAIN] epoch=1/1 batch=42/50 sample=666/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.5357 loss=0.6934 correct=yes time_ms=9.10 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0192.jpg
+[TRAIN] epoch=1/1 batch=42/50 sample=667/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.5443 loss=0.6877 correct=yes time_ms=10.49 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0097.jpg
+[TRAIN] epoch=1/1 batch=42/50 sample=668/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.6294 loss=0.5166 correct=yes time_ms=10.21 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0190.jpg
+[TRAIN] epoch=1/1 batch=42/50 sample=669/800 label=pituitary_tumor predicted=glioma_tumor confidence=0.3739 loss=1.6252 correct=no time_ms=9.33 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0007.jpg
+[TRAIN] epoch=1/1 batch=42/50 sample=670/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.6839 loss=0.4295 correct=yes time_ms=10.49 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0113.jpg
+[TRAIN] epoch=1/1 batch=42/50 sample=671/800 label=pituitary_tumor predicted=meningioma_tumor confidence=0.3256 loss=2.4819 correct=no time_ms=13.21 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0067.jpg
+[TRAIN] epoch=1/1 batch=42/50 sample=672/800 label=no_tumor predicted=meningioma_tumor confidence=0.3018 loss=1.3871 correct=no time_ms=9.79 file=data/brain_tumor/Training/no_tumor/no_tumor_0101.jpg
+[BATCH] epoch=1/1 batch=42/50 loss=1.0847 accuracy=68.75% duration_ms=156.06 end
+[BATCH] epoch=1/1 batch=43/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=43/50 sample=673/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.8324 loss=0.2070 correct=yes time_ms=10.34 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0150.jpg
+[TRAIN] epoch=1/1 batch=43/50 sample=674/800 label=meningioma_tumor predicted=pituitary_tumor confidence=0.2533 loss=1.7352 correct=no time_ms=11.27 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0149.jpg
+[TRAIN] epoch=1/1 batch=43/50 sample=675/800 label=no_tumor predicted=meningioma_tumor confidence=0.4418 loss=1.4885 correct=no time_ms=8.68 file=data/brain_tumor/Training/no_tumor/no_tumor_0183.jpg
+[TRAIN] epoch=1/1 batch=43/50 sample=676/800 label=pituitary_tumor predicted=meningioma_tumor confidence=0.2825 loss=2.1566 correct=no time_ms=10.54 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0123.jpg
+[TRAIN] epoch=1/1 batch=43/50 sample=677/800 label=no_tumor predicted=meningioma_tumor confidence=0.4466 loss=1.4408 correct=no time_ms=8.58 file=data/brain_tumor/Training/no_tumor/no_tumor_0191.jpg
+[TRAIN] epoch=1/1 batch=43/50 sample=678/800 label=no_tumor predicted=no_tumor confidence=0.8242 loss=1.1892 correct=yes time_ms=10.18 file=data/brain_tumor/Training/no_tumor/no_tumor_0093.jpg
+[TRAIN] epoch=1/1 batch=43/50 sample=679/800 label=no_tumor predicted=no_tumor confidence=0.9646 loss=2.1255 correct=yes time_ms=8.22 file=data/brain_tumor/Training/no_tumor/no_tumor_0077.jpg
+[TRAIN] epoch=1/1 batch=43/50 sample=680/800 label=no_tumor predicted=no_tumor confidence=0.9995 loss=0.0005 correct=yes time_ms=8.55 file=data/brain_tumor/Training/no_tumor/no_tumor_0056.jpg
+[TRAIN] epoch=1/1 batch=43/50 sample=681/800 label=no_tumor predicted=no_tumor confidence=0.9406 loss=0.0963 correct=yes time_ms=8.33 file=data/brain_tumor/Training/no_tumor/no_tumor_0178.jpg
+[TRAIN] epoch=1/1 batch=43/50 sample=682/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.2842 loss=3.3308 correct=no time_ms=9.20 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0185.jpg
+[TRAIN] epoch=1/1 batch=43/50 sample=683/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.2954 loss=1.3659 correct=no time_ms=9.15 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0162.jpg
+[TRAIN] epoch=1/1 batch=43/50 sample=684/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.2534 loss=1.3733 correct=yes time_ms=9.27 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0087.jpg
+[TRAIN] epoch=1/1 batch=43/50 sample=685/800 label=meningioma_tumor predicted=pituitary_tumor confidence=0.2533 loss=1.3870 correct=no time_ms=9.25 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0070.jpg
+[TRAIN] epoch=1/1 batch=43/50 sample=686/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.4251 loss=1.1047 correct=yes time_ms=13.28 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0041.jpg
+[TRAIN] epoch=1/1 batch=43/50 sample=687/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.4875 loss=1.2294 correct=no time_ms=12.51 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0152.jpg
+[TRAIN] epoch=1/1 batch=43/50 sample=688/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.3991 loss=2.2377 correct=no time_ms=9.24 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0183.jpg
+[BATCH] epoch=1/1 batch=43/50 loss=1.4043 accuracy=43.75% duration_ms=156.78 end
+[BATCH] epoch=1/1 batch=44/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=44/50 sample=689/800 label=glioma_tumor predicted=glioma_tumor confidence=0.3254 loss=1.3509 correct=yes time_ms=10.37 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0022.jpg
+[TRAIN] epoch=1/1 batch=44/50 sample=690/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.4977 loss=0.7858 correct=yes time_ms=9.92 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0013.jpg
+[TRAIN] epoch=1/1 batch=44/50 sample=691/800 label=meningioma_tumor predicted=pituitary_tumor confidence=0.2533 loss=1.3870 correct=no time_ms=9.19 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0030.jpg
+[TRAIN] epoch=1/1 batch=44/50 sample=692/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.4188 loss=1.0937 correct=yes time_ms=9.48 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0016.jpg
+[TRAIN] epoch=1/1 batch=44/50 sample=693/800 label=no_tumor predicted=meningioma_tumor confidence=0.2886 loss=1.3810 correct=no time_ms=11.43 file=data/brain_tumor/Training/no_tumor/no_tumor_0013.jpg
+[TRAIN] epoch=1/1 batch=44/50 sample=694/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.3142 loss=1.3550 correct=no time_ms=9.73 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0179.jpg
+[TRAIN] epoch=1/1 batch=44/50 sample=695/800 label=no_tumor predicted=pituitary_tumor confidence=0.2533 loss=1.4052 correct=no time_ms=9.27 file=data/brain_tumor/Training/no_tumor/no_tumor_0155.jpg
+[TRAIN] epoch=1/1 batch=44/50 sample=696/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.3922 loss=1.2019 correct=no time_ms=9.27 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0085.jpg
+[TRAIN] epoch=1/1 batch=44/50 sample=697/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.4395 loss=1.4037 correct=no time_ms=9.47 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0030.jpg
+[TRAIN] epoch=1/1 batch=44/50 sample=698/800 label=no_tumor predicted=pituitary_tumor confidence=0.2532 loss=1.4052 correct=no time_ms=8.17 file=data/brain_tumor/Training/no_tumor/no_tumor_0040.jpg
+[TRAIN] epoch=1/1 batch=44/50 sample=699/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.5749 loss=0.6136 correct=yes time_ms=9.21 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0019.jpg
+[TRAIN] epoch=1/1 batch=44/50 sample=700/800 label=meningioma_tumor predicted=pituitary_tumor confidence=0.2532 loss=1.8494 correct=no time_ms=8.50 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0122.jpg
+[TRAIN] epoch=1/1 batch=44/50 sample=701/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4217 loss=0.9591 correct=yes time_ms=10.29 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0134.jpg
+[TRAIN] epoch=1/1 batch=44/50 sample=702/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.2532 loss=1.3803 correct=no time_ms=9.81 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0164.jpg
+[TRAIN] epoch=1/1 batch=44/50 sample=703/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.2532 loss=1.3800 correct=no time_ms=9.18 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0147.jpg
+[TRAIN] epoch=1/1 batch=44/50 sample=704/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.4004 loss=1.1945 correct=yes time_ms=9.90 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0179.jpg
+[BATCH] epoch=1/1 batch=44/50 loss=1.2592 accuracy=37.50% duration_ms=153.31 end
+[BATCH] epoch=1/1 batch=45/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=45/50 sample=705/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.4266 loss=1.1237 correct=yes time_ms=9.15 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0011.jpg
+[TRAIN] epoch=1/1 batch=45/50 sample=706/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.5937 loss=0.5820 correct=yes time_ms=9.27 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0048.jpg
+[TRAIN] epoch=1/1 batch=45/50 sample=707/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.7701 loss=0.2965 correct=yes time_ms=9.30 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0142.jpg
+[TRAIN] epoch=1/1 batch=45/50 sample=708/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.6836 loss=0.4249 correct=yes time_ms=8.97 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0058.jpg
+[TRAIN] epoch=1/1 batch=45/50 sample=709/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.2536 loss=1.3725 correct=yes time_ms=8.55 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0023.jpg
+[TRAIN] epoch=1/1 batch=45/50 sample=710/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.4116 loss=1.3465 correct=yes time_ms=8.65 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0004.jpg
+[TRAIN] epoch=1/1 batch=45/50 sample=711/800 label=meningioma_tumor predicted=pituitary_tumor confidence=0.2536 loss=1.3872 correct=no time_ms=8.53 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0036.jpg
+[TRAIN] epoch=1/1 batch=45/50 sample=712/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.4250 loss=1.2057 correct=yes time_ms=18.11 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0032.jpg
+[TRAIN] epoch=1/1 batch=45/50 sample=713/800 label=no_tumor predicted=pituitary_tumor confidence=0.8090 loss=4.3367 correct=no time_ms=8.00 file=data/brain_tumor/Training/no_tumor/no_tumor_0136.jpg
+[TRAIN] epoch=1/1 batch=45/50 sample=714/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.5753 loss=1.4047 correct=no time_ms=8.90 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0149.jpg
+[TRAIN] epoch=1/1 batch=45/50 sample=715/800 label=no_tumor predicted=pituitary_tumor confidence=0.3360 loss=1.3587 correct=no time_ms=7.54 file=data/brain_tumor/Training/no_tumor/no_tumor_0169.jpg
+[TRAIN] epoch=1/1 batch=45/50 sample=716/800 label=no_tumor predicted=glioma_tumor confidence=0.4390 loss=1.7449 correct=no time_ms=7.99 file=data/brain_tumor/Training/no_tumor/no_tumor_0071.jpg
+[TRAIN] epoch=1/1 batch=45/50 sample=717/800 label=meningioma_tumor predicted=pituitary_tumor confidence=0.2534 loss=1.7519 correct=no time_ms=8.72 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0077.jpg
+[TRAIN] epoch=1/1 batch=45/50 sample=718/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.2535 loss=1.3729 correct=yes time_ms=8.55 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0100.jpg
+[TRAIN] epoch=1/1 batch=45/50 sample=719/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.5900 loss=1.2530 correct=yes time_ms=8.73 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0046.jpg
+[TRAIN] epoch=1/1 batch=45/50 sample=720/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.5316 loss=0.6877 correct=yes time_ms=8.85 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0050.jpg
+[BATCH] epoch=1/1 batch=45/50 loss=1.3531 accuracy=62.50% duration_ms=147.94 end
+[BATCH] epoch=1/1 batch=46/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=46/50 sample=721/800 label=no_tumor predicted=meningioma_tumor confidence=0.3384 loss=1.3689 correct=no time_ms=7.51 file=data/brain_tumor/Training/no_tumor/no_tumor_0052.jpg
+[TRAIN] epoch=1/1 batch=46/50 sample=722/800 label=no_tumor predicted=meningioma_tumor confidence=0.2976 loss=1.3747 correct=no time_ms=8.68 file=data/brain_tumor/Training/no_tumor/no_tumor_0142.jpg
+[TRAIN] epoch=1/1 batch=46/50 sample=723/800 label=no_tumor predicted=no_tumor confidence=0.6195 loss=1.1517 correct=yes time_ms=7.54 file=data/brain_tumor/Training/no_tumor/no_tumor_0057.jpg
+[TRAIN] epoch=1/1 batch=46/50 sample=724/800 label=no_tumor predicted=pituitary_tumor confidence=0.2535 loss=1.4044 correct=no time_ms=7.64 file=data/brain_tumor/Training/no_tumor/no_tumor_0045.jpg
+[TRAIN] epoch=1/1 batch=46/50 sample=725/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.3840 loss=1.2051 correct=no time_ms=8.49 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0002.jpg
+[TRAIN] epoch=1/1 batch=46/50 sample=726/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4212 loss=0.9702 correct=yes time_ms=8.70 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0165.jpg
+[TRAIN] epoch=1/1 batch=46/50 sample=727/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.7309 loss=0.4458 correct=yes time_ms=8.76 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0052.jpg
+[TRAIN] epoch=1/1 batch=46/50 sample=728/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.7416 loss=0.5265 correct=yes time_ms=9.23 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0082.jpg
+[TRAIN] epoch=1/1 batch=46/50 sample=729/800 label=no_tumor predicted=meningioma_tumor confidence=0.2969 loss=1.3938 correct=no time_ms=8.10 file=data/brain_tumor/Training/no_tumor/no_tumor_0044.jpg
+[TRAIN] epoch=1/1 batch=46/50 sample=730/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4324 loss=1.0130 correct=yes time_ms=8.70 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0007.jpg
+[TRAIN] epoch=1/1 batch=46/50 sample=731/800 label=no_tumor predicted=pituitary_tumor confidence=0.3822 loss=1.3893 correct=no time_ms=7.85 file=data/brain_tumor/Training/no_tumor/no_tumor_0119.jpg
+[TRAIN] epoch=1/1 batch=46/50 sample=732/800 label=no_tumor predicted=pituitary_tumor confidence=0.6759 loss=2.0116 correct=no time_ms=7.74 file=data/brain_tumor/Training/no_tumor/no_tumor_0075.jpg
+[TRAIN] epoch=1/1 batch=46/50 sample=733/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.7792 loss=0.3315 correct=yes time_ms=9.17 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0126.jpg
+[TRAIN] epoch=1/1 batch=46/50 sample=734/800 label=no_tumor predicted=meningioma_tumor confidence=0.4200 loss=1.3877 correct=no time_ms=8.09 file=data/brain_tumor/Training/no_tumor/no_tumor_0113.jpg
+[TRAIN] epoch=1/1 batch=46/50 sample=735/800 label=no_tumor predicted=pituitary_tumor confidence=0.2534 loss=1.4032 correct=no time_ms=7.66 file=data/brain_tumor/Training/no_tumor/no_tumor_0047.jpg
+[TRAIN] epoch=1/1 batch=46/50 sample=736/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4764 loss=0.8126 correct=yes time_ms=9.15 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0015.jpg
+[BATCH] epoch=1/1 batch=46/50 loss=1.1369 accuracy=43.75% duration_ms=133.14 end
+[BATCH] epoch=1/1 batch=47/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=47/50 sample=737/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4830 loss=1.3178 correct=yes time_ms=11.05 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0183.jpg
+[TRAIN] epoch=1/1 batch=47/50 sample=738/800 label=pituitary_tumor predicted=meningioma_tumor confidence=0.3741 loss=2.9305 correct=no time_ms=9.08 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0111.jpg
+[TRAIN] epoch=1/1 batch=47/50 sample=739/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.3603 loss=1.7750 correct=no time_ms=11.19 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0135.jpg
+[TRAIN] epoch=1/1 batch=47/50 sample=740/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4885 loss=0.8156 correct=yes time_ms=10.41 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0161.jpg
+[TRAIN] epoch=1/1 batch=47/50 sample=741/800 label=no_tumor predicted=no_tumor confidence=0.7891 loss=0.2661 correct=yes time_ms=9.17 file=data/brain_tumor/Training/no_tumor/no_tumor_0038.jpg
+[TRAIN] epoch=1/1 batch=47/50 sample=742/800 label=pituitary_tumor predicted=meningioma_tumor confidence=0.2740 loss=1.9671 correct=no time_ms=10.42 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0156.jpg
+[TRAIN] epoch=1/1 batch=47/50 sample=743/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.2536 loss=1.3724 correct=yes time_ms=8.85 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0093.jpg
+[TRAIN] epoch=1/1 batch=47/50 sample=744/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.2537 loss=1.3720 correct=yes time_ms=8.20 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0033.jpg
+[TRAIN] epoch=1/1 batch=47/50 sample=745/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.3602 loss=1.2196 correct=yes time_ms=9.42 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0197.jpg
+[TRAIN] epoch=1/1 batch=47/50 sample=746/800 label=no_tumor predicted=no_tumor confidence=0.6997 loss=0.4553 correct=yes time_ms=9.45 file=data/brain_tumor/Training/no_tumor/no_tumor_0016.jpg
+[TRAIN] epoch=1/1 batch=47/50 sample=747/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.5127 loss=0.7370 correct=yes time_ms=8.89 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0184.jpg
+[TRAIN] epoch=1/1 batch=47/50 sample=748/800 label=no_tumor predicted=pituitary_tumor confidence=0.3967 loss=1.4533 correct=no time_ms=8.71 file=data/brain_tumor/Training/no_tumor/no_tumor_0073.jpg
+[TRAIN] epoch=1/1 batch=47/50 sample=749/800 label=no_tumor predicted=no_tumor confidence=0.5304 loss=1.1022 correct=yes time_ms=7.61 file=data/brain_tumor/Training/no_tumor/no_tumor_0152.jpg
+[TRAIN] epoch=1/1 batch=47/50 sample=750/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.2537 loss=1.3718 correct=yes time_ms=9.04 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0088.jpg
+[TRAIN] epoch=1/1 batch=47/50 sample=751/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.3499 loss=1.4218 correct=no time_ms=8.63 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0198.jpg
+[TRAIN] epoch=1/1 batch=47/50 sample=752/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.2537 loss=1.3834 correct=no time_ms=8.60 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0155.jpg
+[BATCH] epoch=1/1 batch=47/50 loss=1.3101 accuracy=62.50% duration_ms=148.86 end
+[BATCH] epoch=1/1 batch=48/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=48/50 sample=753/800 label=glioma_tumor predicted=no_tumor confidence=0.3803 loss=1.1681 correct=no time_ms=8.65 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0142.jpg
+[TRAIN] epoch=1/1 batch=48/50 sample=754/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.2537 loss=1.3718 correct=yes time_ms=12.50 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0044.jpg
+[TRAIN] epoch=1/1 batch=48/50 sample=755/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.3559 loss=1.2649 correct=no time_ms=8.70 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0066.jpg
+[TRAIN] epoch=1/1 batch=48/50 sample=756/800 label=no_tumor predicted=meningioma_tumor confidence=0.2968 loss=1.3735 correct=no time_ms=7.56 file=data/brain_tumor/Training/no_tumor/no_tumor_0061.jpg
+[TRAIN] epoch=1/1 batch=48/50 sample=757/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.3164 loss=1.3888 correct=no time_ms=8.51 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0052.jpg
+[TRAIN] epoch=1/1 batch=48/50 sample=758/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4353 loss=0.9390 correct=yes time_ms=8.61 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0001.jpg
+[TRAIN] epoch=1/1 batch=48/50 sample=759/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.5946 loss=0.5857 correct=yes time_ms=8.49 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0039.jpg
+[TRAIN] epoch=1/1 batch=48/50 sample=760/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.5650 loss=0.6608 correct=yes time_ms=9.53 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0009.jpg
+[TRAIN] epoch=1/1 batch=48/50 sample=761/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.3435 loss=1.2130 correct=no time_ms=8.60 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0084.jpg
+[TRAIN] epoch=1/1 batch=48/50 sample=762/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4904 loss=1.6321 correct=yes time_ms=8.57 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0080.jpg
+[TRAIN] epoch=1/1 batch=48/50 sample=763/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.2537 loss=1.4848 correct=yes time_ms=9.13 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0127.jpg
+[TRAIN] epoch=1/1 batch=48/50 sample=764/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.5482 loss=0.6595 correct=yes time_ms=8.59 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0137.jpg
+[TRAIN] epoch=1/1 batch=48/50 sample=765/800 label=no_tumor predicted=meningioma_tumor confidence=0.3478 loss=1.3765 correct=no time_ms=8.20 file=data/brain_tumor/Training/no_tumor/no_tumor_0131.jpg
+[TRAIN] epoch=1/1 batch=48/50 sample=766/800 label=no_tumor predicted=meningioma_tumor confidence=0.3509 loss=1.3705 correct=no time_ms=7.68 file=data/brain_tumor/Training/no_tumor/no_tumor_0074.jpg
+[TRAIN] epoch=1/1 batch=48/50 sample=767/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.4370 loss=1.5612 correct=no time_ms=8.74 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0041.jpg
+[TRAIN] epoch=1/1 batch=48/50 sample=768/800 label=no_tumor predicted=no_tumor confidence=0.7190 loss=1.3728 correct=yes time_ms=7.77 file=data/brain_tumor/Training/no_tumor/no_tumor_0027.jpg
+[BATCH] epoch=1/1 batch=48/50 loss=1.2139 accuracy=50.00% duration_ms=139.94 end
+[BATCH] epoch=1/1 batch=49/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=49/50 sample=769/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.3160 loss=1.3945 correct=no time_ms=8.48 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0036.jpg
+[TRAIN] epoch=1/1 batch=49/50 sample=770/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.3609 loss=1.1820 correct=yes time_ms=8.54 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0187.jpg
+[TRAIN] epoch=1/1 batch=49/50 sample=771/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.6553 loss=0.4756 correct=yes time_ms=8.72 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0047.jpg
+[TRAIN] epoch=1/1 batch=49/50 sample=772/800 label=no_tumor predicted=meningioma_tumor confidence=0.5144 loss=1.5598 correct=no time_ms=9.37 file=data/brain_tumor/Training/no_tumor/no_tumor_0151.jpg
+[TRAIN] epoch=1/1 batch=49/50 sample=773/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.5867 loss=0.5956 correct=yes time_ms=8.47 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0085.jpg
+[TRAIN] epoch=1/1 batch=49/50 sample=774/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.4008 loss=1.5072 correct=no time_ms=8.56 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0175.jpg
+[TRAIN] epoch=1/1 batch=49/50 sample=775/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.6509 loss=0.4815 correct=yes time_ms=8.73 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0147.jpg
+[TRAIN] epoch=1/1 batch=49/50 sample=776/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.4040 loss=1.2135 correct=no time_ms=9.16 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0016.jpg
+[TRAIN] epoch=1/1 batch=49/50 sample=777/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.5065 loss=1.7080 correct=no time_ms=9.48 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0046.jpg
+[TRAIN] epoch=1/1 batch=49/50 sample=778/800 label=no_tumor predicted=no_tumor confidence=0.6652 loss=0.6203 correct=yes time_ms=7.62 file=data/brain_tumor/Training/no_tumor/no_tumor_0042.jpg
+[TRAIN] epoch=1/1 batch=49/50 sample=779/800 label=no_tumor predicted=no_tumor confidence=0.6462 loss=1.0954 correct=yes time_ms=7.72 file=data/brain_tumor/Training/no_tumor/no_tumor_0091.jpg
+[TRAIN] epoch=1/1 batch=49/50 sample=780/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.3989 loss=1.2352 correct=yes time_ms=8.81 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0074.jpg
+[TRAIN] epoch=1/1 batch=49/50 sample=781/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4285 loss=1.0047 correct=yes time_ms=9.36 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0169.jpg
+[TRAIN] epoch=1/1 batch=49/50 sample=782/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.5000 loss=1.6898 correct=no time_ms=8.95 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0160.jpg
+[TRAIN] epoch=1/1 batch=49/50 sample=783/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.4678 loss=1.2464 correct=no time_ms=8.87 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0026.jpg
+[TRAIN] epoch=1/1 batch=49/50 sample=784/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.4411 loss=0.9226 correct=yes time_ms=10.24 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0199.jpg
+[BATCH] epoch=1/1 batch=49/50 loss=1.1208 accuracy=56.25% duration_ms=141.22 end
+[BATCH] epoch=1/1 batch=50/50 samples=16 begin
+[TRAIN] epoch=1/1 batch=50/50 sample=785/800 label=glioma_tumor predicted=glioma_tumor confidence=0.3729 loss=1.4000 correct=yes time_ms=12.21 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0115.jpg
+[TRAIN] epoch=1/1 batch=50/50 sample=786/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.6265 loss=0.5249 correct=yes time_ms=11.32 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0064.jpg
+[TRAIN] epoch=1/1 batch=50/50 sample=787/800 label=no_tumor predicted=meningioma_tumor confidence=0.3172 loss=1.3614 correct=no time_ms=8.62 file=data/brain_tumor/Training/no_tumor/no_tumor_0079.jpg
+[TRAIN] epoch=1/1 batch=50/50 sample=788/800 label=glioma_tumor predicted=pituitary_tumor confidence=0.4100 loss=1.2194 correct=no time_ms=12.12 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0111.jpg
+[TRAIN] epoch=1/1 batch=50/50 sample=789/800 label=pituitary_tumor predicted=meningioma_tumor confidence=0.3126 loss=2.4190 correct=no time_ms=12.08 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0045.jpg
+[TRAIN] epoch=1/1 batch=50/50 sample=790/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.6652 loss=0.4540 correct=yes time_ms=9.87 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0018.jpg
+[TRAIN] epoch=1/1 batch=50/50 sample=791/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.7057 loss=0.3864 correct=yes time_ms=13.21 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0107.jpg
+[TRAIN] epoch=1/1 batch=50/50 sample=792/800 label=no_tumor predicted=pituitary_tumor confidence=0.3778 loss=1.5551 correct=no time_ms=10.50 file=data/brain_tumor/Training/no_tumor/no_tumor_0128.jpg
+[TRAIN] epoch=1/1 batch=50/50 sample=793/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.4130 loss=2.3695 correct=yes time_ms=11.66 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0121.jpg
+[TRAIN] epoch=1/1 batch=50/50 sample=794/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.5321 loss=1.7167 correct=no time_ms=10.11 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0023.jpg
+[TRAIN] epoch=1/1 batch=50/50 sample=795/800 label=no_tumor predicted=pituitary_tumor confidence=0.3550 loss=1.3853 correct=no time_ms=10.86 file=data/brain_tumor/Training/no_tumor/no_tumor_0078.jpg
+[TRAIN] epoch=1/1 batch=50/50 sample=796/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.4365 loss=1.4369 correct=no time_ms=11.28 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0153.jpg
+[TRAIN] epoch=1/1 batch=50/50 sample=797/800 label=glioma_tumor predicted=meningioma_tumor confidence=0.3538 loss=1.3422 correct=no time_ms=11.00 file=data/brain_tumor/Training/glioma_tumor/glioma_tumor_0174.jpg
+[TRAIN] epoch=1/1 batch=50/50 sample=798/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.5870 loss=0.5880 correct=yes time_ms=11.17 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0021.jpg
+[TRAIN] epoch=1/1 batch=50/50 sample=799/800 label=meningioma_tumor predicted=meningioma_tumor confidence=0.6090 loss=0.5544 correct=yes time_ms=9.79 file=data/brain_tumor/Training/meningioma_tumor/meningioma_tumor_0024.jpg
+[TRAIN] epoch=1/1 batch=50/50 sample=800/800 label=pituitary_tumor predicted=pituitary_tumor confidence=0.4284 loss=1.0726 correct=yes time_ms=10.93 file=data/brain_tumor/Training/pituitary_tumor/pituitary_tumor_0185.jpg
+[BATCH] epoch=1/1 batch=50/50 loss=1.2366 accuracy=50.00% duration_ms=176.90 end
+Epoch 1/1 loss=1.5743 train_accuracy=57.62% duration=8.31 s throughput=96.30 images/s
+Checkpoint saved: models/telemetry_checkpoints/epoch_1.weights
+Saved brain tumour weights: models/telemetry_check.weights
+TRAINING DURATION: 8.31 seconds (0.14 minutes)

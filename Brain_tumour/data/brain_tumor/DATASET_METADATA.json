@@ -1,0 +1,20 @@
+{
+  "dataset": "Brain Tumor Classification MRI",
+  "source_url": "https://github.com/sartajbhuvaji/brain-tumor-classification-dataset",
+  "source_commit": "3ea9f4eae54c67e5bddbf6f7a73582967a5f5f79",
+  "license_note": "MIT (source repository metadata; verify upstream terms before redistribution)",
+  "classes": [
+    "glioma_tumor",
+    "meningioma_tumor",
+    "no_tumor",
+    "pituitary_tumor"
+  ],
+  "counts": {
+    "total": 1000,
+    "training": 800,
+    "testing": 200,
+    "training_per_class": 200,
+    "testing_per_class": 50
+  },
+  "warning": "Research dataset only. Not for diagnosis or clinical deployment."
+}
