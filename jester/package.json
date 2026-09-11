@@ -1,0 +1,21 @@
+{
+  "name": "jester-holographic-interface",
+  "version": "1.0.0",
+  "description": "Moonday gesture-controlled spine visualization and patient-record review interface.",
+  "type": "module",
+  "main": "electron/main.js",
+  "scripts": {
+    "start": "node server/jester.js",
+    "app": "electron ."
+  },
+  "dependencies": {
+    "dotenv": "^16.6.1",
+    "express": "^4.19.2",
+    "openai": "^4.104.0",
+    "pg": "^8.23.0",
+    "ws": "^8.21.0"
+  },
+  "devDependencies": {
+    "electron": "^43.1.0"
+  }
+}
