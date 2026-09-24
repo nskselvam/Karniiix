@@ -1,1 +1,0 @@
-/usr/bin/c++  -arch arm64 -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/spine_cli.dir/spine_cli.c++.o CMakeFiles/spine_cli.dir/medical/SpineEvaluationUtils.cpp.o -o spine_cli

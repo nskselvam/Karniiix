@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { AuthProvider } from "@/components/auth-provider";
 import { ThemeProvider } from "@/components/theme-provider";
 import { SmoothScroll } from "@/components/smooth-scroll";
 
@@ -15,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Finaro | Modern banking for everyone",
-  description: "A fintech landing page template for modern banking, instant transfers, savings, and developer tools.",
+  title: "Karnix | Secure account access",
+  description: "Secure authentication for Karnix.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -28,7 +29,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full bg-[#020b17] text-white">
         <ThemeProvider>
-          <SmoothScroll>{children}</SmoothScroll>
+          <AuthProvider>
+            <SmoothScroll>{children}</SmoothScroll>
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -21,3 +21,14 @@ karnix_spine_edge/models/dexa_training_full.log
 karnix_spine_edge/models/dexa_evaluation_full.log
 karnix_spine_edge/models/dexa_cnn.weights
 karnix_spine_edge/models/checkpoints/
+
+# Build artifacts (CMake/Makefile outputs, compiled binaries, object files)
+karnix_spine_edge/build/
+karnix_spine_edge/build_current/
+Brain_tumour/build/
+Other_Disease/build/
+*.o
+*.o.d
+*.elf
+node_modules/
+

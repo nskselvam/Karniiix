@@ -130,6 +130,13 @@ pass "Prepared $mri_train_rows MRI training and $mri_test_rows MRI test images"
 
 step "7/13" "Building the C++ CNN and native animation"
 build_started=$(date +%s)
+if [[ -f "$SCRIPT_DIR/build/CMakeCache.txt" ]]; then
+    cached_source=$(sed -n 's/^CMAKE_HOME_DIRECTORY:INTERNAL=//p' "$SCRIPT_DIR/build/CMakeCache.txt")
+    if [[ -n "$cached_source" && "$cached_source" != "$SCRIPT_DIR" ]]; then
+        printf '[INFO] Removing stale CMake cache from %s\n' "$cached_source"
+        rm -rf "$SCRIPT_DIR/build"
+    fi
+fi
 cmake -S "$SCRIPT_DIR" -B "$SCRIPT_DIR/build"
 cmake --build "$SCRIPT_DIR/build" --config Release
 [[ -x "$SCRIPT_DIR/build/spine_cli" ]] || fail "spine_cli was not built"

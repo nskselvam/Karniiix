@@ -1,1 +1,0 @@
-/usr/bin/c++  -arch arm64 -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/cnn_visualizer.dir/cnn_visualizer.c++.o -o cnn_visualizer  /opt/homebrew/Cellar/sdl2/2.32.10/lib/libSDL2.dylib /opt/homebrew/Cellar/sdl2_ttf/2.24.0/lib/libSDL2_ttf.dylib
