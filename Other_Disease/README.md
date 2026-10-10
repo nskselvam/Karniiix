@@ -43,6 +43,35 @@ cmake --build build --config Release
 
 Prediction output is JSON with `research_only:true` and `diagnosis:false`. The class names are deliberately generic until the dataset's verified label semantics are inspected.
 
+## Unified Medical Prediction Entry Point
+
+`medical_screening` routes a single image to the disease-specific model selected
+by `--disease`; it does not combine the distinct MRI, radiograph, and DEXA tasks.
+Pass the checkpoint trained for that condition and the matching image modality:
+
+```sh
+./build/medical_screening predict --disease brain_tumor \
+  --model ../Brain_tumour/models/brain_tumour_cnn.weights \
+  --image /path/to/brain_mri.png
+
+./build/medical_screening predict --disease osteoarthritis \
+  --model ../karnix_spine_edge/models/osteoarthritis_cnn.weights \
+  --image /path/to/knee_xray.png
+
+./build/medical_screening predict --disease osteoporosis \
+  --model ../karnix_spine_edge/models/dexa_cnn.weights \
+  --image /path/to/dexa_scan.png
+```
+
+The modality can be provided explicitly with `--modality MRI`, `XRAY`, or
+`DEXA`; mismatches are rejected. The DEXA model is not bundled because a
+verified labeled DEXA dataset is not available in this repository. The
+osteoporosis command will therefore fail until a compatible DEXA checkpoint
+has been trained. Checkpoint task provenance cannot be verified from the
+current binary weight format, so never substitute a brain-tumor, osteoarthritis,
+or other model file. All output is experimental, research-only, and not a
+medical diagnosis.
+
 ## Model contract
 
 Input: one supported lung X-ray image, decoded to grayscale, resized to a 32x32 feature grid, centered by image mean.

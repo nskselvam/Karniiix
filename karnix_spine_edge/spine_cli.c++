@@ -673,11 +673,10 @@ static void print_banner() {
     std::cout << "\n";
     std::cout << "================================================================================\n";
     std::cout << "  KARNIX SPINE SCREENING SYSTEM v3.0\n";
-    std::cout << "  Clinical-Grade AI Bone Abnormality Detection\n";
+    std::cout << "  Research-only medical image screening; not for diagnosis\n";
     std::cout << "  ─────────────────────────────────────────────────────────────────────────── \n";
-    std::cout << "  • Pre-trained ResNet50 (MURA Dataset)\n";
-    std::cout << "  • UCI Vertebral Column ML Risk Scoring\n";
-    std::cout << "  • Clinical Rule-Based Assessment\n";
+    std::cout << "  • Task-specific CNN checkpoints\n";
+    std::cout << "  • Experimental vertebral and image-feature analyses\n";
     std::cout << "  • Fully Offline - No Internet Required\n";
     std::cout << "================================================================================\n\n";
 }
@@ -689,6 +688,33 @@ static std::string option_value(int argc, char** argv,
         if (argv[index] == option) return argv[index + 1];
     }
     return fallback;
+}
+
+static std::string normalize_task_name(const std::string& task_name) {
+    const std::string normalized = upper_copy(task_name);
+    return normalized == "OSTEOPOROSIS" ? "DEXA_BMD" : normalized;
+}
+
+static bool is_osteoporosis_task(const std::string& task_name) {
+    return task_name == "DEXA_BMD";
+}
+
+static std::string default_model_for_task(const std::string& task_name) {
+    if (is_osteoporosis_task(task_name)) return "./models/dexa_cnn.weights";
+    if (task_name == "LUMBAR_MRI") return "./models/lumbar_mri_cnn.weights";
+    return MODEL_PATH;
+}
+
+static std::string default_negative_label(const std::string& task_name) {
+    if (is_osteoporosis_task(task_name)) return "NORMAL_BMD";
+    if (task_name == "LUMBAR_MRI") return "NO_STENOSIS";
+    return "NO_OA";
+}
+
+static std::string default_positive_label(const std::string& task_name) {
+    if (is_osteoporosis_task(task_name)) return "OSTEOPOROSIS";
+    if (task_name == "LUMBAR_MRI") return "STENOSIS";
+    return "OA";
 }
 
 static int option_int(int argc, char** argv,
@@ -707,11 +733,16 @@ static double option_double(int argc, char** argv,
 int main(int argc, char** argv) {
     try {
         bool verbose = std::find(argv + 1, argv + argc, std::string("--verbose")) != argv + argc;
-        std::string model_path = option_value(argc, argv, "--model", MODEL_PATH);
-        std::string task_name = option_value(argc, argv, "--task", "OSTEOARTHRITIS");
-        std::string negative_name = option_value(argc, argv, "--negative", "NO_OA");
-        std::string positive_name = option_value(argc, argv, "--positive", "OA");
-        std::string modality = upper_copy(option_value(argc, argv, "--modality", "AUTO"));
+        std::string task_name = normalize_task_name(
+            option_value(argc, argv, "--task", "OSTEOARTHRITIS"));
+        std::string model_path = option_value(
+            argc, argv, "--model", default_model_for_task(task_name));
+        std::string negative_name = option_value(
+            argc, argv, "--negative", default_negative_label(task_name));
+        std::string positive_name = option_value(
+            argc, argv, "--positive", default_positive_label(task_name));
+        std::string default_modality = is_osteoporosis_task(task_name) ? "DEXA" : "AUTO";
+        std::string modality = upper_copy(option_value(argc, argv, "--modality", default_modality));
         int batch_size = option_int(argc, argv, "--batch-size", 16);
         double learning_rate = option_double(argc, argv, "--learning-rate", 0.0001);
         std::string checkpoint_dir = option_value(argc, argv, "--checkpoint-dir", "");
@@ -747,12 +778,26 @@ int main(int argc, char** argv) {
 
     const std::string images_dir = argc >= 3 && std::string(argv[1]) == "--screen"
         ? argv[2] : "./data/images";
-    const std::string model_path = option_value(argc, argv, "--model", MODEL_PATH);
-    const std::string task_name = option_value(argc, argv, "--task", "OSTEOARTHRITIS");
-    const std::string negative_name = option_value(argc, argv, "--negative", "NO_OA");
-    const std::string positive_name = option_value(argc, argv, "--positive", "OA");
-    const std::string modality = upper_copy(option_value(argc, argv, "--modality", "AUTO"));
+    const std::string task_name = normalize_task_name(
+        option_value(argc, argv, "--task", "OSTEOARTHRITIS"));
+    const std::string model_path = option_value(
+        argc, argv, "--model", default_model_for_task(task_name));
+    const std::string negative_name = option_value(
+        argc, argv, "--negative", default_negative_label(task_name));
+    const std::string positive_name = option_value(
+        argc, argv, "--positive", default_positive_label(task_name));
+    const std::string default_modality = is_osteoporosis_task(task_name) ? "DEXA" : "AUTO";
+    const std::string modality = upper_copy(option_value(argc, argv, "--modality", default_modality));
     const std::string db_path = "./data/spine_records.json";
+
+    if (is_osteoporosis_task(task_name) && modality != "DEXA") {
+        std::cerr << "[ERROR] Osteoporosis screening requires --modality DEXA and a dedicated DEXA checkpoint.\n";
+        return 2;
+    }
+    if (!is_osteoporosis_task(task_name) && modality == "DEXA") {
+        std::cerr << "[ERROR] DEXA modality requires --task DEXA_BMD (or OSTEOPOROSIS) and its dedicated checkpoint.\n";
+        return 2;
+    }
 
     std::cout << "Configuration:\n";
     std::cout << "  Images Directory: " << images_dir << "\n";
@@ -772,11 +817,6 @@ int main(int argc, char** argv) {
     std::cout << "  Output classes: " << negative_name << " / " << positive_name << "\n\n";
 
     UCIVertebralAnalyzer vertebral_analyzer;
-    ClinicalScoringSystem clinical_scoring;
-    
-    std::cout << "Clinical Analysis Systems Initialized:\n";
-    std::cout << "  ✓ UCI Vertebral Column Analyzer\n";
-    std::cout << "  ✓ Clinical Scoring System\n\n";
 
     std::cout << "Scanning dataset: " << images_dir << "\n";
     
@@ -859,114 +899,109 @@ int main(int argc, char** argv) {
                       << (prob_abnormal * 100.0) << "%\n";
             std::cout << "  Classification: "
                       << (prob_abnormal > 0.5 ? positive_name : negative_name) << "\n";
-            
-            VertebralFeatures vf = VertebralFeatures::extract_from_image_features(
-                mean_intensity, variance, edge_score
-            );
-            
-            VertebralPathology pathology = vertebral_analyzer.classify(vf);
-            double vertebral_risk = vertebral_analyzer.calculate_risk_score(vf);
-            
-            std::cout << "\n[UCI VERTEBRAL COLUMN ANALYSIS]\n";
-            std::cout << "  Pelvic Incidence:      " << std::fixed << std::setprecision(1) 
-                      << vf.pelvic_incidence << "°\n";
-            std::cout << "  Pelvic Tilt:           " << vf.pelvic_tilt << "°\n";
-            std::cout << "  Lumbar Lordosis:       " << vf.lumbar_lordosis_angle << "°\n";
-            std::cout << "  Sacral Slope:          " << vf.sacral_slope << "°\n";
-            std::cout << "  Spondylolisthesis:     " << vf.grade_of_spondylolisthesis << "%\n";
-            std::cout << "  Pathology:             " << UCIVertebralAnalyzer::pathology_name(pathology) << "\n";
-            std::cout << "  Risk Score:            " << std::fixed << std::setprecision(1) 
-                      << vertebral_risk << "/100\n";
-            
-            ClinicalMeasurements clinical_measures = 
-                ClinicalMeasurements::estimate_from_image(
-                    mean_intensity, variance, edge_score, texture_complexity
-                );
-            
-            double clinical_severity = ClinicalScoringSystem::calculate_clinical_severity(clinical_measures);
-            
-            std::cout << "\n[CLINICAL ASSESSMENT]\n";
-            
-            auto scoliosis = ClinicalScoringSystem::classify_scoliosis(clinical_measures.cobb_angle);
-            std::cout << "  Scoliosis:             " << ClinicalScoringSystem::scoliosis_name(scoliosis);
-            if (scoliosis != ScoliosisSeverity::NONE) {
-                std::cout << " (" << std::fixed << std::setprecision(1) 
-                          << clinical_measures.cobb_angle << "°)";
-            }
-            std::cout << "\n";
-            
-            int fracture_grade = ClinicalScoringSystem::compression_fracture_grade(clinical_measures);
-            std::cout << "  Compression Fracture:  ";
-            if (fracture_grade == 0) {
-                std::cout << "Not detected\n";
-            } else {
-                std::cout << "Grade " << fracture_grade << " detected\n";
-            }
-            
-            std::cout << "  Bone Density:          " 
-                      << ClinicalScoringSystem::classify_bone_density(clinical_measures.t_score)
-                      << " (T-score: " << std::fixed << std::setprecision(1) 
-                      << clinical_measures.t_score << ")\n";
 
-            std::cout << "\n[ADVANCED MODALITY ASSESSMENT]\n";
-            std::cout << "  DEXA TBS Proxy:        " << std::fixed << std::setprecision(2)
-                      << advanced_metrics.trabecular_bone_score
-                      << " (pixel-to-pixel texture variation)\n";
-            std::cout << "  CT Cortical Thinning:  " << std::fixed << std::setprecision(1)
-                      << advanced_metrics.cortical_thinning_index
-                      << "/100 (marrow cavity widening + cortex edge loss proxy)\n";
-            std::cout << "  MRI Marrow Signal:     " << advanced_metrics.marrow_signal
-                      << " (dark ratio " << advanced_metrics.marrow_dark_ratio << "%)\n";
-            
-            std::cout << "  Disc Degeneration:     " 
-                      << ClinicalScoringSystem::disc_degeneration_grade_name(
-                          clinical_measures.disc_degeneration_grade) << "\n";
-            
-            double fracture_risk_pct = ClinicalScoringSystem::calculate_fracture_risk_score(clinical_measures);
-            auto fracture_risk = ClinicalScoringSystem::classify_fracture_risk(fracture_risk_pct);
-            std::cout << "  10-Year Fracture Risk: " 
-                      << ClinicalScoringSystem::fracture_risk_name(fracture_risk)
-                      << " (" << std::fixed << std::setprecision(0) << fracture_risk_pct << "%)\n";
-            
-            int instability = ClinicalScoringSystem::calculate_instability_score(clinical_measures);
-            std::cout << "  Instability Score:     " << instability << "/13";
-            if (instability >= 5) {
-                std::cout << " [SURGICAL EVALUATION RECOMMENDED]";
+            int instability = 0;
+            if (!is_osteoporosis_task(task_name)) {
+                VertebralFeatures vf = VertebralFeatures::extract_from_image_features(
+                    mean_intensity, variance, edge_score
+                );
+
+                VertebralPathology pathology = vertebral_analyzer.classify(vf);
+                double vertebral_risk = vertebral_analyzer.calculate_risk_score(vf);
+
+                std::cout << "\n[UCI VERTEBRAL COLUMN ANALYSIS]\n";
+                std::cout << "  Pelvic Incidence:      " << std::fixed << std::setprecision(1)
+                          << vf.pelvic_incidence << "°\n";
+                std::cout << "  Pelvic Tilt:           " << vf.pelvic_tilt << "°\n";
+                std::cout << "  Lumbar Lordosis:       " << vf.lumbar_lordosis_angle << "°\n";
+                std::cout << "  Sacral Slope:          " << vf.sacral_slope << "°\n";
+                std::cout << "  Spondylolisthesis:     " << vf.grade_of_spondylolisthesis << "%\n";
+                std::cout << "  Pathology:             " << UCIVertebralAnalyzer::pathology_name(pathology) << "\n";
+                std::cout << "  Risk Score:            " << std::fixed << std::setprecision(1)
+                          << vertebral_risk << "/100\n";
+
+                ClinicalMeasurements clinical_measures =
+                    ClinicalMeasurements::estimate_from_image(
+                        mean_intensity, variance, edge_score, texture_complexity
+                    );
+
+                std::cout << "\n[EXPERIMENTAL IMAGE-FEATURE ESTIMATES - NOT CLINICAL MEASUREMENTS]\n";
+
+                auto scoliosis = ClinicalScoringSystem::classify_scoliosis(clinical_measures.cobb_angle);
+                std::cout << "  Scoliosis:             " << ClinicalScoringSystem::scoliosis_name(scoliosis);
+                if (scoliosis != ScoliosisSeverity::NONE) {
+                    std::cout << " (" << std::fixed << std::setprecision(1)
+                              << clinical_measures.cobb_angle << "°)";
+                }
+                std::cout << "\n";
+
+                int fracture_grade = ClinicalScoringSystem::compression_fracture_grade(clinical_measures);
+                std::cout << "  Compression Fracture:  ";
+                if (fracture_grade == 0) {
+                    std::cout << "Not detected\n";
+                } else {
+                    std::cout << "Grade " << fracture_grade << " detected\n";
+                }
+
+                std::cout << "\n[EXPERIMENTAL MODALITY METRICS - NOT CLINICAL MEASUREMENTS]\n";
+                std::cout << "  DEXA TBS Proxy:        " << std::fixed << std::setprecision(2)
+                          << advanced_metrics.trabecular_bone_score
+                          << " (pixel-to-pixel texture variation)\n";
+                std::cout << "  CT Cortical Thinning:  " << std::fixed << std::setprecision(1)
+                          << advanced_metrics.cortical_thinning_index
+                          << "/100 (marrow cavity widening + cortex edge loss proxy)\n";
+                std::cout << "  MRI Marrow Signal:     " << advanced_metrics.marrow_signal
+                          << " (dark ratio " << advanced_metrics.marrow_dark_ratio << "%)\n";
+
+                std::cout << "  Disc Degeneration:     "
+                          << ClinicalScoringSystem::disc_degeneration_grade_name(
+                              clinical_measures.disc_degeneration_grade) << "\n";
+
+                double fracture_risk_pct = ClinicalScoringSystem::calculate_fracture_risk_score(clinical_measures);
+                auto fracture_risk = ClinicalScoringSystem::classify_fracture_risk(fracture_risk_pct);
+                std::cout << "  10-Year Fracture Risk: "
+                          << ClinicalScoringSystem::fracture_risk_name(fracture_risk)
+                          << " (" << std::fixed << std::setprecision(0) << fracture_risk_pct << "%)\n";
+
+                instability = ClinicalScoringSystem::calculate_instability_score(clinical_measures);
+                std::cout << "  Instability Score:     " << instability << "/13 (experimental estimate)\n";
             }
-            std::cout << "\n";
-            
+
             double final_score = prob_abnormal * 100.0;
             final_score = std::min(100.0, final_score);
-            
-            std::cout << "\n[COMPREHENSIVE ASSESSMENT]\n";
-            std::cout << "  Overall Risk Score:    " << std::fixed << std::setprecision(1) 
-                      << final_score << "/100\n";
-            
-            std::string risk_category;
-            if (final_score < 30.0) {
-                risk_category = "LOW";
-            } else if (final_score < 60.0) {
-                risk_category = "MODERATE";
+
+            if (is_osteoporosis_task(task_name)) {
+                std::cout << "\n[RESEARCH OUTPUT]\n"
+                          << "  Predicted class: " << (prob_abnormal > 0.5 ? positive_name : negative_name) << "\n"
+                          << "  Predicted-class confidence: " << std::fixed << std::setprecision(1)
+                          << std::max(prob_normal, prob_abnormal) * 100.0 << "%\n"
+                          << "  Osteoporosis-class probability: " << prob_abnormal * 100.0 << "%\n"
+                          << "  This experimental output is not a diagnosis or calibrated risk estimate.\n";
             } else {
-                risk_category = "HIGH";
-            }
-            std::cout << "  Risk Category:         " << risk_category << "\n";
-            
-            std::cout << "\n[CLINICAL RECOMMENDATIONS]\n";
-            if (final_score >= 60.0) {
-                std::cout << "  • Immediate clinical evaluation recommended\n";
-                std::cout << "  • Consider MRI or CT scan for detailed assessment\n";
-                if (instability >= 5) {
-                    std::cout << "  • Orthopedic/neurosurgical consultation advised\n";
+                std::cout << "\n[COMPREHENSIVE ASSESSMENT]\n";
+                std::cout << "  Overall Risk Score:    " << std::fixed << std::setprecision(1)
+                          << final_score << "/100\n";
+
+                std::string risk_category;
+                if (final_score < 30.0) {
+                    risk_category = "LOW";
+                } else if (final_score < 60.0) {
+                    risk_category = "MODERATE";
+                } else {
+                    risk_category = "HIGH";
                 }
-            } else if (final_score >= 30.0) {
-                std::cout << "  • Follow-up imaging in 6-12 months\n";
-                std::cout << "  • Monitor for symptom progression\n";
-            } else {
-                std::cout << "  • Routine follow-up as needed\n";
-                std::cout << "  • No immediate intervention required\n";
+                std::cout << "  Risk Category:         " << risk_category << "\n";
+
+                std::cout << "\n[RESEARCH-ONLY SUGGESTIONS]\n";
+                if (final_score >= 60.0) {
+                    std::cout << "  • Seek evaluation by a qualified healthcare professional\n";
+                } else if (final_score >= 30.0) {
+                    std::cout << "  • Consider discussing the result with a healthcare professional\n";
+                } else {
+                    std::cout << "  • This experimental result does not rule out disease\n";
+                }
             }
-            
+
             auto end_time = std::chrono::high_resolution_clock::now();
             double inference_ms = std::chrono::duration<double, std::milli>(
                 end_time - start_time).count();

@@ -27,8 +27,9 @@ karnix_spine_edge/build/
 karnix_spine_edge/build_current/
 Brain_tumour/build/
 Other_Disease/build/
+llm/build/
+os/karnix64/build/
 *.o
 *.o.d
 *.elf
 node_modules/
-

@@ -1,11 +1,11 @@
 /**
- * KarnixOS v1.0  –  TempleOS-inspired Spine Intelligence OS
- * Karnix Spine Edge  ·  Clinical-Grade Bone Abnormality Detection
+ * KarnixOS v1.1  –  Terminal research-data viewer
+ * Karnix Spine Edge  ·  Experimental, non-diagnostic software
  *
- * UI mirrors TempleOS:
+ * Terminal UI provides:
  *   - Blue title bar with live clock + FPS
  *   - Multiple colour-bordered panels (ncurses)
- *   - ANNOUNCEMENT / DIAGNOSIS / TOOLS / DIRECTORY / ANALYSIS
+ *   - ANNOUNCEMENT / SCREENING STATUS / TOOLS / RECORDS / ANALYSIS
  *   - Interactive shell: type commands at bottom bar
  *
  * Build:
@@ -24,6 +24,10 @@
 #include <unistd.h>
 #include <ctype.h>
 #include <signal.h>
+#include <limits.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <errno.h>
 
 /* ─────────────────────────────────────  Colour pairs (TempleOS palette) ─── */
 #define CP_TITLE      1   /* white on blue   – title bar          */
@@ -45,10 +49,9 @@
 #define MAX_STR         128
 #define JSON_PATH       "./karnix_spine_edge/data/spine_records.json"
 #define CSV_PATH        "./karnix_spine_edge/data/uci_vertebral_samples.csv"
-#define CMD_HISTORY     16
 #define MAX_LOG         256
 #define FPS_TARGET      30
-#define VERSION_STR     "KarnixOS v1.0"
+#define VERSION_STR     "KarnixOS v1.1"
 
 /* ─────────────────────────────────────────────────────  Data structures  ── */
 typedef struct {
@@ -89,83 +92,57 @@ static int         g_log_count = 0;
 
 static int  g_running       = 1;
 static int  g_dir_offset    = 0;
-static int  g_selected      = 0;
-static int  g_active_panel  = 0;  /* 0=announce 1=diag 2=tools 3=dir 4=analysis */
+static int  g_selected      = -1;
 static char g_cmd_buf[256]  = {0};
 static int  g_cmd_len       = 0;
-static int  g_diag_scroll   = 0;
 static char g_search_query[MAX_STR] = {0};
-
-static const char *g_diagnoses[] = {
-    "VERTEBRAL ALIGNMENT NOMINAL – No structural deviation detected.",
-    "SCOLIOSIS RISK: LOW – Cobb angle within normal range (<10 deg).",
-    "DISC INTEGRITY: STABLE – No herniation markers in dataset.",
-    "BONE DENSITY INDEX: 98.2% – Osteoporosis risk: minimal.",
-    "LUMBAR LORDOSIS: 44.3 deg – Within physiological range.",
-    "SACRAL SLOPE: 38.7 deg – Normal sagittal balance confirmed.",
-    "PELVIC INCIDENCE: 52.1 – Harmonious spinopelvic parameters.",
-    "COMPRESSION FRACTURE RISK: LOW – FRAX score < 5%.",
-    "SPONDYLOLISTHESIS: ABSENT – No vertebral slippage detected.",
-    "SPINAL CANAL: PATENT – No stenosis markers present.",
-};
-static const int g_diag_count = 10;
+static int  g_directory_visible_rows = 1;
 
 static const char *g_tools[] = {
-    "[ SCAN     ]  Full Spine AI Analysis",
-    "[ DIAG     ]  Differential Diagnosis",
-    "[ UCI      ]  Vertebral ML Risk Score",
-    "[ COBB     ]  Cobb Angle Measurement",
-    "[ FRAX     ]  Fracture Risk Assessment",
-    "[ DENSITY  ]  Bone Mineral Density",
-    "[ EXPORT   ]  Generate PDF Report",
-    "[ VOICE    ]  Voice Report Mode",
-    "[ TRAIN    ]  Retrain CNN Model",
+    "[ llm     ]  Chat with a local model",
+    "[ scan    ]  Run the configured OA image scan",
+    "[ predict ]  Run a task-specific image model",
+    "[ train   ]  Train and evaluate the OA model",
+    "[ brain   ]  Open the brain MRI model UI",
+    "[ uci     ]  Inspect one sample UCI row",
+    "[ dir     ]  Show loaded data counts",
+    "[ search  ]  Filter loaded records",
+    "[ help    ]  List commands",
+    "[ quit    ]  Exit KarnixOS",
 };
-static const int g_tools_count = 9;
+static const int g_tools_count = (int)(sizeof(g_tools) / sizeof(g_tools[0]));
 
 static const char *g_article_lines[] = {
-    "---- Karnix Spine Edge: What Is It? ----",
+    "---- KarnixOS research viewer ----",
     "",
-    "Karnix Spine Edge is a clinical-grade",
-    "AI spine screening system built on a",
-    "custom CNN (ResNet50 architecture) trained",
-    "on the MURA musculoskeletal dataset.",
+    "A terminal UI for local screening records",
+    "and a small UCI vertebral sample dataset.",
     "",
-    "It performs three-tier analysis:",
-    " 1. Deep learning ONNX inference",
-    " 2. UCI vertebral ML risk scoring",
-    " 3. Rule-based clinical scoring",
+    "The LLM runs in a hosted C++ companion",
+    "and talks only to local Ollama.",
     "",
-    "Classification targets:",
-    "  Normal           Healthy spine",
-    "  DiskHernia       Herniated disc",
-    "  Spondylolisthesis Vertebral slip",
-    "  Abnormal         General anomaly",
+    "The bare-metal kernel is separate and",
+    "does not provide LLM runtime services.",
     "",
-    "---- Architecture ----",
+    "Model commands use separate experimental",
+    "research software and checkpoints.",
     "",
-    "Conv2D(1→8)  ReLU  MaxPool(2)",
-    "Conv2D(8→16) ReLU  MaxPool(2)",
-    "Conv2D(16→32)ReLU  MaxPool(2)",
-    "Flatten → FC(6272→128) → FC(2)",
-    "Output: [Normal, Abnormal]",
+    "Record scores are experimental model",
+    "outputs, not calibrated clinical risks.",
     "",
-    "---- Clinical Scoring ----",
+    "Missing data is not replaced with examples.",
+    "Test records are not patient cases.",
     "",
-    "Cobb Angle  < 10°  Normal",
-    "            10-25° Mild scoliosis",
-    "            25-50° Moderate",
-    "            > 50°  Severe",
-    "",
-    "Pfirrmann Disc Grade 1-5",
-    "T-Score < -2.5  Osteoporosis",
+    "Not a medical device. Not for diagnosis.",
 };
-static const int g_article_lines_count = 34;
+static const int g_article_lines_count =
+    (int)(sizeof(g_article_lines) / sizeof(g_article_lines[0]));
 
 /* ─────────────────────────────────────────────────────  Logging  ──────────── */
 static void log_msg(const char *msg, int cp) {
     if (g_log_count < MAX_LOG) {
         strncpy(g_log[g_log_count].text, msg, 255);
+        g_log[g_log_count].text[255] = '\0';
         g_log[g_log_count].color_pair = cp;
         g_log_count++;
     }
@@ -187,30 +164,66 @@ static int contains_case_insensitive(const char *text, const char *query) {
 
 /* ─────────────────────────────────────────────────────  JSON parser  ──────── */
 static void trim(char *s) {
-    char *p = s + strlen(s) - 1;
-    while (p >= s && (*p == '"' || *p == ',' || *p == ' ' || *p == '\n'
-                       || *p == '\r' || *p == ':')) { *p-- = '\0'; }
-    p = s;
-    while (*p == '"' || *p == ' ') p++;
-    memmove(s, p, strlen(p) + 1);
+    size_t length = strlen(s);
+    while (length > 0 &&
+           (s[length - 1] == '"' || s[length - 1] == ',' ||
+            s[length - 1] == ' ' || s[length - 1] == '\n' ||
+            s[length - 1] == '\r' || s[length - 1] == ':')) {
+        s[--length] = '\0';
+    }
+    size_t start = 0;
+    while (s[start] == '"' || s[start] == ' ') start++;
+    if (start > 0) memmove(s, s + start, strlen(s + start) + 1);
+}
+
+static int record_matches_query(const SpineRecord *record) {
+    char haystack[512];
+    snprintf(haystack, sizeof(haystack), "%s %s %s %s %s",
+             record->patient_id, record->date, record->classification,
+             record->image_path, record->sex);
+    return contains_case_insensitive(haystack, g_search_query);
+}
+
+static int matching_record_count(void) {
+    int count = 0;
+    for (int i = 0; i < g_record_count; i++) {
+        if (record_matches_query(&g_records[i])) count++;
+    }
+    return count;
+}
+
+static int filtered_position_for_record(int record_index) {
+    int position = 0;
+    for (int i = 0; i < record_index; i++) {
+        if (record_matches_query(&g_records[i])) position++;
+    }
+    return position;
+}
+
+static void move_selected_record(int direction) {
+    int index = g_selected;
+    if (index < 0 || index >= g_record_count ||
+        !record_matches_query(&g_records[index])) {
+        index = direction > 0 ? -1 : g_record_count;
+    }
+
+    for (index += direction; index >= 0 && index < g_record_count; index += direction) {
+        if (!record_matches_query(&g_records[index])) continue;
+        g_selected = index;
+        int position = filtered_position_for_record(index);
+        if (position < g_dir_offset) {
+            g_dir_offset = position;
+        } else if (position >= g_dir_offset + g_directory_visible_rows) {
+            g_dir_offset = position - g_directory_visible_rows + 1;
+        }
+        return;
+    }
 }
 
 static void parse_json_records(void) {
     FILE *f = fopen(JSON_PATH, "r");
     if (!f) {
-        log_msg("WARNING: Cannot open spine_records.json – using demo data", CP_PANEL_RED);
-        /* Insert demo records */
-        SpineRecord *r;
-        for (int i = 0; i < 4 && g_record_count < MAX_RECORDS; i++) {
-            r = &g_records[g_record_count++];
-            snprintf(r->patient_id, MAX_STR, "DEMO-%03d", i + 1);
-            r->age = 35 + i * 7;
-            strcpy(r->sex, i % 2 == 0 ? "M" : "F");
-            strcpy(r->date, "2026-02-28");
-            r->risk_score    = 75.0 + (i * 6.5);
-            r->abnormal_prob = 0.1 + (i * 0.2);
-            strcpy(r->classification, i < 2 ? "Normal" : "Abnormal");
-        }
+        log_msg("No screening records found; no example predictions loaded.", CP_PANEL_RED);
         return;
     }
 
@@ -229,6 +242,8 @@ static void parse_json_records(void) {
             in_obj = 0;
             if (cur.patient_id[0] && g_record_count < MAX_RECORDS)
                 g_records[g_record_count++] = cur;
+            else if (cur.patient_id[0])
+                log_msg("Record limit reached; additional records were skipped.", CP_PANEL_RED);
             continue;
         }
         if (!in_obj) continue;
@@ -237,7 +252,9 @@ static void parse_json_records(void) {
         char key[64] = {0}, val[256] = {0};
         char *colon = strchr(l, ':');
         if (!colon) continue;
-        strncpy(key, l, (size_t)(colon - l));
+        size_t key_length = (size_t)(colon - l);
+        if (key_length >= sizeof(key)) continue;
+        memcpy(key, l, key_length);
         strncpy(val, colon + 1, 255);
         trim(key); trim(val);
 
@@ -255,6 +272,7 @@ static void parse_json_records(void) {
     char buf[128];
     snprintf(buf, sizeof(buf), "Loaded %d spine records from JSON database.", g_record_count);
     log_msg(buf, CP_PANEL_GRN);
+    g_selected = g_record_count > 0 ? 0 : -1;
 }
 
 static void parse_uci_csv(void) {
@@ -326,9 +344,19 @@ static void draw_hline(WINDOW *win, int y, int x, int w, int cp) {
 
 /* Print clipped to width, return chars written */
 static int mvwprint_clip(WINDOW *win, int y, int x, int w, const char *s) {
-    char buf[256]; strncpy(buf, s, 254); buf[254] = '\0';
-    if ((int)strlen(buf) > w) { buf[w-1] = '\0'; }
-    mvwprintw(win, y, x, "%s", buf);
+    int rows, cols;
+    getmaxyx(win, rows, cols);
+    if (y < 0 || y >= rows || x < 0 || x >= cols || w <= 0) return 0;
+    int available = cols - x;
+    if (w > available) w = available;
+    if (w <= 0) return 0;
+    char buf[256];
+    size_t length = strlen(s);
+    if (length >= sizeof(buf)) length = sizeof(buf) - 1;
+    memcpy(buf, s, length);
+    buf[length] = '\0';
+    if ((int)length > w) buf[w] = '\0';
+    mvwaddnstr(win, y, x, buf, w);
     return (int)strlen(buf);
 }
 
@@ -338,13 +366,19 @@ static void render_titlebar(WINDOW *win, int cols, int fps) {
     time_t t = time(NULL);
     struct tm *tm = localtime(&t);
     char datebuf[64];
-    strftime(datebuf, sizeof(datebuf), "LOAD %a %m/%d %H:%M:%S", tm);
+    if (tm) strftime(datebuf, sizeof(datebuf), "%a %m/%d %H:%M:%S", tm);
+    else snprintf(datebuf, sizeof(datebuf), "LOCAL time unavailable");
 
     wattron(win, COLOR_PAIR(CP_TITLE) | A_BOLD);
     mvwhline(win, 0, 0, ' ', cols);
-    mvwprintw(win, 0, 0, " %s  FPS:%d", datebuf, fps);
+    mvwprint_clip(win, 0, 0, cols, " KarnixOS | research viewer");
     wattron(win, COLOR_PAIR(CP_HEADER) | A_BOLD);
-    mvwprintw(win, 0, cols - 16, "CTRL SHIFT ?");
+    if (cols >= 60) mvwprint_clip(win, 0, cols - 28, 20, datebuf);
+    if (cols >= 60) {
+        char fps_text[16];
+        snprintf(fps_text, sizeof(fps_text), "FPS:%d", fps);
+        mvwprint_clip(win, 0, cols - 7, 7, fps_text);
+    }
     wattroff(win, A_BOLD | COLOR_PAIR(CP_HEADER));
 }
 
@@ -356,53 +390,44 @@ static void render_announce(WINDOW *win, int y, int x, int h, int w) {
     int row = iy;
 
     wattron(win, COLOR_PAIR(CP_HIGHLIGHT) | A_BOLD);
-    mvwprint_clip(win, row++, ix, iw, "  --Karnix Spine Edge OS--  ");
-    wattroff(win, COLOR_PAIR(CP_HIGHLIGHT) | A_BOLD);
+    if (row < y + h - 1) mvwprint_clip(win, row++, ix, iw, "Karnix Spine Edge OS");
+    wattroff(win, A_BOLD | COLOR_PAIR(CP_HIGHLIGHT));
 
     wattron(win, COLOR_PAIR(CP_PANEL_YEL));
-    mvwprint_clip(win, row++, ix, iw, "Clinical-Grade AI Screening");
-    mvwprint_clip(win, row++, ix, iw, "ResNet50  |  ONNX Runtime");
-    mvwprint_clip(win, row++, ix, iw, "UCI Vertebral  |  MURA Data");
-    row++;
-
-    wattron(win, COLOR_PAIR(CP_PANEL_GRN) | A_BOLD);
-    mvwprint_clip(win, row++, ix, iw, ">>  COMING SOON  <<");
-    wattroff(win, A_BOLD);
-    wattron(win, COLOR_PAIR(CP_PANEL_YEL));
-    mvwprint_clip(win, row++, ix, iw, "* DICOM Image Support");
-    mvwprint_clip(win, row++, ix, iw, "* 3D Reconstruction View");
-    mvwprint_clip(win, row++, ix, iw, "* Cloud Sync & Share");
-    mvwprint_clip(win, row++, ix, iw, "* Voice Report Mode v2");
-    row++;
-
-    wattron(win, COLOR_PAIR(CP_PANEL_CYN));
-    mvwprint_clip(win, row++, ix, iw, "Cmd: help | scan | dir");
-    mvwprint_clip(win, row++, ix, iw, "     uci  | clear | quit");
-
-    wattroff(win, COLOR_PAIR(CP_PANEL_CYN));
+    if (row < y + h - 1) mvwprint_clip(win, row++, ix, iw, "Local experimental data viewer");
+    if (row < y + h - 1) mvwprint_clip(win, row++, ix, iw, "No diagnosis or medical advice");
+    char status[80];
+    snprintf(status, sizeof(status), "* Screening records: %d", g_record_count);
+    if (row < y + h - 1) mvwprint_clip(win, row++, ix, iw, status);
+    snprintf(status, sizeof(status), "* UCI sample rows: %d", g_uci_count);
+    if (row < y + h - 1) mvwprint_clip(win, row++, ix, iw, status);
+    if (row < y + h - 1) mvwprint_clip(win, row++, ix, iw, "Missing data is not simulated");
+    if (row < y + h - 1) {
+        wattron(win, COLOR_PAIR(CP_PANEL_CYN));
+        mvwprint_clip(win, row, ix, iw, "Cmd: help | llm | scan | dir");
+        wattroff(win, COLOR_PAIR(CP_PANEL_CYN));
+    }
 }
 
-/* DIAGNOSIS panel – top-center (scrolling God Word style) */
+/* Screening-status panel – top-center. */
 static void render_diagnosis(WINDOW *win, int y, int x, int h, int w) {
-    draw_box(win, y, x, h, w, "DIAGNOSIS", "karnix.edge/#diag", CP_PANEL_CYN);
+    draw_box(win, y, x, h, w, "SCREENING STATUS", NULL, CP_PANEL_CYN);
 
     int iy = y + 1, ix = x + 1, iw = w - 2;
 
     wattron(win, COLOR_PAIR(CP_PANEL_CYN) | A_BOLD);
-    mvwprint_clip(win, iy, ix, iw, "AI SPINE ANALYSIS SAYS:");
+    mvwprint_clip(win, iy, ix, iw, "RESEARCH-ONLY DATA VIEW");
     wattroff(win, A_BOLD);
 
-    wattron(win, COLOR_PAIR(CP_PANEL_GRN));
-    /* Cycle diagnoses */
-    for (int i = 0; i < h - 4 && i < g_diag_count; i++) {
-        int idx = (g_diag_scroll + i) % g_diag_count;
-        mvwprint_clip(win, iy + 1 + i, ix, iw, g_diagnoses[idx]);
+    wattron(win, COLOR_PAIR(CP_PANEL_YEL));
+    mvwprint_clip(win, iy + 1, ix, iw, "This program displays saved outputs.");
+    mvwprint_clip(win, iy + 2, ix, iw, "It does not diagnose or rule out disease.");
+    mvwprint_clip(win, iy + 3, ix, iw, "Review findings with a qualified clinician.");
+    if (h >= 9) {
+        draw_hline(win, y + h - 3, x + 1, w - 2, CP_PANEL_CYN);
+        mvwprint_clip(win, y + h - 2, ix, iw, "Commands: scan | brain | help");
     }
-
-    draw_hline(win, y + h - 3, x + 1, w - 2, CP_PANEL_CYN);
-    wattron(win, COLOR_PAIR(CP_PANEL_WHT));
-    mvwprint_clip(win, y + h - 2, ix, iw, "[ NEW ANALYSIS ]");
-    wattroff(win, COLOR_PAIR(CP_PANEL_WHT));
+    wattroff(win, COLOR_PAIR(CP_PANEL_YEL));
 }
 
 /* TOOLS panel – top-right */
@@ -416,7 +441,7 @@ static void render_tools(WINDOW *win, int y, int x, int h, int w) {
     wattroff(win, A_BOLD);
 
     for (int i = 0; i < g_tools_count && i < h - 4; i++) {
-        if (i == g_active_panel % g_tools_count) {
+        if (i == 0) {
             wattron(win, COLOR_PAIR(CP_HIGHLIGHT) | A_BOLD);
         } else {
             wattron(win, COLOR_PAIR(CP_PANEL_GRN));
@@ -428,16 +453,18 @@ static void render_tools(WINDOW *win, int y, int x, int h, int w) {
 
 /* DIRECTORY panel – bottom-left (patient records) */
 static void render_directory(WINDOW *win, int y, int x, int h, int w) {
-    draw_box(win, y, x, h, w, "PATIENT-RECORDS", "karnix.edge/#records", CP_PANEL_MAG);
+    draw_box(win, y, x, h, w, "SCREENING-RECORDS", "karnix.edge/#records", CP_PANEL_MAG);
 
     int iy = y + 1, ix = x + 1, iw = w - 2;
     int max_rows = h - 2;
+    g_directory_visible_rows = max_rows - 3;
+    if (g_directory_visible_rows < 1) g_directory_visible_rows = 1;
 
     /* Header row */
     wattron(win, COLOR_PAIR(CP_PANEL_MAG) | A_BOLD);
     char hdr[128];
     snprintf(hdr, sizeof(hdr), " %-16s %-8s %-6s %-5s %s",
-             "PATIENT-ID", "DATE", "CLASS", "RISK", "ABN%");
+             "RECORD-ID", "DATE", "CLASS", "SCORE", "ABN%");
     if (g_search_query[0]) {
         char search_header[128];
         snprintf(search_header, sizeof(search_header), " SEARCH: %s", g_search_query);
@@ -451,20 +478,15 @@ static void render_directory(WINDOW *win, int y, int x, int h, int w) {
     int matched = 0;
     for (int i = 0; i < g_record_count; i++) {
         SpineRecord *r = &g_records[i];
-        char haystack[512];
-        snprintf(haystack, sizeof(haystack), "%s %s %s %s %s",
-                 r->patient_id, r->date, r->classification, r->image_path, r->sex);
-        if (g_search_query[0] && !contains_case_insensitive(haystack, g_search_query)) continue;
+        if (!record_matches_query(r)) continue;
         matched++;
         if (matched <= g_dir_offset || shown >= max_rows - 3) continue;
 
         /* alternate colour; highlight selected */
         if (i == g_selected) {
             wattron(win, COLOR_PAIR(CP_HIGHLIGHT) | A_BOLD);
-        } else if (strcmp(r->classification, "Normal") == 0) {
-            wattron(win, COLOR_PAIR(CP_NORMAL));
         } else {
-            wattron(win, COLOR_PAIR(CP_ABNORMAL));
+            wattron(win, COLOR_PAIR(CP_PANEL_WHT));
         }
 
         char row_buf[160];
@@ -473,7 +495,8 @@ static void render_directory(WINDOW *win, int y, int x, int h, int w) {
                  r->risk_score, r->abnormal_prob * 100.0);
         mvwprint_clip(win, iy + 2 + shown, ix, iw, row_buf);
         wattroff(win, COLOR_PAIR(CP_HIGHLIGHT) | A_BOLD |
-                 COLOR_PAIR(CP_NORMAL) | COLOR_PAIR(CP_ABNORMAL));
+                 COLOR_PAIR(CP_PANEL_WHT));
+        shown++;
     }
 
     /* Scroll indicator */
@@ -483,6 +506,7 @@ static void render_directory(WINDOW *win, int y, int x, int h, int w) {
         snprintf(sc, sizeof(sc), "[%d matches]  ^/v scroll  search <text>  search clear",
                  matched);
         mvwprint_clip(win, y + h - 2, ix, iw, sc);
+        if (matched == 0) mvwprint_clip(win, iy + 2, ix, iw, "No records match this search.");
     } else {
         mvwprint_clip(win, y + h - 2, ix, iw, "No records loaded. Type: scan");
     }
@@ -496,76 +520,45 @@ static void render_analysis(WINDOW *win, int y, int x, int h, int w, int scroll)
     int iy = y + 1, ix = x + 1, iw = w - 2;
     int max_rows = h - 2;
 
-    /* If a record is selected, show its detail */
-    if (g_record_count > 0) {
+    /* If a matching record is selected, show its saved fields. */
+    if (g_selected >= 0 && g_selected < g_record_count &&
+        record_matches_query(&g_records[g_selected])) {
         SpineRecord *r = &g_records[g_selected];
-
-        wattron(win, COLOR_PAIR(CP_PANEL_YEL) | A_BOLD);
-        char title[128];
-        snprintf(title, sizeof(title), "---- %s ----", r->patient_id);
-        mvwprint_clip(win, iy, ix, iw, title);
-        wattroff(win, A_BOLD);
-
-        /* Classification badge */
-        if (strcmp(r->classification, "Normal") == 0)
-            wattron(win, COLOR_PAIR(CP_NORMAL) | A_BOLD);
-        else
-            wattron(win, COLOR_PAIR(CP_ABNORMAL) | A_BOLD);
-        mvwprintw(win, iy + 1, ix, "Status: %s", r->classification);
-        wattroff(win, A_BOLD | COLOR_PAIR(CP_NORMAL) | COLOR_PAIR(CP_ABNORMAL));
-
-        wattron(win, COLOR_PAIR(CP_PANEL_WHT));
-        mvwprintw(win, iy + 2, ix, "Date   : %s", r->date);
-        mvwprintw(win, iy + 3, ix, "Age    : %d", r->age);
-        mvwprintw(win, iy + 4, ix, "Sex    : %s", r->sex[0] ? r->sex : "N/A");
-
-        /* Risk bar */
-        mvwprintw(win, iy + 5, ix, "Risk   : %.2f%%", r->risk_score);
-        int bar_w = iw - 12;
-        if (bar_w > 2) {
-            int filled = (int)(r->risk_score * bar_w / 100.0);
-            if (filled > bar_w) filled = bar_w;
-            wattron(win, COLOR_PAIR(CP_PANEL_GRN));
-            mvwprintw(win, iy + 6, ix, "[");
-            for (int b = 0; b < filled; b++) waddch(win, ACS_BLOCK);
-            wattron(win, COLOR_PAIR(CP_PANEL_RED));
-            for (int b = filled; b < bar_w; b++) waddch(win, '-');
-            wattron(win, COLOR_PAIR(CP_PANEL_WHT));
-            waddch(win, ']');
+        int row = iy;
+        const int last_row = y + h - 1;
+        char line[256];
+        snprintf(line, sizeof(line), "Record: %s", r->patient_id);
+        if (row < last_row) mvwprint_clip(win, row++, ix, iw, line);
+        snprintf(line, sizeof(line), "Class: %s", r->classification);
+        if (row < last_row) mvwprint_clip(win, row++, ix, iw, line);
+        snprintf(line, sizeof(line), "Date: %s  Age: %d  Sex: %s",
+                 r->date, r->age, r->sex[0] ? r->sex : "N/A");
+        if (row < last_row) mvwprint_clip(win, row++, ix, iw, line);
+        snprintf(line, sizeof(line), "Model score (unvalidated): %.2f", r->risk_score);
+        if (row < last_row) mvwprint_clip(win, row++, ix, iw, line);
+        snprintf(line, sizeof(line), "Abnormal-class probability: %.2f%%",
+                 r->abnormal_prob * 100.0);
+        if (row < last_row) mvwprint_clip(win, row++, ix, iw, line);
+        if (row < last_row) mvwprint_clip(win, row++, ix, iw, "Image:");
+        if (row < last_row) mvwprint_clip(win, row++, ix, iw, r->image_path);
+        if (g_uci_count > 0 && row + 3 < last_row) {
+            UCIRecord *u = &g_uci[0];
+            mvwprint_clip(win, row++, ix, iw, "UCI sample (not linked to this scan):");
+            snprintf(line, sizeof(line), "PI %.1f PT %.1f LL %.1f",
+                     u->pelvic_incidence, u->pelvic_tilt, u->lumbar_lordosis);
+            mvwprint_clip(win, row++, ix, iw, line);
+            snprintf(line, sizeof(line), "SS %.1f PR %.1f SP %.1f (%s)",
+                     u->sacral_slope, u->pelvic_radius, u->spondylolisthesis,
+                     u->class_label);
+            mvwprint_clip(win, row++, ix, iw, line);
         }
-
-        /* Abnormal prob */
-        mvwprintw(win, iy + 7, ix, "AbnPrb : %.4f", r->abnormal_prob);
-        mvwprintw(win, iy + 8, ix, "Image  :");
-        mvwprint_clip(win, iy + 9, ix, iw, r->image_path);
-
-        draw_hline(win, iy + 10, ix, iw, CP_PANEL_WHT);
-
-        /* UCI closest match */
-        wattron(win, COLOR_PAIR(CP_PANEL_CYN) | A_BOLD);
-        mvwprintw(win, iy + 11, ix, "Nearest UCI Record:");
-        wattroff(win, A_BOLD);
-        if (g_uci_count > 0) {
-            UCIRecord *u = &g_uci[g_selected % g_uci_count];
-            wattron(win, COLOR_PAIR(CP_PANEL_YEL));
-            if (iy + 12 < y + h - 2) mvwprintw(win, iy + 12, ix, "PI:%.1f PT:%.1f LL:%.1f",
-                    u->pelvic_incidence, u->pelvic_tilt, u->lumbar_lordosis);
-            if (iy + 13 < y + h - 2) mvwprintw(win, iy + 13, ix, "SS:%.1f PR:%.1f SP:%.1f",
-                    u->sacral_slope, u->pelvic_radius, u->spondylolisthesis);
-            if (iy + 14 < y + h - 2) {
-                if (strcmp(u->class_label, "Normal") == 0)
-                    wattron(win, COLOR_PAIR(CP_NORMAL) | A_BOLD);
-                else
-                    wattron(win, COLOR_PAIR(CP_PANEL_RED) | A_BOLD);
-                mvwprintw(win, iy + 14, ix, "Class: %s", u->class_label);
-                wattroff(win, A_BOLD | COLOR_PAIR(CP_NORMAL) | COLOR_PAIR(CP_PANEL_RED));
-            }
-        }
-        wattroff(win, COLOR_PAIR(CP_PANEL_YEL) | COLOR_PAIR(CP_PANEL_CYN));
+    } else if (g_record_count > 0 && g_search_query[0]) {
+        mvwprint_clip(win, iy, ix, iw, "No records match the current search.");
     } else {
         /* fallback: show OS article */
         wattron(win, COLOR_PAIR(CP_PANEL_WHT));
-        for (int i = 0; i < max_rows - 1 && (i + scroll) < g_article_lines_count; i++) {
+        for (int i = 0; i < max_rows - 1 &&
+             (i + scroll) < g_article_lines_count; i++) {
             mvwprint_clip(win, iy + i, ix, iw, g_article_lines[i + scroll]);
         }
         wattroff(win, COLOR_PAIR(CP_PANEL_WHT));
@@ -581,13 +574,16 @@ static void render_log(WINDOW *win, int y, int x, int h, int w) {
     int start = g_log_count - iw / 40;
     if (start < 0) start = 0;
     int col = ix;
-    for (int i = start; i < g_log_count && col < ix + iw - 20; i++) {
+    for (int i = start; i < g_log_count && col < ix + iw - 2; i++) {
         wattron(win, COLOR_PAIR(g_log[i].color_pair));
         /* single line snippets */
         char snip[48]; strncpy(snip, g_log[i].text, 47); snip[47] = '\0';
         char *nl = strchr(snip, '\n'); if (nl) *nl = '\0';
-        mvwprintw(win, iy, col, "%s  ", snip);
-        col += (int)strlen(snip) + 2;
+        int remaining = ix + iw - col;
+        int text_length = (int)strlen(snip);
+        if (text_length > remaining - 2) text_length = remaining - 2;
+        if (text_length > 0) mvwaddnstr(win, iy, col, snip, text_length);
+        col += text_length + 2;
         wattroff(win, COLOR_PAIR(g_log[i].color_pair));
     }
 }
@@ -596,10 +592,11 @@ static void render_log(WINDOW *win, int y, int x, int h, int w) {
 static void render_cmdbar(WINDOW *win, int rows, int cols) {
     wattron(win, COLOR_PAIR(CP_CMD) | A_BOLD);
     mvwhline(win, rows - 1, 0, ' ', cols);
-    mvwprintw(win, rows - 1, 0, " KarnixOS> %s", g_cmd_buf);
+    mvwprint_clip(win, rows - 1, 0, cols, " KarnixOS> ");
+    if (cols > 11) mvwprint_clip(win, rows - 1, 11, cols - 11, g_cmd_buf);
     /* cursor */
     wattron(win, A_BLINK);
-    mvwaddch(win, rows - 1, 11 + g_cmd_len, '_');
+    if (11 + g_cmd_len < cols) mvwaddch(win, rows - 1, 11 + g_cmd_len, '_');
     wattroff(win, A_BLINK | A_BOLD | COLOR_PAIR(CP_CMD));
 }
 
@@ -613,11 +610,200 @@ static int run_host_command(const char *command) {
     return result;
 }
 
+static int split_llm_arguments(const char *input, char *storage,
+                               size_t storage_size, char **arguments,
+                               size_t argument_capacity) {
+    size_t read_index = 0;
+    size_t write_index = 0;
+    size_t count = 1;
+    arguments[0] = "karnix_llm";
+
+    while (input[read_index]) {
+        while (isspace((unsigned char)input[read_index])) read_index++;
+        if (!input[read_index]) break;
+        if (count + 1 >= argument_capacity) return -1;
+        if (write_index >= storage_size) return -1;
+        arguments[count++] = storage + write_index;
+
+        char quote = '\0';
+        while (input[read_index]) {
+            const char character = input[read_index++];
+            if (quote) {
+                if (character == quote) {
+                    quote = '\0';
+                } else {
+                    if (write_index + 1 >= storage_size) return -1;
+                    storage[write_index++] = character;
+                }
+            } else if (character == '"' || character == '\'') {
+                quote = character;
+            } else if (isspace((unsigned char)character)) {
+                break;
+            } else {
+                if (write_index + 1 >= storage_size) return -1;
+                storage[write_index++] = character;
+            }
+        }
+        if (quote) return -1;
+        storage[write_index++] = '\0';
+    }
+    arguments[count] = NULL;
+    return (int)count;
+}
+
+static int run_llm_command(const char *arguments) {
+    const char *program = "./llm/build/karnix_llm";
+    if (access(program, X_OK) != 0) {
+        log_msg("Build the local C++ LLM first: cmake -S llm -B llm/build.",
+                CP_PANEL_RED);
+        return -1;
+    }
+
+    const char *request = arguments;
+    while (*request == ' ') request++;
+
+    char argument_storage[256] = {0};
+    char *child_arguments[18] = {0};
+    int argument_count = split_llm_arguments(
+        request, argument_storage, sizeof(argument_storage), child_arguments,
+        sizeof(child_arguments) / sizeof(child_arguments[0]));
+    if (argument_count < 0) {
+        log_msg("Invalid LLM arguments; check quoting or shorten the command.",
+                CP_PANEL_RED);
+        return -1;
+    }
+    if (argument_count == 1) {
+        child_arguments[1] = "--interactive";
+        child_arguments[2] = NULL;
+    }
+
+    def_prog_mode();
+    endwin();
+    pid_t child = fork();
+    if (child == 0) {
+        execv(program, child_arguments);
+        perror("Cannot launch local Karnix LLM");
+        _exit(127);
+    }
+
+    if (child < 0) {
+        reset_prog_mode();
+        clearok(stdscr, TRUE);
+        log_msg("Could not start local LLM process.", CP_PANEL_RED);
+        return -1;
+    }
+
+    int status = 0;
+    while (waitpid(child, &status, 0) < 0) {
+        if (errno == EINTR) continue;
+        status = -1;
+        break;
+    }
+    reset_prog_mode();
+    clearok(stdscr, TRUE);
+    refresh();
+    if (status == -1 || !WIFEXITED(status) || WEXITSTATUS(status) != 0) {
+        log_msg("Local LLM exited with an error; see its output above.",
+                CP_PANEL_RED);
+        return -1;
+    }
+    log_msg("Local LLM session ended.", CP_PANEL_GRN);
+    return 0;
+}
+
+static int run_medical_prediction(const char *disease, const char *image_path) {
+    const char *model_path = NULL;
+    if (strcmp(disease, "brain_tumor") == 0 ||
+        strcmp(disease, "brain_tumour") == 0) {
+        model_path = "Brain_tumour/models/brain_tumour_cnn.weights";
+    } else if (strcmp(disease, "osteoarthritis") == 0) {
+        model_path = "karnix_spine_edge/models/osteoarthritis_cnn.weights";
+    } else if (strcmp(disease, "osteoporosis") == 0) {
+        model_path = "karnix_spine_edge/models/dexa_cnn.weights";
+    } else {
+        log_msg("Choose brain_tumor, osteoarthritis, or osteoporosis.", CP_PANEL_RED);
+        return -1;
+    }
+
+    const char *program = "./Other_Disease/build/medical_screening";
+    if (access(program, X_OK) != 0) {
+        log_msg("Build Other_Disease target medical_screening before predicting.", CP_PANEL_RED);
+        return -1;
+    }
+    if (access(model_path, F_OK) != 0) {
+        log_msg("Required disease-specific model checkpoint is missing.", CP_PANEL_RED);
+        return -1;
+    }
+    if (access(image_path, R_OK) != 0) {
+        log_msg("Cannot read the requested image file.", CP_PANEL_RED);
+        return -1;
+    }
+
+    def_prog_mode();
+    endwin();
+    pid_t child = fork();
+    if (child == 0) {
+        execl(program, "medical_screening", "predict",
+              "--disease", disease, "--model", model_path,
+              "--image", image_path, (char *)NULL);
+        perror("Cannot launch medical_screening");
+        _exit(127);
+    }
+    if (child < 0) {
+        reset_prog_mode();
+        clearok(stdscr, TRUE);
+        log_msg("Could not start prediction process.", CP_PANEL_RED);
+        return -1;
+    }
+
+    int status = 0;
+    while (waitpid(child, &status, 0) < 0) {
+        if (errno == EINTR) continue;
+        status = -1;
+        break;
+    }
+    reset_prog_mode();
+    clearok(stdscr, TRUE);
+    refresh();
+
+    if (status == -1 || !WIFEXITED(status) || WEXITSTATUS(status) != 0) {
+        log_msg("Prediction failed; see the model error above.", CP_PANEL_RED);
+        return -1;
+    }
+    log_msg("Research prediction completed; not a diagnosis.", CP_PANEL_GRN);
+    return 0;
+}
+
 /* ─────────────────────────────────────────────────────  Command handler  ─── */
 static void exec_command(const char *cmd) {
     char buf[300];
     if (strcmp(cmd, "help") == 0) {
-        log_msg("Commands: search <text>  search clear  help train scan brain spine3dData dir uci clear quit", CP_PANEL_GRN);
+        log_msg("Commands: llm [--status|--interactive|<prompt>]; predict <disease> <image-path>; search; scan; train; brain; uci; quit", CP_PANEL_GRN);
+    } else if (strcmp(cmd, "llm") == 0 || strncmp(cmd, "llm ", 4) == 0) {
+        const char *arguments = cmd[3] == '\0' ? "" : cmd + 4;
+        run_llm_command(arguments);
+    } else if (strncmp(cmd, "predict ", 8) == 0) {
+        const char *arguments = cmd + 8;
+        while (*arguments == ' ') arguments++;
+        char disease[32] = {0};
+        size_t disease_length = 0;
+        while (arguments[disease_length] &&
+               !isspace((unsigned char)arguments[disease_length]) &&
+               disease_length < sizeof(disease) - 1) {
+            disease[disease_length] = arguments[disease_length];
+            disease_length++;
+        }
+        const char *image_path = arguments + disease_length;
+        while (*image_path == ' ') image_path++;
+        char image_buffer[256];
+        strncpy(image_buffer, image_path, sizeof(image_buffer) - 1);
+        image_buffer[sizeof(image_buffer) - 1] = '\0';
+        trim(image_buffer);
+        if (disease_length == 0 || image_buffer[0] == '\0') {
+            log_msg("Usage: predict <brain_tumor|osteoarthritis|osteoporosis> <image-path>", CP_PANEL_RED);
+        } else {
+            run_medical_prediction(disease, image_buffer);
+        }
     } else if (strcmp(cmd, "train") == 0) {
         int result = run_host_command(
             "cd karnix_spine_edge && "
@@ -630,10 +816,15 @@ static void exec_command(const char *cmd) {
         int result = run_host_command(
             "cd karnix_spine_edge && "
             "./build/spine_cli --screen data/osteoarthritis/screen");
-        g_record_count = 0;
-        g_uci_count = 0;
-        parse_json_records();
-        parse_uci_csv();
+        if (result == 0) {
+            g_record_count = 0;
+            g_uci_count = 0;
+            g_selected = -1;
+            g_dir_offset = 0;
+            g_search_query[0] = '\0';
+            parse_json_records();
+            parse_uci_csv();
+        }
         log_msg(result == 0 ? "OA screening complete; records reloaded."
                             : "OA screening failed. Run karnix_spine_edge/setup.sh.",
                 result == 0 ? CP_PANEL_GRN : CP_PANEL_RED);
@@ -650,7 +841,7 @@ static void exec_command(const char *cmd) {
                 result == 0 ? CP_PANEL_GRN : CP_PANEL_RED);
     } else if (strcmp(cmd, "search clear") == 0 || strcmp(cmd, "find clear") == 0) {
         g_search_query[0] = '\0';
-        g_selected = 0;
+        g_selected = g_record_count > 0 ? 0 : -1;
         g_dir_offset = 0;
         log_msg("Patient search cleared.", CP_PANEL_GRN);
     } else if (strncmp(cmd, "search ", 7) == 0 || strncmp(cmd, "find ", 5) == 0) {
@@ -658,17 +849,18 @@ static void exec_command(const char *cmd) {
         while (*query == ' ') query++;
         strncpy(g_search_query, query, MAX_STR - 1);
         g_search_query[MAX_STR - 1] = '\0';
-        g_selected = 0;
+        g_selected = -1;
         g_dir_offset = 0;
+        move_selected_record(1);
         log_msg(g_search_query[0] ? "Patient search applied." : "Empty search; showing all records.", CP_PANEL_CYN);
     } else if (strcmp(cmd, "dir") == 0 || strcmp(cmd, "ls") == 0) {
         snprintf(buf, sizeof(buf), "Records loaded: %d  UCI: %d", g_record_count, g_uci_count);
         log_msg(buf, CP_PANEL_CYN);
     } else if (strcmp(cmd, "uci") == 0) {
         if (g_uci_count > 0) {
-            UCIRecord *u = &g_uci[g_selected % g_uci_count];
+            UCIRecord *u = &g_uci[0];
             snprintf(buf, sizeof(buf), "UCI[%d] PI=%.1f PT=%.1f LL=%.1f  → %s",
-                     g_selected % g_uci_count,
+                     0,
                      u->pelvic_incidence, u->pelvic_tilt, u->lumbar_lordosis,
                      u->class_label);
             log_msg(buf, CP_PANEL_YEL);
@@ -681,12 +873,18 @@ static void exec_command(const char *cmd) {
     } else if (strcmp(cmd, "quit") == 0 || strcmp(cmd, "q") == 0 || strcmp(cmd, "exit") == 0) {
         g_running = 0;
     } else if (strcmp(cmd, "up") == 0) {
-        if (g_selected > 0) { g_selected--; if (g_selected < g_dir_offset) g_dir_offset--; }
+        move_selected_record(-1);
     } else if (strcmp(cmd, "down") == 0) {
-        if (g_selected < g_record_count - 1) { g_selected++; }
+        move_selected_record(1);
     } else if (strncmp(cmd, "select ", 7) == 0) {
         int idx = atoi(cmd + 7);
-        if (idx >= 0 && idx < g_record_count) { g_selected = idx; g_dir_offset = idx; }
+        if (idx >= 0 && idx < g_record_count &&
+            record_matches_query(&g_records[idx])) {
+            g_selected = idx;
+            g_dir_offset = filtered_position_for_record(idx);
+        } else {
+            log_msg("Record index is invalid or filtered out.", CP_PANEL_RED);
+        }
     } else if (strlen(cmd) > 0) {
         snprintf(buf, sizeof(buf), "Unknown command: '%s'  (type: help)", cmd);
         log_msg(buf, CP_PANEL_RED);
@@ -696,6 +894,18 @@ static void exec_command(const char *cmd) {
 /* ─────────────────────────────────────────────────────  Main render loop  ── */
 static void full_render(WINDOW *win, int rows, int cols, int fps) {
     werase(win);
+
+    if (rows < 24 || cols < 80) {
+        char message[128];
+        snprintf(message, sizeof(message),
+                 "Resize terminal to at least 80x24 (current %dx%d).",
+                 cols, rows);
+        mvwprint_clip(win, 0, 0, cols, message);
+        if (rows > 1)         mvwprint_clip(win, 1, 0, cols, "Type quit or press Ctrl+Q to exit.");
+        if (rows > 2) render_cmdbar(win, rows, cols);
+        wrefresh(win);
+        return;
+    }
 
     /* ── title bar ── */
     render_titlebar(win, cols, fps);
@@ -753,7 +963,6 @@ int main(void) {
     cbreak();
     noecho();
     keypad(stdscr, TRUE);
-    nodelay(stdscr, TRUE);   /* non-blocking input */
     curs_set(0);
 
     /* ── colour pairs ── */
@@ -783,15 +992,13 @@ int main(void) {
     getmaxyx(stdscr, rows, cols);
     WINDOW *win = newwin(rows, cols, 0, 0);
     keypad(win, TRUE);
+    nodelay(win, TRUE);
 
     /* ── FPS tracking ── */
     struct timespec ts_last, ts_now;
     clock_gettime(CLOCK_MONOTONIC, &ts_last);
     int frame_count = 0;
     int fps = 0;
-
-    /* ── Article scroll timer ── */
-    int diag_timer = 0;
 
     log_msg("Type 'help' for commands. Use arrow keys to navigate.", CP_PANEL_YEL);
 
@@ -808,13 +1015,6 @@ int main(void) {
             ts_last = ts_now;
         }
 
-        /* Scroll diagnosis panel every 3s */
-        diag_timer++;
-        if (diag_timer >= FPS_TARGET * 3) {
-            diag_timer = 0;
-            g_diag_scroll = (g_diag_scroll + 1) % g_diag_count;
-        }
-
         /* ── Input ── */
         int ch = wgetch(win);
         if (ch != ERR) {
@@ -823,19 +1023,20 @@ int main(void) {
                 wresize(win, rows, cols);
                 mvwin(win, 0, 0);
             } else if (ch == KEY_UP || ch == 'k') {
-                if (g_selected > 0) {
-                    g_selected--;
-                    if (g_selected < g_dir_offset) g_dir_offset = g_selected;
-                }
+                move_selected_record(-1);
             } else if (ch == KEY_DOWN || ch == 'j') {
-                if (g_selected < g_record_count - 1) {
-                    g_selected++;
-                }
+                move_selected_record(1);
             } else if (ch == KEY_PPAGE) {
-                g_diag_scroll = (g_diag_scroll + g_diag_count - 1) % g_diag_count;
+                g_dir_offset -= g_directory_visible_rows;
+                if (g_dir_offset < 0) g_dir_offset = 0;
             } else if (ch == KEY_NPAGE) {
-                g_diag_scroll = (g_diag_scroll + 1) % g_diag_count;
-            } else if (ch == '\n' || ch == '\r') {
+                int match_count = matching_record_count();
+                g_dir_offset += g_directory_visible_rows;
+                if (g_dir_offset + g_directory_visible_rows > match_count) {
+                    g_dir_offset = match_count - g_directory_visible_rows;
+                }
+                if (g_dir_offset < 0) g_dir_offset = 0;
+            } else if (ch == '\n' || ch == '\r' || ch == KEY_ENTER) {
                 exec_command(g_cmd_buf);
                 g_cmd_buf[0] = '\0';
                 g_cmd_len = 0;
@@ -847,7 +1048,8 @@ int main(void) {
             } else if (ch == 17 || ch == ('q' & 0x1f)) {
                 /* Ctrl+Q */
                 g_running = 0;
-            } else if (isprint(ch) && g_cmd_len < 253) {
+            } else if (ch >= 0 && ch <= UCHAR_MAX &&
+                       isprint((unsigned char)ch) && g_cmd_len < 253) {
                 g_cmd_buf[g_cmd_len++] = (char)ch;
                 g_cmd_buf[g_cmd_len]   = '\0';
             }
@@ -857,7 +1059,8 @@ int main(void) {
         full_render(win, rows, cols, fps);
 
         /* sleep ~1/FPS_TARGET seconds */
-        usleep(1000000 / FPS_TARGET);
+        struct timespec frame_sleep = {0, 1000000000L / FPS_TARGET};
+        nanosleep(&frame_sleep, NULL);
     }
 
     /* ── Cleanup ── */
@@ -865,7 +1068,7 @@ int main(void) {
     endwin();
 
     printf("\n\n");
-    printf("  KarnixOS v1.0  –  Karnix Spine Edge\n");
+    printf("  %s  –  Karnix Spine Edge\n", VERSION_STR);
     printf("  Spine records processed : %d\n", g_record_count);
     printf("  UCI records processed   : %d\n", g_uci_count);
     printf("  Session ended.\n\n");

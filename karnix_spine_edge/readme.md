@@ -166,10 +166,12 @@ Use `--modality CT`, `--modality MRI`, or `--modality DEXA` during screening:
 ```bash
 ./build/spine_cli --screen ./data/ct_exports --model ./models/osteoarthritis_cnn.weights --modality CT
 ./build/spine_cli --screen ./data/mri_exports --model ./models/lumbar_mri_cnn.weights --modality MRI --task LUMBAR_MRI --negative NO_STENOSIS --positive STENOSIS
-./build/spine_cli --screen ./data/dexa_exports --model ./models/osteoarthritis_cnn.weights --modality DEXA
+./build/spine_cli --screen ./data/dexa_exports --task DEXA_BMD --modality DEXA
 ```
 
 For CT, the CLI saves `cortical_thinning_index`, a 0-100 proxy for marrow cavity widening and cortical edge loss. For MRI, it saves `marrow_dark_ratio` and `marrow_signal`; bright marrow is treated as healthier fatty marrow signal, while a high dark-ratio is flagged for clinical review. These metrics are pixel-derived screening aids and must be confirmed by radiology review.
+
+Osteoporosis screening uses a separate checkpoint at `models/dexa_cnn.weights`; it never defaults to the OA or MRI model. The `OSTEOPOROSIS` task name is an alias for `DEXA_BMD`. A genuine labeled DEXA dataset is required to train this model. Until the checkpoint exists, the CLI reports an error rather than producing a prediction. The DEXA mode reports only the trained model output and does not present pixel heuristics as a T-score, fracture-risk estimate, or diagnosis.
 
 ### UCI Vertebral Data and Clinical Rules
 

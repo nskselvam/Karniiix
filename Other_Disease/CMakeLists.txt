@@ -20,6 +20,10 @@ add_executable(lumbar_stenosis_ml lumbar_stenosis_ml.cpp)
 target_include_directories(lumbar_stenosis_ml PRIVATE ${CMAKE_SOURCE_DIR}/..)
 target_compile_options(lumbar_stenosis_ml PRIVATE -Wall -Wextra -Wpedantic -O2)
 
+add_executable(medical_screening medical_screening.cpp)
+target_include_directories(medical_screening PRIVATE ${CMAKE_SOURCE_DIR}/..)
+target_compile_options(medical_screening PRIVATE -Wall -Wextra -Wpedantic -O2)
+
 if(APPLE)
   target_link_libraries(lung_xray_ml PRIVATE
     "-framework CoreGraphics"
@@ -37,6 +41,11 @@ if(APPLE)
     "-framework CoreFoundation"
   )
   target_link_libraries(lumbar_stenosis_ml PRIVATE
+    "-framework CoreGraphics"
+    "-framework ImageIO"
+    "-framework CoreFoundation"
+  )
+  target_link_libraries(medical_screening PRIVATE
     "-framework CoreGraphics"
     "-framework ImageIO"
     "-framework CoreFoundation"

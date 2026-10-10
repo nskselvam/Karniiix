@@ -213,7 +213,8 @@ inline RawImage load_image(const std::string& path) {
 
 } // namespace BrainImageIO
 
-inline RawImage resize_bilinear(const RawImage& source, int target_height, int target_width) {
+inline RawImage resize_brain_image_bilinear(
+    const RawImage& source, int target_height, int target_width) {
     RawImage result{std::vector<double>(target_height * target_width), target_width, target_height};
     double scale_y = static_cast<double>(source.height) / target_height;
     double scale_x = static_cast<double>(source.width) / target_width;
@@ -338,7 +339,7 @@ public:
 
     Tensor preprocess(const std::string& image_path) {
         RawImage image = BrainImageIO::load_image(image_path);
-        image = resize_bilinear(image, INPUT_H, INPUT_W);
+        image = resize_brain_image_bilinear(image, INPUT_H, INPUT_W);
         Tensor input({1, INPUT_H, INPUT_W}, false);
         for (int y = 0; y < INPUT_H; ++y) {
             for (int x = 0; x < INPUT_W; ++x) {
