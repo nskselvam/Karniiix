@@ -1,5 +1,5 @@
 const safeColumns = `
-  id, name, email, role, is_active, created_at, updated_at, last_login_at, deleted_at
+  id, name, email, username, role, is_active, created_at, updated_at, last_login_at, deleted_at
 `;
 
 export function createUserRepository(database) {
@@ -8,6 +8,14 @@ export function createUserRepository(database) {
       const { rows } = await database.query(
         `SELECT ${safeColumns}, password_hash FROM users WHERE email = $1 LIMIT 1`,
         [email],
+      );
+      return rows[0] ?? null;
+    },
+
+    async findAuthByUsername(username) {
+      const { rows } = await database.query(
+        `SELECT ${safeColumns}, password_hash FROM users WHERE lower(username) = $1 LIMIT 1`,
+        [username],
       );
       return rows[0] ?? null;
     },
@@ -28,12 +36,12 @@ export function createUserRepository(database) {
       return rows[0] ?? null;
     },
 
-    async create({ name, email, passwordHash }) {
+    async create({ name, email = null, username = null, passwordHash }) {
       const { rows } = await database.query(
-        `INSERT INTO users (name, email, password_hash)
-         VALUES ($1, $2, $3)
+        `INSERT INTO users (name, email, username, password_hash)
+         VALUES ($1, $2, $3, $4)
          RETURNING ${safeColumns}`,
-        [name, email, passwordHash],
+        [name, email, username, passwordHash],
       );
       return rows[0];
     },

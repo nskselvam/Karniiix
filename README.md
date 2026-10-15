@@ -19,6 +19,7 @@ independent operating-system and language experiments.
 - [Start here](#start-here)
 - [Project map](#project-map)
 - [What is integrated](#what-is-integrated)
+- [Karnix Web auth and risk assessment app](#karnix-web-auth-and-risk-assessment-app)
 - [C++ projects and health models](#c-projects)
 - [KarnixOS x86_64 kernel foundation](#karnixos-x86_64-kernel-foundation)
 - [KarnixOS terminal research viewer](#karnixos-terminal-research-viewer)
@@ -57,11 +58,11 @@ section explicitly says to change directories.
 | `Other_Disease/` | C++ medical-image experiments and the unified prediction executable |
 | `karnix_spine_edge/` | Spine image research CLI, model helpers, sample data, and voice wrapper |
 | `spine_analytics_dashboard/` | Separate Vite/React frontend and Express/PostgreSQL backend |
-| `Karnix_Web/` | Separate web application; consult its own README and environment examples |
+| `Karnix_Web/` | Next.js/Fastify web application with an optional fixed-registry API bridge to the C++ image models |
 | `spine_3d/` | C++ spine visualization experiment |
 | `os/main.c`, `os/Makefile` | ncurses terminal research-record viewer called KarnixOS |
 | `os/karnix_kernel/` | Existing separate 32-bit bare-metal kernel experiment |
-| `os/karnix64/` | Freestanding x86_64 C++20 kernel with a DOS/TempleOS-inspired blue-and-white framebuffer desktop, keyboard program menu, text terminal, and host-bridged MedGemma chat |
+| `os/karnix64/` | Freestanding x86_64 C++20 kernel with a keyboard-first GNOME-inspired framebuffer desktop, host-bridged MedGemma chat, and native Patient Records app |
 | `private/os copy/` | Another independent OS experiment |
 | `NEWP/`, `jester/`, `Rust/` | Independent experiments; use their local project instructions |
 | `data/` | Shared/sample data and image assets used by some projects |
@@ -76,17 +77,20 @@ the actual connections between its major components:
 | `os/main.c` ncurses viewer | Spine records and UCI sample data | Reads repository-relative JSON/CSV files when present | Viewer and datasets are hosted; records are not connected to real patients |
 | ncurses viewer | `Other_Disease/build/medical_screening` | `predict <disease> <image>` starts the separate predictor executable | Hosted process integration; model checkpoint must exist and match the task |
 | ncurses viewer | `llm/build/karnix_llm` | `llm` command starts the C++ client as a child process | Hosted only; client sends requests to Ollama on loopback |
-| `os/karnix64/` QEMU guest shell | `llm/build/karnix_qemu_medgemma_bridge` | `ask <prompt>` uses the emulated COM1 serial port connected to a host-private Unix socket | Text only; model inference runs in host Ollama, not in the guest |
+| `os/karnix64/` Local AI app | `llm/build/karnix_qemu_medgemma_bridge` | Chat prompts use the emulated COM1 serial port connected to a host-private Unix socket | Text only; model inference runs in host Ollama, not in the guest |
+| `os/karnix64/` Patient Records app | Authenticated Karnix risk-assessment API | Native guest UI sends sign-in, list, create, and logout requests over the private COM1 bridge to the host API client | Host keeps the API session in memory; API URL must be HTTP on localhost; guest has no direct database or network access |
 | host bridge / C++ LLM client | Ollama and MedGemma | HTTP requests to `127.0.0.1:11434`; model is selected by `KARNIX_MODEL` | Local host service; no cloud API in this path; guest cannot invoke shell/tools |
 | `os/karnix_kernel/` 32-bit kernel | — | No host-model or dashboard bridge | Independent kernel experiment |
 | `spine_analytics_dashboard/` | Its own Express/PostgreSQL backend | Separate frontend/backend configuration and API | Does not invoke the C++ predictors or Ollama automatically |
 | `Brain_tumour/`, `Other_Disease/`, `karnix_spine_edge/` | Their own data, checkpoints, CLIs, and optional visualizers | Separate CMake/manual build workflows; predictor routes are exposed to the ncurses viewer where documented | Not one shared model; modalities/checkpoints must not be interchanged |
-| `Karnix_Web/`, `jester/`, `spine_3d/`, `NEWP/`, `Rust/`, `private/os copy/` | Their respective runtimes | Separate applications and experiments | No automatic connection to KarnixOS, MedGemma, or the medical predictor |
+| `Karnix_Web/backend/` | Authenticated research prediction API | Launches fixed, configured C++ executables for lung X-ray, brain MRI, osteoarthritis X-ray, and lumbar MRI tasks | Separate from the dashboards and kernels; configured files do not prove checkpoint compatibility or clinical validation |
+| `jester/`, `spine_3d/`, `NEWP/`, `Rust/`, `private/os copy/` | Their respective runtimes | Separate applications and experiments | No automatic connection to KarnixOS, MedGemma, or the medical predictor |
 
-In brief, **the hosted ncurses viewer is the most connected application**.
-The x86_64 kernel is a separate QEMU-booted, DOS/TempleOS-inspired text
-desktop with an optional host-side chat bridge. Neither the old 32-bit kernel
-nor the medical model executables are running inside the x86_64 kernel.
+There is no unified medical AI workspace yet. The hosted ncurses viewer and
+Karnix Web each connect to selected hosted components through separate
+interfaces. The x86_64 kernel is a separate QEMU-booted, GNOME-inspired
+keyboard-first desktop with an optional host-side chat bridge. Neither the old 32-bit
+kernel nor the medical model executables run inside the x86_64 kernel.
 
 ## Requirements
 
@@ -109,6 +113,94 @@ Install only the tools required by the component you plan to build:
   visualizer when that target is enabled.
 - Python and macOS speech tools are optional dependencies for some voice
   control workflows; core C++ model inference does not require Python.
+
+## Karnix Web auth and risk assessment app
+
+The repository also contains a Next.js frontend and Fastify API in
+[`Karnix_Web/`](Karnix_Web/). It is independently built and deployed; its
+optional prediction routes invoke only fixed C++ executables configured on
+the API host.
+
+### App structure
+
+- [`Karnix_Web/src/`](Karnix_Web/src/) — Next.js app pages, auth provider, landing screen, and the lung-risk assessment UI.
+- [`Karnix_Web/backend/src/`](Karnix_Web/backend/src/) — Fastify API server, auth/session handling, user management, risk validation, and fixed-registry model adapters.
+- [`Karnix_Web/backend/test/`](Karnix_Web/backend/test/) — Automated tests for auth, risk validation, patient-record assistant isolation/error handling, model readiness, prediction output validation, and demo labeling.
+
+### Run the app locally
+
+From the repository root:
+
+```bash
+cd Karnix_Web
+npm install
+npm run build
+```
+
+Start the API and the web app in separate terminals:
+
+```bash
+cd Karnix_Web/backend
+npm install
+cp .env.example .env
+# edit .env with your local PostgreSQL connection and JWT settings
+npm run dev
+```
+
+To enable image predictions, build the relevant C++ model executable(s), then
+set their executable/checkpoint paths, `PREDICTION_INPUT_ROOT`, and optional
+repository sample-image paths in `Karnix_Web/backend/.env`. The disease catalog
+reports configured assets without claiming that the checkpoint has passed a
+runtime compatibility check. See
+[`Karnix_Web/backend/README.md`](Karnix_Web/backend/README.md) for the fixed
+model registry and API behavior.
+
+```bash
+cd Karnix_Web
+cp .env.example .env.local
+npm run dev
+```
+
+Then open `http://localhost:3000` and use the login/register flow or the welcome page. The API listens on `http://localhost:4000` by default.
+
+### Features in the current app
+
+- Email/password registration and login with secure password hashing.
+- JWT-based access tokens plus refresh-session rotation and cookie-based auth.
+- Current-user retrieval, account updates, password changes, and account deactivation.
+- Risk-assessment validation for lung-health profile inputs, including pack-year and BMI calculations.
+- Authenticated research image inference through fixed lung, brain MRI, osteoarthritis, and lumbar MRI adapters, when executable/checkpoint paths are configured.
+- An authenticated patient-record assistant that answers only from the signed-in user's saved lung-risk assessment using peer-reviewed local Ollama models and deterministic backend rendering.
+- Request validation and origin checks intended to guard against common API abuse patterns.
+
+### Important note
+
+This app is a product/demo layer layered on top of the research repository. It is not a medical diagnostic tool. It enforces research-only safety messaging and should not be treated as clinical-grade risk prediction or patient-care software.
+
+The current image demo runs repository research samples; it does not use a
+synthetic patient case and its outputs are not associated with the signed-in
+user's risk profile. The app does not yet provide doctor roles, patient-case
+authorization, report approval, DICOM viewing, clinical GenAI explanations,
+or reference retrieval.
+
+The patient-record assistant is limited to the lung-risk assessment fields
+currently stored in this app. Appointments, allergies, medications,
+diagnoses, and lab results are not in the current database schema and are
+reported as unavailable, not fabricated. For supported questions, each
+configured local Ollama model independently classifies the request, reviews
+the other models' proposals, then provides its own final classification. The
+assistant proceeds only when all final classifications agree; it does not
+create diagnoses or treatment conclusions. Configure at least two installed
+model identifiers with `KARNIX_MODELS` in `Karnix_Web/backend/.env`; the
+separate C++ LLM client continues to use `KARNIX_MODEL`.
+The assessment form starts blank; example health values are not silently
+saved as a patient's own records. The assistant
+rejects unrelated questions and renders responses from validated PostgreSQL
+values rather than exposing generated model prose. Ollama is restricted to
+localhost; models are never downloaded automatically. See
+[`Karnix_Web/backend/README.md`](Karnix_Web/backend/README.md) for controls
+and limitations, and for a synthetic multi-model engineering evaluation
+command. Its metrics are not medical accuracy or clinical validation.
 
 ## C++ projects
 
@@ -334,15 +426,22 @@ CLI behavior.
 
 The new `os/karnix64/` target is a separate freestanding C++20 x86_64 kernel.
 Limine loads it using Multiboot2; it enters long mode, maps the first 4 GiB,
-and requests a 1024x768x32 framebuffer. Supported RGB modes render an original
-DOS/TempleOS-inspired blue-and-white text desktop, with VGA text output as a
-fallback. Press a number key to launch an app; press **Esc** from the command
-terminal to return to the home menu. The shell provides the existing command
-terminal and local-AI chat workflow. It is not MS-DOS, TempleOS, or a Linux
-desktop; mouse input, movable windows, a filesystem, image viewer, and CNN Lab
-are not implemented. Unavailable research apps are labelled instead of
-showing fabricated results. The existing 32-bit kernel and hosted ncurses
-viewer are not replaced.
+and requests a 1024x768x32 framebuffer. Supported RGB modes render a custom
+GNOME-inspired desktop with a top bar, dock, rounded application overview, and
+VGA fallback. Press **A** to open the overview, **N** or **Tab** to move the
+selection, and **1–5** to launch an app. Terminal and Math Lab are not
+desktop apps; Local AI opens its own prompt-focused screen, and **Esc** returns
+to the desktop. This is not Fedora or an actual GNOME/Linux installation;
+mouse input, movable windows, and a filesystem are not implemented in the
+guest. The Medical Imaging and CNN Lab overview entries launch the repository's
+existing native host visualizers beside QEMU; they do not imply that the guest
+can load files or run inference itself. Patient Records is a native OS app for
+signing in, listing, and creating lung-risk assessments through the
+authenticated host API bridge. The host
+service/API must be running; the guest has no direct database or network
+access. The bridge keeps the session in memory only and restricts API
+connections to localhost. The existing 32-bit kernel and hosted ncurses viewer
+are not replaced.
 
 Build and boot-test the kernel and shell:
 
@@ -371,24 +470,65 @@ returns to the guest. To open the interactive OS window:
 make -C os/karnix64 run
 ```
 
-At boot, press **1–6** to select an app; **A** highlights the program menu.
-**T** opens the terminal directly. Press **Esc** in the terminal to return to
-the home menu, or type `DESKTOP`. Terminal and Math Lab use the working shell.
-Local AI opens the terminal with instructions for the existing `ASK <prompt>`
-command. Medical Imaging and CNN Lab currently show explicit not-available
-messages.
+At boot, press **A** to open the GNOME-inspired application overview, **N** or
+**Tab** to move the highlight, or **1–5** to launch an app. The Terminal and
+Math Lab are no longer desktop apps. Local AI opens a chat-focused screen for
+the existing prompt flow and automatically includes the Karnix project context
+and 100 synthetic Patient Records examples with each local Ollama request.
+Ask about the demo examples in Local AI; they are explicitly synthetic, not
+real patients, and real account records are not sent to chat. Press **Esc** to
+return to the desktop. Medical Imaging launches the brain MRI visualizer; CNN
+Lab launches the osteoarthritis CNN activation visualizer. Both are hosted
+SDL2 windows started by the local serial bridge, not guest applications.
+When a patient-data summary is requested, the bridge also runs
+`os/karnix_kernel/setup.sh --run-only` to open the existing 32-bit OS in a
+separate QEMU window; it does not reinstall dependencies or rebuild on every
+request.
+Press **4** to open the native Patient Records app. Sign in with a Karnix
+account to list existing lung-risk assessments or enter a new one. The
+host-side bridge forwards the requests to the authenticated API and keeps the
+session in memory; the guest receives only the records it displays and has no
+direct database/network access. Start the host backend before using the app.
+By default, the bridge connects to `http://127.0.0.1:4000`; set
+`KARNIX_API_URL` to another localhost API port when launching
+`make -C os/karnix64 run`. Non-local API hosts and HTTPS URLs are rejected.
+Passwords are masked in the UI and not logged; logout or bridge shutdown
+discards the in-memory API session. Press **5** for basic display and keyboard
+settings.
 
-The QEMU run builds a host companion and uses a per-run, current-user-only
-Unix socket connected to the guest COM1 serial port. Click inside the QEMU
+The QEMU run builds the host companion and both visualizers, then uses a
+per-run, current-user-only Unix socket connected to the guest COM1 serial port.
+Click inside the QEMU
 window to give it keyboard focus. Try `help`, `status`, `echo hello`,
 `calc 2+3*4`, or `ask What can you do?`. `ASK` currently supports text only.
 MedGemma runs in Ollama on the host Mac; the guest does not contain or execute
 the model. Directly booting the ISO has no host bridge.
 
-Run the repository's `./setup.sh` to install required Homebrew tools,
-build/test the kernel and host bridge, and open QEMU. Interactive chat needs
-local Ollama and the configured model; setup does not automatically download
-the model. Set `KARNIX_ROOT` to use a different checkout.
+Run the repository's `./setup.sh` to install the KarnixOS and Patient Records
+prerequisites, set up the local PostgreSQL-backed API, install backend
+dependencies, apply migrations, run backend and QEMU checks, and open the OS
+in QEMU. On first run it creates `Karnix_Web/backend/.env` only if no file
+exists, using a generated local development signing secret, and starts the
+PostgreSQL service. Existing backend configuration is left untouched. The
+local PostgreSQL service and its records persist after setup; stop it with
+`brew services stop postgresql@16` if no longer needed. If setup starts the
+API, it stops that process when QEMU exits. Patient Records requires an
+account named `Hyper`; on interactive first setup, setup prompts for a
+password without echo and stores only its bcrypt hash. Use at least 10
+characters with uppercase, lowercase, and a number. Email-less accounts have
+no email-based password recovery, so keep the password safe. Setup does not
+seed patient data. This is a local development configuration, not a
+production deployment. For a non-default local API port, set
+`KARNIX_API_URL`, for example:
+
+```bash
+KARNIX_API_URL=http://127.0.0.1:4001 ./setup.sh
+```
+
+Interactive chat additionally needs Ollama running locally and the configured
+model installed; setup does not automatically download the model. Set
+`KARNIX_ROOT` to use a different checkout. `setup.sh` configures the native
+KarnixOS workflow, not every independent project in this repository.
 
 The guest still lacks an allocator, filesystem/model loader, userspace,
 network stack, multi-window manager, and native inference engine. See
@@ -559,6 +699,8 @@ integration boundary, build results, and remaining blockers.
 `spine_analytics_dashboard/` is independent from the C++ predictor and has a
 Vite/React frontend plus an Express backend. It does not automatically expose
 the C++ model executables as an API.
+
+For the separate web auth app, see the [`Karnix Web auth and risk assessment app`](#karnix-web-auth-and-risk-assessment-app) section above.
 
 Install dependencies in each app:
 

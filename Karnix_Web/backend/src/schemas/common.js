@@ -1,11 +1,12 @@
 export const safeUserSchema = {
   type: "object",
   additionalProperties: false,
-  required: ["id", "name", "email", "role"],
+  required: ["id", "name", "email", "username", "role"],
   properties: {
     id: { type: "string", format: "uuid" },
     name: { type: "string" },
-    email: { type: "string", format: "email" },
+    email: { anyOf: [{ type: "string", format: "email" }, { type: "null" }] },
+    username: { anyOf: [{ type: "string" }, { type: "null" }] },
     role: { type: "string", enum: ["user"] },
   },
 };

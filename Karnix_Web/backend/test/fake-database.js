@@ -5,6 +5,7 @@ export class FakeDatabase {
     this.users = [];
     this.sessions = [];
     this.auditEvents = [];
+    this.riskAssessments = [];
     this.failQueries = false;
   }
 
@@ -34,14 +35,21 @@ export class FakeDatabase {
       const user = this.users.find((item) => item.email === params[0]);
       return { rows: user ? [{ ...user }] : [], rowCount: user ? 1 : 0 };
     }
+    if (statement.startsWith("SELECT") && statement.includes("FROM users WHERE lower(username)")) {
+      const user = this.users.find((item) => item.username?.toLowerCase() === params[0]);
+      return { rows: user ? [{ ...user }] : [], rowCount: user ? 1 : 0 };
+    }
     if (statement.startsWith("SELECT") && statement.includes("FROM users WHERE id")) {
       const user = this.users.find((item) => item.id === params[0] && (!statement.includes("is_active = TRUE") || (item.is_active && !item.deleted_at)));
       return { rows: user ? [{ ...user }] : [], rowCount: user ? 1 : 0 };
     }
     if (statement.startsWith("INSERT INTO users")) {
-      if (this.users.some((item) => item.email === params[1])) throw Object.assign(new Error("duplicate"), { code: "23505" });
+      if ((params[1] && this.users.some((item) => item.email === params[1])) ||
+          (params[2] && this.users.some((item) => item.username?.toLowerCase() === params[2].toLowerCase()))) {
+        throw Object.assign(new Error("duplicate"), { code: "23505" });
+      }
       const now = new Date();
-      const user = { id: randomUUID(), name: params[0], email: params[1], password_hash: params[2], role: "user", is_active: true, created_at: now, updated_at: now, last_login_at: null, deleted_at: null };
+      const user = { id: randomUUID(), name: params[0], email: params[1], username: params[2], password_hash: params[3], role: "user", is_active: true, created_at: now, updated_at: now, last_login_at: null, deleted_at: null };
       this.users.push(user);
       return { rows: [{ ...user }], rowCount: 1 };
     }
@@ -92,8 +100,21 @@ export class FakeDatabase {
     }
     if (statement.startsWith("INSERT INTO audit_events")) {
       if (this.failAudit) throw new Error("audit insert failed");
-      this.auditEvents.push({ user_id: params[0], event_type: params[1], request_id: params[2], ip_address: params[3], user_agent: params[4], metadata: params[5] });
+      this.auditEvents.push({ user_id: params[0], event_type: params[1], resource_id: params[2], request_id: params[3], ip_address: params[4], user_agent: params[5], metadata: params[6] });
       return { rows: [], rowCount: 1 };
+    }
+    if (statement.startsWith("SELECT") && statement.includes("FROM lung_risk_assessments")) {
+      const selectedColumns = statement.slice("SELECT".length, statement.indexOf("FROM lung_risk_assessments"))
+        .split(",")
+        .map((column) => column.trim());
+      const matching = this.riskAssessments
+        .filter((assessment) => assessment.user_id === params[0])
+        .sort((left, right) => new Date(right.created_at) - new Date(left.created_at))
+        .slice(0, 20)
+        .map((assessment) => Object.fromEntries(
+          selectedColumns.map((column) => [column, assessment[column]]),
+        ));
+      return { rows: matching, rowCount: matching.length };
     }
     throw new Error(`Unhandled fake SQL: ${statement}`);
   }

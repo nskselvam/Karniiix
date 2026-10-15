@@ -41,7 +41,7 @@ cmake --build build --config Release
 ./build/lung_xray_ml predict --model models/lung_xray.weights --image dataset/raw/normal/example.png
 ```
 
-Prediction output is JSON with `research_only:true` and `diagnosis:false`. The class names are deliberately generic until the dataset's verified label semantics are inspected.
+Prediction Output is JSON with `research_only:true` and `diagnosis:false`. The class names are deliberately generic until the dataset's verified label semantics are inspected. The executable's `probability` field is an uncalibrated model output, not a clinical probability; the Karnix Web adapter exposes it as `model_score`.
 
 ## Unified Medical Prediction Entry Point
 
@@ -91,6 +91,17 @@ Output:
 
 The current artifact is a baseline only. Before any healthcare use, establish dataset provenance, patient-level split discipline, external validation, calibration, sensitivity/specificity, subgroup evaluation, clinical review, and regulatory/privacy controls.
 
-## Deferred integration
+## Karnix Web integration
 
-No Fastify prediction route is connected yet. The existing web app remains limited to authentication and background assessment. When the model contract and validation are approved, expose this executable behind a separately authenticated Fastify adapter; do not connect the browser directly to the binary or PostgreSQL.
+The Karnix Web backend has authenticated adapters for the lung baseline,
+brain-tumour MRI model, osteoarthritis model, and lumbar MRI model. It invokes
+fixed server-configured executables with bounded arguments and timeouts; the
+browser does not invoke binaries or access PostgreSQL directly. Configure
+executable, checkpoint, input-root, and sample-image paths in
+`Karnix_Web/backend/.env` to enable the adapters.
+
+The prediction catalog reports configured files and their SHA-256 hashes but
+does not claim compatibility until the selected executable accepts the
+checkpoint and returns a valid result. The adapter validates that result and
+labels its score as uncalibrated. Diabetes, heart disease, osteoporosis, DICOM,
+clinical reports, and GenAI/RAG remain unavailable in this integration.

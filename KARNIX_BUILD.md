@@ -13,11 +13,12 @@ Run the repository's setup script:
 ```
 
 It installs missing Homebrew packages (`x86_64-elf-gcc`, `limine`, `qemu`,
-`nasm`, `xorriso`, `cmake`, `nlohmann-json`, and `ollama`), builds the
-separate x86_64 kernel, creates a Limine ISO,
-verifies boot, desktop initialization, and keyboard app selection in QEMU,
-then opens a QEMU window with a host-side Ollama bridge for the shell's `ask`
-command. Ollama must be running and the selected model installed to launch the
+`nasm`, `xorriso`, `cmake`, `nlohmann-json`, `ollama`, `sdl2`, and
+`sdl2_ttf`), builds the separate x86_64 kernel, creates a Limine ISO, builds
+the brain MRI and CNN host visualizers, and verifies boot, desktop
+initialization, and keyboard app selection in QEMU, then opens a QEMU window
+with a host-side bridge for the shell's `ask` command and visualizer launch
+requests. Ollama must be running and the selected model installed to launch the
 interactive desktop; the script does not download models. With an interactive
 terminal, `./setup.sh` launches the desktop after the checks pass. Without
 one, it prints the command to launch QEMU manually. By default, the checkout
@@ -64,9 +65,9 @@ cmake --build /tmp/karnix-spine-build --target spine_cli mura_pipeline --paralle
 clang++ -std=c++14 -I. main.c++ -o /tmp/karnix-math-demo
 ```
 
-Optional native visualizers require SDL2 and SDL2_ttf. Those packages were
-not available during the recorded component audit, so the visualizer targets
-were not built there.
+Native visualizers require SDL2 and SDL2_ttf. The `host-apps` target builds
+the existing brain-tumour MRI viewer and the osteoarthritis CNN activation
+viewer for use from the QEMU desktop.
 
 ## Freestanding kernel targets
 
@@ -82,9 +83,10 @@ make -C os/karnix64 run
 ```
 
 It uses `x86_64-elf-g++`, `x86_64-elf-ld`, NASM, Limine, xorriso, and
-`qemu-system-x86_64`. `run` also builds the host-side `karnix_qemu_medgemma_bridge`
-from `llm/` and connects it to the guest over a private Unix socket attached
-to COM1. Start Ollama and install MedGemma on the Mac before launching; then
+`qemu-system-x86_64`. `run` builds the host-side
+`karnix_qemu_medgemma_bridge` from `llm/` and the existing brain MRI and CNN
+visualizers. The bridge connects to the guest over a private Unix socket
+attached to COM1. Start Ollama and install MedGemma on the Mac before launching; then
 click the QEMU window and use `ask <prompt>`. In the QEMU window, `help`,
 `status`, and `calc 2+3*4` work without a model. The shell is
 DOS/TempleOS-inspired, not an exact replica, and is text-only; it does not

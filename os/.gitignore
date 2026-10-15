@@ -1,0 +1,59 @@
+# Binaries
+target/boot/*.bin
+target/usr/bin/*
+target/usr/sbin
+target/usr/lib
+target/lib
+disk.img
+disk.vmdk
+temporarydir
+
+# Libraries
+target/usr/include/ncursesw
+target/usr/etc/profile.d
+target/usr/libexec
+target/usr/x86_64-cavos
+target/usr/x86_64-linux-musl
+
+# Chroot stuff
+target/dev/shm
+target/run
+target/sys
+target/proc
+target/dev/pts
+target/dev
+target/bin
+target/etc/ssl
+
+# Limine repository
+src/bootloader/limine
+src/bootloader/.version
+
+# Misc (on the target system)
+target/etc/localtime
+target/usr/share
+
+pci.ids
+
+# Wireshark network dumps
+*.pcapng
+
+# Could obviously contain sensitive data
+.idea/
+Session.vim
+
+# uACPI
+.version_uacpi
+
+# Generated kernel/dependency output
+build/
+target/root/medical-images/
+target/root/medical-images.list
+*.o
+src/kernel/acpi/uacpi/
+src/kernel/include/uacpi/
+src/libs/musl/musl-*/
+src/libs/musl/*.tar.gz
+src/libs/musl/cavos-build/
+src/libs/musl/cavos-out/lib/
+src/libs/musl/cavos-out/include/

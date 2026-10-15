@@ -65,8 +65,25 @@ describe("authentication and account API", () => {
     for (const [email, password] of [["user@example.com", "WrongPass1"], ["missing@example.com", "WrongPass1"]]) {
       const failed = await app.inject({ method: "POST", url: "/api/v1/auth/login", payload: { email, password } });
       assert.equal(failed.statusCode, 401);
-      assert.equal(failed.json().error.message, "Invalid email or password.");
+      assert.equal(failed.json().error.message, "Invalid username/email or password.");
     }
+  });
+
+  test("authenticates email-less accounts with a case-insensitive username", async () => {
+    await register(app);
+    database.users[0].username = "hyper";
+    database.users[0].email = null;
+
+    const response = await app.inject({
+      method: "POST",
+      url: "/api/v1/auth/login",
+      payload: { identifier: "Hyper", password: "StrongPass1" },
+    });
+
+    assert.equal(response.statusCode, 200);
+    assert.equal(response.json().data.user.username, "hyper");
+    assert.equal(response.json().data.user.email, null);
+    assert.ok(cookieHeader(response).includes("karnix_access="));
   });
 
   test("restores current user, updates account, and blocks privilege fields", async () => {

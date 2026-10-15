@@ -19,8 +19,20 @@ if(APPLE)
         "-framework CoreFoundation"
     )
 
-    file(GLOB SDL2_CELLAR_DIRS "/opt/homebrew/Cellar/sdl2/*")
-    file(GLOB SDL2_TTF_CELLAR_DIRS "/opt/homebrew/Cellar/sdl2_ttf/*")
+    file(GLOB SDL2_CELLAR_DIRS
+        "/opt/homebrew/Cellar/sdl2/*"
+        "/opt/homebrew/Cellar/sdl2-compat/*"
+        "/usr/local/Cellar/sdl2/*"
+        "/usr/local/Cellar/sdl2-compat/*"
+        "/opt/homebrew/opt/sdl2"
+        "/usr/local/opt/sdl2"
+    )
+    file(GLOB SDL2_TTF_CELLAR_DIRS
+        "/opt/homebrew/Cellar/sdl2_ttf/*"
+        "/usr/local/Cellar/sdl2_ttf/*"
+        "/opt/homebrew/opt/sdl2_ttf"
+        "/usr/local/opt/sdl2_ttf"
+    )
     list(SORT SDL2_CELLAR_DIRS)
     list(SORT SDL2_TTF_CELLAR_DIRS)
     list(REVERSE SDL2_CELLAR_DIRS)

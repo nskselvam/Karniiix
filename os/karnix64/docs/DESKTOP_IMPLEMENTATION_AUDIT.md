@@ -8,8 +8,8 @@ This audit covers the current `os/karnix64/` boot/runtime path, its build and
 QEMU checks, the existing host-side Ollama connection, and neighboring
 medical-image projects that are not yet integrated with the desktop. The
 repository had pre-existing staged/unstaged and untracked work before this
-milestone. Those changes were left intact; this milestone changes only the
-x86_64 kernel target and its directly related documentation.
+milestone. Those changes were left intact; this milestone updates the x86_64
+kernel, its existing host bridge, and directly related documentation.
 
 ## Existing kernel before the graphics milestone
 
@@ -46,18 +46,34 @@ identity-maps the first 4 GiB with 2 MiB pages to cover the QEMU framebuffer
 address used by this configuration. SIMD use is disabled in the freestanding
 C++ build because the kernel does not initialize or preserve SIMD/FPU state.
 
-The current desktop is an original, keyboard-operated DOS/TempleOS-inspired
-blue-and-white text menu. Number keys select apps, `A` highlights the program
-menu, `T` opens Terminal, and `Esc` or `DESKTOP` returns from the shell to the
-home screen. Terminal and Math Lab use the existing command shell; Local AI
-provides the existing host Ollama chat path.
-Medical Imaging and CNN Lab explicitly report that they are unavailable.
+The desktop is an original, keyboard-operated cavOS/TWM-inspired interface
+with a teal root background, square bordered windows, an icon manager/program
+menu, and a workspace information panel. Its palette follows the local cavOS
+`.xinitrc` and `.twmrc`; no X11 server or cavOS kernel code is integrated.
+`A` opens the menu, `N` or `Tab` moves its selection, `Enter` launches the
+selected app, and number keys launch apps directly. The
+Terminal and Math Lab are not listed as desktop applications. Local AI opens a
+chat-focused screen that uses the host Ollama path; `Esc` returns to the
+desktop.
+Medical Imaging and CNN Lab send fixed, allowlisted launch messages through
+the private COM1 bridge. The host bridge starts the existing brain MRI
+visualizer or osteoarthritis CNN activation visualizer in a native host
+window. This is a host-side integration, not guest filesystem access or
+guest-native medical inference.
+Patient Records is a native guest app for signing in, listing, and creating
+lung-risk assessments. It sends fixed protocol messages over the private
+COM1 bridge; the host client calls the existing authenticated API, keeps its
+cookie session in memory, and restricts the API URL to HTTP on localhost.
+The guest has no direct database or network access. The host records API
+must be running separately; this app does not launch a browser.
 This is not MS-DOS, TempleOS, or a Linux desktop installation. There is no
 pointer, window manager, files app, native image viewer, or guest medical
-inference. The QEMU keyboard check demonstrates launching Terminal, returning
-home with Escape, opening and dismissing the program menu with Escape,
-reopening Terminal, and running a calculator command; it does not demonstrate
-medical inference.
+inference. The QEMU keyboard check demonstrates the application overview,
+Local AI launch, keyboard prompt input, and Escape-to-desktop navigation; it
+does not demonstrate guest medical inference. The Patient Records integration check runs a QEMU
+guest against a synthetic authenticated API and verifies rejected and
+successful login, listing, assessment creation, logout, and rejection of
+non-local API URLs. It does not access a production account or database.
 
 ## Existing hosted research modules and compatibility
 
@@ -136,12 +152,21 @@ After the graphics change:
 | --- | --- | --- |
 | `make -C os/karnix64 build` | PASS | Freestanding C++20 kernel and graphics renderer linked successfully |
 | `make -C os/karnix64 check` | PASS | Boot marker, shell marker, and expected QEMU debug-exit status |
-| `make -C os/karnix64 check-shell` | PASS | Emulated keyboard opened Terminal, returned home with Escape, dismissed the program menu with Escape, reopened Terminal, entered `calc 2+3*4`, and the guest reported `14` |
+| `make -C os/karnix64 check-shell` | PASS | Emulated keyboard opened Local AI, navigated the application overview, typed help, and returned to the desktop with Escape |
 | `make -C os/karnix64 check-graphics` | PASS | QEMU reported `framebuffer=ready` and `desktop-ui=ready` |
 | `make -C os/karnix64 check-desktop` | PASS | Graphics initialization and Escape-to-home keyboard path passed |
 | `make -C os/karnix64 check-chat` | PASS | Local Ollama/MedGemma reply returned through the guest serial bridge |
 | `cmake --build Other_Disease/build --target medical_screening --parallel` | PASS | Existing hosted medical router target built |
-| QEMU `screendump` | PASS | Captured 1024x768 image was opened and inspected; it shows the DOS/TempleOS-inspired text desktop |
+| QEMU `screendump` | PASS | Captured 1024x768 image was opened and inspected; it shows the GNOME-inspired framebuffer desktop |
+
+After the native Patient Records integration:
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+| `make -C os/karnix64 check-patient-records` | PASS | QEMU sign-in (including rejected credentials), list, complete assessment creation, list-after-save, logout, and authenticated API calls against a synthetic API; non-local API URL forms rejected |
+| `make -C os/karnix64 check-desktop` | PASS | Graphics, keyboard shell, visualizer launch, and native Patient Records checks passed |
+| `make -C os/karnix64 check-chat` | PASS | Local Ollama/MedGemma reply returned through the guest serial bridge |
+| `git diff --check` | PASS | No whitespace errors |
 
 These checks do not exercise medical inference, CNN tracing, input devices
 other than the PS/2 keyboard, a pointer, or a window manager.

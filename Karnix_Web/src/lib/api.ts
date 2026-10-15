@@ -1,7 +1,8 @@
 export interface User {
   id: string;
   name: string;
-  email: string;
+  email: string | null;
+  username: string | null;
   role: "user";
 }
 
@@ -41,12 +42,52 @@ export interface RiskAssessment {
 
 export interface DiseaseModelContract {
   id: string;
+  model_id: string;
+  model_version: string;
   label: string;
   modality: string;
-  status: string;
+  status: "configured" | "unavailable";
+  readiness: "compatibility_not_verified" | "not_configured" | "invalid_assets" | "assets_missing_or_unreadable";
   input: string;
+  input_formats: string[];
+  preprocessing: string;
+  output_schema: string;
+  provenance: string;
+  evaluation: string;
+  limitations: string;
+  resources: string;
+  checkpoint_sha256: string | null;
   research_only: true;
   diagnosis: false;
+}
+
+export interface DemoPrediction {
+  disease: string;
+  status: "demo_prediction" | "demo_unavailable" | "model_unavailable" | "demo_error";
+  message?: string;
+  model_id?: string;
+  model_version?: string;
+  checkpoint_sha256?: string;
+  modality?: string;
+  class?: string;
+  model_score?: number;
+  score_semantics?: string;
+  image_preview_available?: boolean;
+  image_url?: string;
+  research_only: true;
+  diagnosis: false;
+}
+
+export interface PatientAssistantResponse {
+  answer: string;
+  outcome:
+    | "record_lookup"
+    | "missing"
+    | "conflict"
+    | "out_of_scope"
+    | "clinical_guidance"
+    | "emergency";
+  sources: Array<{ record_id: string; recorded_at: string }>;
 }
 
 interface ApiEnvelope<T> {
@@ -72,9 +113,13 @@ export class ApiError extends Error {
 
 export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
 
-async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
+async function request<T>(
+  path: string,
+  init: RequestInit = {},
+  timeoutMs = 10_000,
+): Promise<T> {
   const controller = new AbortController();
-  const timeout = window.setTimeout(() => controller.abort(), 10_000);
+  const timeout = window.setTimeout(() => controller.abort(), timeoutMs);
   const headers = new Headers(init.headers);
   if (init.body != null && !headers.has("Content-Type")) {
     headers.set("Content-Type", "application/json");
@@ -123,5 +168,11 @@ export const api = {
   diseaseCatalog: () => request<{ diseases: DiseaseModelContract[] }>("/api/v1/predictions/catalog"),
   predictDisease: (diseaseId: string, imagePath: string) =>
     request<{ prediction: Record<string, unknown> }>("/api/v1/predictions", { method: "POST", body: JSON.stringify({ diseaseId, imagePath }) }),
-  demoPredictions: () => request<{ predictions: Array<Record<string, unknown>>; demo: true }>("/api/v1/predictions/demo"),
+  demoPredictions: () => request<{ predictions: DemoPrediction[]; demo: true }>("/api/v1/predictions/demo"),
+  askPatientAssistant: (question: string) =>
+    request<PatientAssistantResponse>(
+      "/api/v1/patient-assistant/ask",
+      { method: "POST", body: JSON.stringify({ question }) },
+      35_000,
+    ),
 };

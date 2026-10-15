@@ -24,8 +24,16 @@ export const loginSchema = {
   body: {
     type: "object",
     additionalProperties: false,
-    required: ["email", "password"],
-    properties: { email, password },
+    required: ["password"],
+    oneOf: [
+      { required: ["email"], not: { required: ["identifier"] } },
+      { required: ["identifier"], not: { required: ["email"] } },
+    ],
+    properties: {
+      email,
+      identifier: { type: "string", minLength: 3, maxLength: 254 },
+      password,
+    },
   },
   response: { 200: successUserResponse, ...standardErrors },
 };

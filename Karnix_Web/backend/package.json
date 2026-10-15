@@ -11,7 +11,9 @@
     "start": "node src/server.js",
     "test": "node --test --test-concurrency=1 test/*.test.js",
     "migrate": "node-pg-migrate up -m migrations",
-    "migrate:down": "node-pg-migrate down -m migrations"
+    "migrate:down": "node-pg-migrate down -m migrations",
+    "local-account": "node src/scripts/local-username-account.js",
+    "evaluate:medical-models": "node src/scripts/evaluate-medical-models.js"
   },
   "dependencies": {
     "@fastify/cookie": "^11.1.2",

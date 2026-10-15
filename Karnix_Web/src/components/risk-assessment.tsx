@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState, type ChangeEvent } from "react";
+import Image from "next/image";
 import {
   Check,
   ChevronLeft,
@@ -13,10 +14,12 @@ import {
   api,
   ApiError,
   API_URL,
+  type DemoPrediction,
   type DiseaseModelContract,
   type RiskAssessment,
 } from "@/lib/api";
 import { useAuth } from "@/components/auth-provider";
+import PatientRecordAssistant from "@/components/patient-record-assistant";
 
 type FormState = Record<string, unknown>;
 const steps = [
@@ -29,32 +32,32 @@ const steps = [
   "Review",
 ];
 const initial: FormState = {
-  age: 52,
-  gender: "male",
-  ethnicity: "white",
-  smoking_status: "former",
-  cigarettes_per_day: 10,
-  years_smoked: 20,
-  age_started_smoking: 25,
-  secondhand_smoke_exposure: "occasional",
-  tobacco_type: "cigarettes",
+  age: "",
+  gender: "",
+  ethnicity: "",
+  smoking_status: "",
+  cigarettes_per_day: "",
+  years_smoked: "",
+  age_started_smoking: "",
+  secondhand_smoke_exposure: "",
+  tobacco_type: "",
   other_tobacco_type: null,
-  alcohol_consumption: "occasional",
-  physical_activity: "moderate",
-  weekly_physical_activity: "1_3_hours",
-  sleep_duration: "6_8_hours",
-  diet_quality: "average",
-  height_cm: 180,
-  weight_kg: 88,
-  air_pollution_exposure: "high",
-  living_environment: "urban",
-  traffic_pollution_exposure: "high",
-  residential_pollution_exposure: "moderate",
-  occupational_exposure: "yes",
-  occupational_exposure_types: ["diesel_exhaust", "chemical_dust"],
-  occupational_exposure_duration: "5_10_years",
-  family_history_lung_cancer: "no",
-  family_history_other_cancer: "yes",
+  alcohol_consumption: "",
+  physical_activity: "",
+  weekly_physical_activity: "",
+  sleep_duration: "",
+  diet_quality: "",
+  height_cm: "",
+  weight_kg: "",
+  air_pollution_exposure: "",
+  living_environment: "",
+  traffic_pollution_exposure: "",
+  residential_pollution_exposure: "",
+  occupational_exposure: "",
+  occupational_exposure_types: [],
+  occupational_exposure_duration: "",
+  family_history_lung_cancer: "",
+  family_history_other_cancer: "",
   family_cancer_relationship: null,
 };
 const options = {
@@ -126,9 +129,10 @@ export default function RiskAssessment() {
   const [diseaseModels, setDiseaseModels] = useState<DiseaseModelContract[]>(
     [],
   );
-  const [demoPredictions, setDemoPredictions] = useState<
-    Array<Record<string, unknown>>
-  >([]);
+  const [catalogError, setCatalogError] = useState("");
+  const [demoPredictions, setDemoPredictions] = useState<DemoPrediction[]>([]);
+  const [demoError, setDemoError] = useState("");
+  const [demoLoading, setDemoLoading] = useState(false);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
 
@@ -142,7 +146,13 @@ export default function RiskAssessment() {
       api
         .diseaseCatalog()
         .then(({ diseases }) => setDiseaseModels(diseases))
-        .catch(() => undefined);
+        .catch((caught) => {
+          setCatalogError(
+            caught instanceof ApiError
+              ? caught.message
+              : "Unable to load the research model catalog.",
+          );
+        });
     }
   }, [loading, router, user]);
 
@@ -219,13 +229,40 @@ export default function RiskAssessment() {
       return false;
     }
     if (
+      targetStep === 0 &&
+      (Number(form.age) < 18 || Number(form.age) > 120)
+    ) {
+      setError("Age must be between 18 and 120.");
+      return false;
+    }
+    if (
+      targetStep === 2 &&
+      (Number(form.height_cm) < 80 ||
+        Number(form.height_cm) > 250 ||
+        Number(form.weight_kg) < 20 ||
+        Number(form.weight_kg) > 400)
+    ) {
+      setError("Please enter a height between 80 and 250 cm and a weight between 20 and 400 kg.");
+      return false;
+    }
+    if (
       targetStep === 1 &&
       form.smoking_status !== "never" &&
       (!form.age_started_smoking ||
-        !form.cigarettes_per_day ||
-        !form.years_smoked)
+        Number(form.cigarettes_per_day) <= 0 ||
+        Number(form.years_smoked) <= 0 ||
+        Number(form.age_started_smoking) < 5 ||
+        Number(form.age_started_smoking) >= Number(form.age))
     ) {
       setError("Please complete the smoking history before continuing.");
+      return false;
+    }
+    if (
+      targetStep === 1 &&
+      form.tobacco_type === "other" &&
+      !String(form.other_tobacco_type ?? "").trim()
+    ) {
+      setError("Please describe the other tobacco type.");
       return false;
     }
     if (
@@ -270,18 +307,31 @@ export default function RiskAssessment() {
       const submittedForm = { ...form };
       delete submittedForm.pack_years;
       delete submittedForm.bmi;
+      submittedForm.cigarettes_per_day = Number(form.cigarettes_per_day || 0);
+      submittedForm.years_smoked = Number(form.years_smoked || 0);
+      submittedForm.age_started_smoking =
+        form.age_started_smoking === "" ? null : Number(form.age_started_smoking);
       const result = await api.createRiskAssessment({
         ...submittedForm,
         age: Number(form.age),
         height_cm: Number(form.height_cm),
         weight_kg: Number(form.weight_kg),
       });
-      const demo = await api
-        .demoPredictions()
-        .catch(() => ({ predictions: [] }));
-      setDemoPredictions(demo.predictions);
       setSaved(result.assessment);
       setExisting((current) => [result.assessment, ...current]);
+      setDemoLoading(true);
+      try {
+        const demo = await api.demoPredictions();
+        setDemoPredictions(demo.predictions);
+      } catch (caught) {
+        setDemoError(
+          caught instanceof ApiError
+            ? caught.message
+            : "Unable to load research demo results.",
+        );
+      } finally {
+        setDemoLoading(false);
+      }
     } catch (caught) {
       setError(
         caught instanceof ApiError
@@ -306,6 +356,8 @@ export default function RiskAssessment() {
         assessment={saved}
         diseaseModels={diseaseModels}
         demoPredictions={demoPredictions}
+        demoError={demoError}
+        demoLoading={demoLoading}
         onLogout={async () => {
           await logout();
           router.replace("/login");
@@ -411,6 +463,7 @@ export default function RiskAssessment() {
                 packYears={packYears}
                 bmi={bmi}
                 diseaseModels={diseaseModels}
+                catalogError={catalogError}
               />
             )}
             {error && (
@@ -451,6 +504,7 @@ export default function RiskAssessment() {
             </div>
           </section>
         </div>
+        <PatientRecordAssistant />
         <p className="mx-auto mt-6 max-w-3xl text-center text-xs leading-5 text-slate-300">
           This assessment estimates risk using selected background and lifestyle
           factors. It is not a diagnosis and does not replace evaluation by a
@@ -503,6 +557,11 @@ function SelectField({
         onChange={(event) => onChange(name, event.target.value)}
         className="risk-input mt-2 w-full"
       >
+        {!values.some(([key]) => key === "") && (
+          <option value="" disabled>
+            Select an option
+          </option>
+        )}
         {values.map(([key, text]) => (
           <option key={key} value={key}>
             {text}
@@ -919,7 +978,6 @@ function Family({
             value={form.family_cancer_relationship ?? ""}
             onChange={update}
             values={[
-              ["", "Select relationship"],
               ["parent", "Parent"],
               ["sibling", "Sibling"],
               ["child", "Child"],
@@ -938,11 +996,13 @@ function Review({
   packYears,
   bmi,
   diseaseModels,
+  catalogError,
 }: {
   form: FormState;
   packYears: number;
   bmi: number;
   diseaseModels: DiseaseModelContract[];
+  catalogError: string;
 }) {
   const labels = Object.entries(form).filter(
     ([key]) =>
@@ -986,6 +1046,11 @@ function Review({
           Research model availability is shown below. Predictions are not
           diagnoses.
         </p>
+        {catalogError && (
+          <p className="mt-3 rounded-lg bg-amber-50 p-3 text-sm text-amber-900" role="alert">
+            Model catalog could not be loaded: {catalogError}
+          </p>
+        )}
         <div className="mt-3 grid gap-3 sm:grid-cols-2">
           {diseaseModels.map((model) => (
             <div
@@ -995,14 +1060,31 @@ function Review({
               <div className="flex items-center justify-between gap-2">
                 <strong className="text-sm">{model.label}</strong>
                 <span
-                  className={`rounded-full px-2 py-1 text-[10px] font-semibold ${model.status === "adapter_ready" ? "bg-emerald-100 text-emerald-800" : "bg-slate-100 text-slate-600"}`}
+                  className={`rounded-full px-2 py-1 text-[10px] font-semibold ${model.status === "configured" ? "bg-amber-100 text-amber-900" : "bg-slate-100 text-slate-600"}`}
                 >
-                  {model.status === "adapter_ready" ? "Ready" : "Unavailable"}
+                  {model.status === "configured" ? "Assets configured" : "Unavailable"}
                 </span>
               </div>
               <p className="mt-1 text-xs text-slate-500">
                 {model.modality} · {model.input}
               </p>
+              <p className="mt-1 text-xs text-slate-500">
+                {model.model_id} · {model.readiness.replaceAll("_", " ")}
+              </p>
+              <details className="mt-2 text-xs text-slate-600">
+                <summary className="cursor-pointer font-medium">Model provenance and limitations</summary>
+                <div className="mt-2 space-y-1">
+                  <p>Version: {model.model_version}</p>
+                  <p>Preprocessing: {model.preprocessing}</p>
+                  <p>Evaluation: {model.evaluation}</p>
+                  <p>Provenance: {model.provenance}</p>
+                  <p>Limitations: {model.limitations}</p>
+                  <p>Resources: {model.resources}</p>
+                  {model.checkpoint_sha256 && (
+                    <p className="break-all">Checkpoint SHA-256: {model.checkpoint_sha256}</p>
+                  )}
+                </div>
+              </details>
             </div>
           ))}
         </div>
@@ -1015,18 +1097,22 @@ function Success({
   assessment,
   diseaseModels,
   demoPredictions,
+  demoError,
+  demoLoading,
   onLogout,
 }: {
   name: string;
   assessment: RiskAssessment;
   diseaseModels: DiseaseModelContract[];
-  demoPredictions: Array<Record<string, unknown>>;
+  demoPredictions: DemoPrediction[];
+  demoError: string;
+  demoLoading: boolean;
   onLogout: () => Promise<void>;
 }) {
   const predictionFor = (id: string) =>
     demoPredictions.find((prediction) => prediction.disease === id);
   return (
-    <main className="risk-shell flex min-h-screen items-center justify-center px-4 py-8">
+    <main className="risk-shell flex min-h-screen flex-col items-center justify-center gap-6 px-4 py-8">
       <section className="risk-panel w-full max-w-2xl rounded-2xl p-8 text-center">
         <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-cyan-100 text-cyan-800">
           <Check />
@@ -1043,40 +1129,73 @@ function Success({
             Prediction output
           </h2>
           <p className="mt-1 text-sm text-slate-600">
-            Demo predictions use fixed repository sample images and trained
-            research adapters. They are not predictions for this user.
+            Demo predictions use fixed repository sample images and run through
+            the configured research adapters. They are not predictions for
+            this user, and model scores are not calibrated probabilities.
           </p>
+          {demoLoading && (
+            <p className="mt-3 text-sm text-cyan-900" role="status">
+              Running configured research demos…
+            </p>
+          )}
+          {demoError && (
+            <p className="mt-3 rounded-lg bg-amber-50 p-3 text-left text-sm text-amber-900" role="alert">
+              Research demo results could not be loaded: {demoError}
+            </p>
+          )}
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
             {diseaseModels.map((model) => {
               const prediction = predictionFor(model.id);
+              const score = prediction?.model_score;
+              const scorePercent =
+                typeof score === "number" && Number.isFinite(score)
+                  ? score * 100
+                  : null;
               return (
                 <div key={model.id} className="rounded-lg border border-slate-200 bg-white p-3 text-slate-950 shadow-sm">
                   {typeof prediction?.image_url === "string" && (
-                    <img
+                    <Image
                       src={`${API_URL}${String(prediction.image_url)}`}
                       alt={`${model.label} demo sample`}
+                      width={420}
+                      height={160}
+                      unoptimized
                       className="mb-3 h-28 w-full rounded-md bg-slate-900 object-cover"
                     />
                   )}
+                  {prediction?.status === "demo_prediction" &&
+                    !prediction.image_preview_available && (
+                      <p className="mb-2 rounded-md bg-slate-50 p-2 text-xs text-slate-600">
+                        Browser preview is unavailable for this sample image format.
+                      </p>
+                    )}
                   <div className="flex items-center justify-between gap-2">
                     <strong className="text-sm text-slate-950">{model.label}</strong>
                     <span
-                      className={`rounded-full px-2 py-1 text-[10px] font-semibold ${prediction?.status === "demo_prediction" ? "bg-emerald-100 text-emerald-800" : "bg-slate-100 text-slate-600"}`}
+                      className={`rounded-full px-2 py-1 text-[10px] font-semibold ${prediction?.status === "demo_prediction" ? "bg-emerald-100 text-emerald-800" : prediction?.status === "demo_error" ? "bg-rose-100 text-rose-800" : "bg-slate-100 text-slate-600"}`}
                     >
                       {prediction?.status === "demo_prediction"
-                        ? "Demo output"
-                        : "Unavailable"}
+                        ? "Research sample output"
+                        : prediction?.status === "demo_error"
+                          ? "Run failed"
+                          : "Unavailable"}
                     </span>
                   </div>
                   <p className="mt-2 text-sm font-semibold text-slate-900">
                     {prediction?.status === "demo_prediction"
-                      ? `${String(prediction.class).replaceAll("_", " ")} · ${(Number(prediction.probability) * 100).toFixed(1)}% probability`
-                      : model.status}
+                      ? `${String(prediction.class).replaceAll("_", " ")} · ${scorePercent === null ? "score unavailable" : `${scorePercent.toFixed(1)}% model score (not calibrated)`}`
+                      : prediction?.message ?? (model.status === "configured" ? "Configured; runtime compatibility not yet verified" : "Model assets are not configured")}
                   </p>
                   {prediction?.status === "demo_prediction" && (
-                    <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-200" aria-label={`${(Number(prediction.probability) * 100).toFixed(1)} percent probability`}>
-                      <div className="h-full rounded-full bg-cyan-700" style={{ width: `${Math.max(0, Math.min(100, Number(prediction.probability) * 100))}%` }} />
+                    <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-200" aria-label={scorePercent === null ? "Uncalibrated model score unavailable" : `Uncalibrated model score ${scorePercent.toFixed(1)} out of 100`}>
+                      <div className="h-full rounded-full bg-cyan-700" style={{ width: `${scorePercent === null ? 0 : Math.max(0, Math.min(100, scorePercent))}%` }} />
                     </div>
+                  )}
+                  {prediction?.status === "demo_prediction" && (
+                    <p className="mt-2 break-all text-[10px] text-slate-500">
+                      {prediction.model_id} · {prediction.model_version}
+                      {prediction.checkpoint_sha256 ? ` · SHA-256 ${prediction.checkpoint_sha256}` : ""}
+                    </p>
                   )}
                 </div>
               );
@@ -1097,6 +1216,7 @@ function Success({
           Log out
         </button>
       </section>
+      <PatientRecordAssistant />
     </main>
   );
 }

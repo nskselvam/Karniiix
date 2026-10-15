@@ -8,14 +8,53 @@ const integer = (value, fallback, name) => {
   return parsed;
 };
 
+export function localOllamaUrl(value) {
+  let url;
+  try {
+    url = new URL(value);
+  } catch {
+    throw new Error("OLLAMA_BASE_URL must be a valid local HTTP URL");
+  }
+  if (
+    url.protocol !== "http:" ||
+    !["127.0.0.1", "localhost"].includes(url.hostname) ||
+    url.username ||
+    url.password ||
+    url.pathname !== "/" ||
+    url.search ||
+    url.hash
+  ) {
+    throw new Error("OLLAMA_BASE_URL must use HTTP on localhost or 127.0.0.1");
+  }
+  return url.origin;
+}
+
 export function loadConfig(env = process.env) {
   const isProduction = env.NODE_ENV === "production";
   const jwtSecret = env.JWT_SECRET ?? (isProduction ? "" : "development-only-change-me-32-characters");
   const databaseUrl = env.DATABASE_URL ?? "";
   const corsOrigin = env.CORS_ORIGIN ?? "http://localhost:3000";
+  const ollamaBaseUrl = localOllamaUrl(env.OLLAMA_BASE_URL ?? "http://127.0.0.1:11434");
+  const ollamaModel = env.KARNIX_MODEL ?? "medgemma1.5:4b";
+  const defaultOllamaModels = [
+    ollamaModel,
+    "hf.co/aaditya/OpenBioLLM-Llama3-8B-GGUF:Q4_K_M",
+  ];
+  const ollamaModels = (env.KARNIX_MODELS ?? defaultOllamaModels.join(","))
+    .split(",")
+    .map((model) => model.trim())
+    .filter(Boolean);
 
   if (!databaseUrl) throw new Error("DATABASE_URL is required");
   if (jwtSecret.length < 32) throw new Error("JWT_SECRET must contain at least 32 characters");
+  if (
+    ollamaModels.length === 0 ||
+    ollamaModels.some((model) => model.length > 128) ||
+    new Set(ollamaModels).size !== ollamaModels.length ||
+    ollamaModels.length < 2
+  ) {
+    throw new Error("KARNIX_MODELS must contain at least two unique model names, each no longer than 128 characters");
+  }
   if (isProduction && !corsOrigin.startsWith("https://")) {
     throw new Error("CORS_ORIGIN must use HTTPS in production");
   }
@@ -26,6 +65,9 @@ export function loadConfig(env = process.env) {
     port: integer(env.PORT, 4000, "PORT"),
     databaseUrl,
     databaseSsl: env.DATABASE_SSL === "true",
+    ollamaBaseUrl,
+    ollamaModel: ollamaModels[0],
+    ollamaModels,
     corsOrigin,
     jwtSecret,
     jwtIssuer: env.JWT_ISSUER ?? "karnix-auth-api",

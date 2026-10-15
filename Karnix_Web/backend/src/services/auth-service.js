@@ -5,7 +5,7 @@ import { withTransaction } from "../db/pool.js";
 import { conflict, unauthorized } from "../utils/app-error.js";
 import { hashToken } from "./session-service.js";
 
-const INVALID_CREDENTIALS = "Invalid email or password.";
+const INVALID_CREDENTIALS = "Invalid username/email or password.";
 const DUMMY_HASH = "$2b$12$KIXxjSc32JQEV67f3mnXueLwQynCkn5dWG2VkWIebTpjfH1lL0V4S";
 
 export const normalizeEmail = (email) => email.trim().toLowerCase();
@@ -56,8 +56,11 @@ export function createAuthService({ pool, passwordService, sessionService }) {
     },
 
     async login(input, context) {
-      const email = normalizeEmail(input.email);
-      const user = await users.findAuthByEmail(email);
+      const identifier = (input.identifier ?? input.email).trim();
+      const isEmail = identifier.includes("@");
+      const user = isEmail
+        ? await users.findAuthByEmail(normalizeEmail(identifier))
+        : await users.findAuthByUsername(identifier.toLowerCase());
       const matches = await passwordService.compare(input.password, user?.password_hash ?? DUMMY_HASH);
       if (!user || !matches || !user.is_active || user.deleted_at) {
         await audit.record({ ...context, userId: user?.id, eventType: "LOGIN_FAILURE" });

@@ -1,0 +1,15 @@
+/* Accessible with Control + Shift + b (for the default task) */
+
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build cavOS-based KarnixOS",
+      "type": "shell",
+      "command": "make",
+      "args": ["-C", "${workspaceFolder}", "disk"],
+      "problemMatcher": [],
+      "group": { "kind": "build", "isDefault": true }
+    }
+  ]
+}

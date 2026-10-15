@@ -1,5 +1,19 @@
 # Moonday Spine 3D — Holographic Interface
 
+The Moonday spine scene loads the anatomical spinal column from
+`../the-human-spinal-column.zip`, converted in Blender to
+`assets/models/human_spine.glb`. The model contains C1–L5, the sacrum, and
+23 intervertebral discs as separate named meshes. The scene is rendered in
+Three.js and keeps Jester's mouse, hand-tracking, and patient-record controls.
+
+To regenerate the GLB (unzip the archive and its inner `source/spine_01.zip.zip`
+first):
+
+```sh
+/Applications/Blender.app/Contents/MacOS/Blender -b --factory-startup \
+  -P scripts/export_spine_glb.py -- path/to/spine_01.fbx assets/models/human_spine.glb
+```
+
 ## Changing Patient Records
 
 Moonday reads patient data from `../karnix_spine_edge/data/spine_records.json` through the local `/spine-records` endpoint. Edit that JSON file to add, remove, or update records, then refresh the Moonday page.
@@ -26,7 +40,9 @@ Each record should use this shape:
 
 Use real de-identified records only. If age or sex is unknown, leave it as `0` or `N/A`; Moonday will display `Unknown`. `abnormal_prob` can be either `0.82` or `82.0`; the server normalizes both to percent.
 
-Fist gesture opens the patient-record panel. The panel supports high/moderate/low filters, search, and sorting by abnormal probability, risk score, or date. New records can include DEXA trabecular bone score, CT cortical thinning index, and MRI marrow dark-signal ratio.
+The **PATIENT RECORDS** button (or the `R` key) opens the patient-record panel; a closed fist now only holds the current view. The panel supports high/moderate/low filters, search, and sorting by abnormal probability, risk score, or date. New records can include DEXA trabecular bone score, CT cortical thinning index, and MRI marrow dark-signal ratio.
+
+Spine view controls (toolbar at the top, keyboard shortcut in brackets): Front `1`, Side `2`, Back `3`, Auto rotate `A`, Labels `L`, Isolate the selected problem `I`, Compare against a normal spine `N`, Reset `0`, PNG Snapshot `S`. Arrow keys step through problems, the problem panel filters by severity, and hovering a vertebra or disc shows its level and any flagged problems.
 
 To generate those fields from scans with the C++ screener, run from `../karnix_spine_edge`:
 

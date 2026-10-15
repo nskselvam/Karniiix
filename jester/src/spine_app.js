@@ -26,8 +26,8 @@ function createSpineHud() {
       <div id="hud-hands">HANDS · 0</div>
     </div>
     <div class="hud-top-right">
-      POINT · rotate and choose focus<br/>PINCH · move slice plane<br/>FIST · patient records<br/>TWO HANDS · zoom model
-      <br/>MOUSE · drag rotate · wheel zoom · click focus
+      POINT · rotate and choose focus<br/>PINCH · move slice plane<br/>FIST · hold view<br/>TWO HANDS · zoom model
+      <br/>MOUSE · drag rotate · wheel zoom · click focus · hover inspect<br/>KEYS · ← → problems · R records · I isolate · N normal
     </div>
     <div id="hud-flash"><div id="hud-flash-text"></div></div>
   `;
@@ -96,7 +96,10 @@ function createSpineHud() {
 async function main() {
   const hud = createSpineHud();
   const smoother = createHandSmoother();
-  const spine = createSpineScene($("scene"), $("problem-panel"), $("records-panel"));
+  const spine = createSpineScene($("scene"), $("problem-panel"), $("records-panel"), {
+    toolbar: $("spine-toolbar"),
+    recordsButton: $("records-btn"),
+  });
   let hands = [];
   let localMode = false;
   let tracker = null;

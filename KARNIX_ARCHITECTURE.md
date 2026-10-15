@@ -46,12 +46,37 @@ implemented.
 | `Brain_tumour/` | Four-label brain MRI research CNN and CLI | CLI built; optional SDL visualizer unavailable without SDL2/SDL2_ttf |
 | `Other_Disease/` | C++17 lung, brain tumour, osteoarthritis, lumbar stenosis and unified medical-screening executables | All five targets built in the prior component audit; setup script builds `medical_screening` |
 | `karnix_spine_edge/` | Spine-image and MURA research CLI, models/data, optional visualizer and voice wrapper | CLI and MURA pipeline built; optional SDL visualizer unavailable |
-| `spine_analytics_dashboard/`, `Karnix_Web/`, `jester/` | Independent web, backend, or Electron applications | Separate manifests and runtimes; not unified with hosted LLM |
+| `spine_analytics_dashboard/`, `Karnix_Web/`, `jester/` | Independent web, backend, or Electron applications | Separate manifests and runtimes; Karnix Web optionally invokes fixed C++ image-model adapters, but is not unified with hosted LLM |
 | `spine_3d/`, `NEWP/`, `Rust/`, `private/os copy/` | Independent visualization, research, language, and OS experiments | Preserved; no monolithic integration |
 
 The repository contains C++, C, assembly, Python, JavaScript/TypeScript, and
 Rust. New local LLM application logic is C++; existing independent modules
 remain in their native languages and build systems.
+
+## Karnix Web research inference slice
+
+`Karnix_Web/backend/` now exposes authenticated routes for a fixed disease
+registry. Its model adapter invokes the configured lung X-ray, brain MRI,
+osteoarthritis X-ray, or lumbar MRI executable with a bounded timeout,
+restricted image root, file-signature check, and validated JSON output. The
+catalog reports configured asset paths by status and checkpoint SHA-256; it
+does not claim runtime compatibility until an actual inference succeeds.
+Scores are exposed as uncalibrated model scores, never as clinical
+probabilities. Osteoporosis/DEXA is explicitly unavailable because a
+compatible checkpoint and verified labeled dataset are not present.
+
+On 2026-10-10, the four C++ adapters built and each ran against its configured
+repository sample image and a compatible checkpoint. The 6.2 MiB
+`karnix_spine_edge/models/spine_model.weights` checkpoint failed to load for
+the lumbar adapter; the smaller `lumbar_mri_cnn.weights` checkpoint loaded and
+ran, so the backend environment example points to the latter. These are
+engineering smoke checks, not model validation.
+
+The backend test suite covers authentication, prediction authorization,
+catalog readiness, image-root containment and signatures, model-output
+validation, demo labeling, and audit events. No synthetic patient cases,
+doctor roles, case authorization, report approval, DICOM viewer, GenAI
+clinical copilot, or medical-reference retrieval are implemented yet.
 
 ## Research boundaries and non-claims
 

@@ -9,6 +9,7 @@ import swagger from "@fastify/swagger";
 import swaggerUi from "@fastify/swagger-ui";
 import { createPool } from "./db/pool.js";
 import { createAuthenticate } from "./middleware/authenticate.js";
+import { createAuditRepository } from "./repositories/audit-repository.js";
 import { authRoutes } from "./routes/auth-routes.js";
 import { userRoutes } from "./routes/user-routes.js";
 import { riskAssessmentRoutes } from "./routes/risk-assessment-routes.js";
@@ -19,10 +20,12 @@ import { createRiskAssessmentService } from "./services/risk-assessment-service.
 import { createPredictionService } from "./services/prediction-service.js";
 import { predictionRoutes } from "./routes/prediction-routes.js";
 import { demoImageRoute } from "./routes/demo-image-route.js";
+import { patientAssistantRoutes } from "./routes/patient-assistant-routes.js";
 import { ACCESS_COOKIE, createSessionService } from "./services/session-service.js";
 import { AppError } from "./utils/app-error.js";
+import { createPatientAssistantService } from "./services/patient-assistant-service.js";
 
-export async function buildApp({ config, database, logger = true }) {
+export async function buildApp({ config, database, logger = true, fetchImpl = globalThis.fetch }) {
   const pool = database ?? createPool(config);
   const app = Fastify({
     logger,
@@ -40,8 +43,10 @@ export async function buildApp({ config, database, logger = true }) {
   const accountService = createAccountService({ pool, passwordService });
   const riskAssessmentService = createRiskAssessmentService(pool);
   const predictionService = createPredictionService(config);
+  const patientAssistantService = createPatientAssistantService({ database: pool, config, fetchImpl });
+  const auditRepository = createAuditRepository(pool);
   app.decorate("sessionService", sessionService);
-  app.decorate("services", { authService, accountService, sessionService, riskAssessmentService, predictionService });
+  app.decorate("services", { authService, accountService, sessionService, riskAssessmentService, predictionService, patientAssistantService, auditRepository });
 
   await app.register(helmet, { global: true });
   await app.register(cors, { origin: config.corsOrigin, credentials: true });
@@ -127,6 +132,7 @@ export async function buildApp({ config, database, logger = true }) {
   await app.register(riskAssessmentRoutes, { prefix: "/api/v1/risk-assessments" });
   await app.register(predictionRoutes, { prefix: "/api/v1/predictions" });
   await app.register(demoImageRoute, { prefix: "/api/v1/predictions" });
+  await app.register(patientAssistantRoutes, { prefix: "/api/v1/patient-assistant" });
 
   app.addHook("onClose", async () => {
     if (!database) await pool.end();
