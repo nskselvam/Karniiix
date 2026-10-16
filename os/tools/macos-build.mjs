@@ -13,10 +13,9 @@ const alpine = 'https://dl-cdn.alpinelinux.org/alpine/v3.21';
 const packages = [
   'bash', 'coreutils', 'grep', 'sed', 'findutils', 'curl', 'tzdata',
   'xorg-server', 'xinit', 'xf86-input-evdev', 'xf86-video-fbdev',
-  'twm', 'xsetroot', 'xeyes', 'xclock', 'xcalc', 'st', 'nedit',
-  'thunar', 'netsurf', 'feh', 'mpv', 'hexchat', 'mesa-dri-gallium',
+  'twm', 'xsetroot', 'st', 'nedit', 'thunar', 'feh', 'mesa-dri-gallium',
   'mesa-utils', 'font-dejavu', 'font-misc-misc', 'font-cursor-misc',
-  'xkeyboard-config', 'xauth', 'dbus', 'htop', 'scrot',
+  'xkeyboard-config', 'xauth', 'dbus', 'htop',
 ];
 
 function run(command, args, options = {}) {

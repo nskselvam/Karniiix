@@ -1,10 +1,33 @@
 import assert from 'node:assert/strict';
-import { mkdtemp, writeFile, utimes, symlink, rm } from 'node:fs/promises';
+import { mkdtemp, writeFile, utimes, symlink, rm, readFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createHash } from 'node:crypto';
 import test from 'node:test';
 import { startImageServer } from './live-images.mjs';
+
+test('slim desktop excludes browser packages, launchers and menu entries', async () => {
+  const menu = await readFile(new URL('../target/root/.twmrc', import.meta.url), 'utf8');
+  const welcome = await readFile(new URL('../target/root/karnix-welcome.sh', import.meta.url), 'utf8');
+  const builder = await readFile(new URL('macos-build.mjs', import.meta.url), 'utf8');
+  const ports = await readFile(new URL('userland/ports.sh', import.meta.url), 'utf8');
+  for (const contents of [menu, welcome, builder, ports]) {
+    assert.doesNotMatch(contents, /netsurf|karnix-browser|Google Search|\b['"]links['"]/i);
+  }
+  await assert.rejects(readFile(new URL('../target/root/karnix-browser.sh', import.meta.url)),
+    { code: 'ENOENT' });
+});
+
+test('incoming images sync without opening a viewer; menu retains manual launch', async () => {
+  const guest = new URL('../target/root/', import.meta.url);
+  const sync = await readFile(new URL('karnix-live-images.sh', guest), 'utf8');
+  const startup = await readFile(new URL('.xinitrc', guest), 'utf8');
+  const menu = await readFile(new URL('.twmrc', guest), 'utf8');
+  assert.match(sync, /echo "Received image: \$name"/);
+  assert.doesNotMatch(sync, /\b(feh|thunar)\b/);
+  assert.doesNotMatch(startup, /\b(feh|thunar)\b/);
+  assert.match(menu, /"Incoming Images"\s+f\.exec "exec feh .*\/root\/incoming-images/);
+});
 
 test('live service discovers later files, serves exact bytes, rejects writes and excludes symlinks', async () => {
   const directory = await mkdtemp(join(tmpdir(), 'karnix-live-'));

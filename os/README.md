@@ -28,8 +28,10 @@ Place images in `../os_image_data/` on your Mac (subfolders supported) while
 the OS is running with `make run`. A read-only Node service binds only to
 `127.0.0.1:18765`; the guest polls it through QEMU's `10.0.2.2` host address.
 New/changed images are downloaded, SHA-256 checked, saved under
-`/root/incoming-images/`, and opened in feh automatically, normally within
-a few seconds. Files still being written are deferred until stable. The
+`/root/incoming-images/` in the background, normally within a few seconds.
+No incoming image viewer opens at startup or when an image arrives. Open
+**Incoming Images** from the desktop menu when you want to view them.
+Files still being written are deferred until stable. The
 service stops when QEMU exits and reports a port conflict explicitly.
 No external server, upload endpoint, host folder sharing, or disk rebuild is
 used for live transfers. Start via `make run`, not a standalone QEMU command.
@@ -37,12 +39,12 @@ used for live transfers. Start via `make run`, not a standalone QEMU command.
 Incoming filenames use content hashes to safely handle spaces and duplicate
 names. Identical content is transferred once. Deleting a host image removes
 it from the published list but does not erase a previously received guest
-copy. Multiple new images open separate viewer windows. Transfer failures
+copy. Receiving images does not open windows or interrupt your work. Transfer failures
 are reported in `/var/log/karnix-images.log` and retried.
 
 The boot console now shows Karnix setup stages as initialization proceeds;
 the desktop opens a Karnix welcome window describing the inbox and menu.
-PGM, JPG, and PNG transfers and automatic viewer launch were verified in
+PGM, JPG, and PNG transfers were verified in
 the running QEMU guest. The guest saves completed downloads using copy and
 remove because its filesystem does not implement rename.
 Visible branding is Karnix. Original copyright notices and
@@ -70,15 +72,15 @@ source dataset images, not automatically linked to a signed-in patient's
 record, and the viewer performs no diagnosis or reconstruction.
 
 `make -f os/Makefile ...` also works. The default target is the complete disk.
-The initial build downloads approximately 300 Alpine x86_64 packages.
+The slim desktop does not include a web browser or Google Search entry.
+The initial build downloads approximately 170 Alpine x86_64 packages.
 Keep enough free space for a 2 GiB root image, the combined disk, and caches.
 
 The macOS builder:
 
 1. Compiles the cavOS C/assembly kernel with `x86_64-elf-gcc`, GNU C11,
    imported musl headers, NASM, and uACPI 3.1.0.
-2. Resolves Alpine v3.21 main/community packages; upstream's additional
-   NetSurf dependency is supplied by edge/community. It checks dependency
+2. Resolves Alpine v3.21 main/community packages. It checks dependency
    constraints and rejects conflicts.
 3. Downloads packages through HTTPS. It validates control checksums against
    the HTTPS-fetched APK indexes and data SHA-256 hashes against each control
