@@ -28,7 +28,7 @@ check:
 	@bash "$(OS_ROOT)/tools/check-host.sh"
 
 test:
-	node --test "$(OS_ROOT)/tools/test-integration.mjs" "$(OS_ROOT)/tools/import-images.test.mjs"
+	node --test "$(OS_ROOT)/tools/test-integration.mjs" "$(OS_ROOT)/tools/import-images.test.mjs" "$(OS_ROOT)/tools/live-images.test.mjs"
 
 images:
 	node "$(OS_ROOT)/tools/import-images.mjs"
@@ -76,7 +76,7 @@ run: qemu
 qemu:
 	@test -s "$(OS_ROOT)/disk.img" || \
 		{ echo 'No cavOS disk image. Build it with: make -C os disk' >&2; exit 1; }
-	$(QEMU) -machine pc,accel=$(QEMU_ACCEL) -m $(QEMU_MEMORY) -smp $(QEMU_CPUS) \
+	node "$(OS_ROOT)/tools/run-os.mjs" $(QEMU) -machine pc,accel=$(QEMU_ACCEL) -m $(QEMU_MEMORY) -smp $(QEMU_CPUS) \
 		-serial stdio -display $(QEMU_DISPLAY) -vga vmware \
 		-drive file="$(OS_ROOT)/disk.img",format=raw,id=disk,if=none \
 		-device ahci,id=ahci -device ide-hd,drive=disk,bus=ahci.0 \

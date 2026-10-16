@@ -1,0 +1,7 @@
+Karnix contains code from cavOS, the Cave-Like Operating System.
+Original project: https://github.com/malwarepad/cavOS
+Copyright MalwarePad 2025 and individual contributors.
+Kernel source includes original Copyright (C) 2024 Panagiotis notices.
+The imported project is licensed under GPL version 3; see LICENSE.
+Original source copyright notices and bundled component licenses are retained.
+Karnix branding does not imply independent authorship of the imported kernel.

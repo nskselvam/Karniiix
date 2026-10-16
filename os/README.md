@@ -22,6 +22,32 @@ If your terminal is already inside `os/`, use `make run`, `make disk`, or
 
 ## Medical image dataset
 
+### Live Mac image inbox
+
+Place images in `../os_image_data/` on your Mac (subfolders supported) while
+the OS is running with `make run`. A read-only Node service binds only to
+`127.0.0.1:18765`; the guest polls it through QEMU's `10.0.2.2` host address.
+New/changed images are downloaded, SHA-256 checked, saved under
+`/root/incoming-images/`, and opened in feh automatically, normally within
+a few seconds. Files still being written are deferred until stable. The
+service stops when QEMU exits and reports a port conflict explicitly.
+No external server, upload endpoint, host folder sharing, or disk rebuild is
+used for live transfers. Start via `make run`, not a standalone QEMU command.
+
+Incoming filenames use content hashes to safely handle spaces and duplicate
+names. Identical content is transferred once. Deleting a host image removes
+it from the published list but does not erase a previously received guest
+copy. Multiple new images open separate viewer windows. Transfer failures
+are reported in `/var/log/karnix-images.log` and retried.
+
+The boot console now shows Karnix setup stages as initialization proceeds;
+the desktop opens a Karnix welcome window describing the inbox and menu.
+PGM, JPG, and PNG transfers and automatic viewer launch were verified in
+the running QEMU guest. The guest saves completed downloads using copy and
+remove because its filesystem does not implement rename.
+Visible branding is Karnix. Original copyright notices and
+`THIRD-PARTY-NOTICES.txt` retain required attribution.
+
 `make images` copies all supported image files recursively from
 `../karnix_spine_edge/data` into `target/root/medical-images`, retaining
 subdirectories and filenames. The originals stay in place for existing

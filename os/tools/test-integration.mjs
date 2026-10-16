@@ -9,6 +9,13 @@ import { gzipMembers, satisfies } from './macos-build.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const source = fileURLToPath(new URL('../../cavOS/', import.meta.url));
+let hasOriginal = true;
+try {
+  await readdir(source);
+} catch (error) {
+  if (error.code !== 'ENOENT') throw error;
+  hasOriginal = false;
+}
 
 async function files(directory, prefix = '') {
   const entries = await readdir(join(directory, prefix), { withFileTypes: true });
@@ -21,13 +28,19 @@ async function files(directory, prefix = '') {
   return result.sort();
 }
 
-test('every cavOS source file is imported; only documented build integration differs', async () => {
+test('every cavOS source file is imported; only documented integration differs', {
+  skip: !hasOriginal && 'Original checkout absent; standalone OS does not require it',
+}, async () => {
   const originals = await files(join(source, 'src'));
   assert.ok(originals.length > 0);
   for (const path of originals) {
     if (path === join('kernel', 'Makefile')) {
       const makefile = await readFile(join(root, 'src', path), 'utf8');
       assert.match(makefile, /exit \$\$status/);
+      continue;
+    }
+    if (path === join('kernel', 'entry', 'kernel.c')) {
+      assert.match(await readFile(join(root, 'src', path), 'utf8'), /KARNIX - Image and research workspace/);
       continue;
     }
     if (path === join('kernel', 'filesystems', 'ext2', 'ext2_controller.c')) {
@@ -40,7 +53,9 @@ test('every cavOS source file is imported; only documented build integration dif
   }
 });
 
-test('all supporting cavOS files are present, including hidden desktop config', async () => {
+test('all supporting cavOS files are present, including hidden desktop config', {
+  skip: !hasOriginal && 'Original checkout absent; standalone OS does not require it',
+}, async () => {
   for (const directory of ['target', 'tools', 'patches', 'docs', '.vscode', '.github']) {
     for (const path of await files(join(source, directory))) {
       await readFile(join(root, directory, path));

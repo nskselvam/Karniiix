@@ -51,6 +51,9 @@ void _start(void) {
   initiateVGA();
   initiateConsole();
   clearScreen();
+  printf("\n\n       K A R N I X\n");
+  printf("       ========================================\n\n");
+  printf("       [1/5] Configuring memory and processor...\n");
 
   // None of the two depend on paging
   initiatePMM();
@@ -61,6 +64,7 @@ void _start(void) {
   initiateACPI(); // needed for APIC setup
   initiateISR();
   initiatePaging();
+  printf("       [2/5] Starting input and system services...\n");
 
   debugf("\n====== REACHED SYSTEM ======\n");
   initiateApicTimer(); // mouse needs a timer
@@ -73,6 +77,7 @@ void _start(void) {
   initiateKernelThreads();
   initiateNetworking();
   initiatePCI();
+  printf("       [3/5] Mounting image workspace...\n");
   fsMount("/", CONNECTOR_AHCI, 0, 1);
   fsMount("/boot/", CONNECTOR_AHCI, 0, 0);
   fsMount("/sys/", CONNECTOR_SYS, 0, 0);
@@ -83,6 +88,7 @@ void _start(void) {
 
   initiateSyscallInst();
   initiateSyscalls();
+  printf("       [4/5] Preparing application runtime...\n");
 
   initiateSSE();
   // initiateTasks();
@@ -92,10 +98,9 @@ void _start(void) {
   if (!systemDiskInit)
     printf("[warning] System disk has not been detected!\n");
 
-  printf("=========================================\n");
-  printf("==     Cave-Like Operating System      ==\n");
-  printf("==      Copyright MalwarePad 2025      ==\n");
-  printf("=========================================\n\n");
+  printf("       [5/5] Starting Karnix graphical desktop...\n\n");
+  printf("       KARNIX - Image and research workspace\n");
+  printf("       Ready for local images and applications.\n\n");
 
   while (1)
     run("/bin/bash", true, 0, 0);
